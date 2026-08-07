@@ -1,0 +1,281 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Designtokens — pas de kleuren hier aan per klant.
+   Tailwind v4: tokens in @theme genereren utilities
+   (bijv. --color-accent -> bg-accent / text-accent / border-accent).
+   ============================================================ */
+@theme {
+  /* Merkpalet */
+  --color-ink: #14201d;
+  --color-ink-soft: #31423e;
+  --color-paper: #f7f5f0;
+  --color-card: #ffffff;
+  --color-line: #e3dfd6;
+  --color-muted: #6b7a76;
+  --color-accent: #1b4de4;
+  --color-accent-soft: #e9eefd;
+  --color-amber: #e8a33d;
+
+  /* shadcn/ui token-mapping */
+  --color-background: #f7f5f0;
+  --color-foreground: #14201d;
+  --color-card-foreground: #14201d;
+  --color-primary: #1b4de4;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #ffffff;
+  --color-secondary-foreground: #14201d;
+  --color-muted-foreground: #6b7a76;
+  --color-accent-foreground: #14201d;
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #e3dfd6;
+  --color-input: #e3dfd6;
+  --color-ring: #1b4de4;
+
+  /* Lettertypes (variabelen komen uit next/font in layout.tsx) */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+}
+
+/* ============================================================
+   Basisstijlen
+   ============================================================ */
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Ankerlinks vrijhouden van de vaste header */
+  section[id] {
+    scroll-margin-top: 5rem;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Zichtbare focusstaat op elk interactief element */
+  :focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: var(--color-accent-soft);
+    color: var(--color-ink);
+  }
+}
+
+/* ============================================================
+   Typografie-helpers
+   ============================================================ */
+@layer components {
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.4rem, 6.2vw, 4.4rem);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  .h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 3.8vw, 3rem);
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+
+  .h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .lead {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    max-width: 44ch;
+    color: var(--color-ink-soft);
+  }
+}
+
+/* ============================================================
+   Signature element: de meetlat
+   ============================================================ */
+.meetlat {
+  height: 14px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-line) 0 1px,
+    transparent 1px 12px
+  );
+  background-position: 0 100%;
+  background-repeat: repeat-x;
+  border-bottom: 1px solid var(--color-line);
+  transform-origin: left;
+}
+
+/* ============================================================
+   Continue beweging in CSS (nooit via React-state per frame)
+   ============================================================ */
+
+/* Hero ambient drift */
+@keyframes ambient-drift {
+  0%,
+  100% {
+    transform: translate(-8%, -6%) scale(1);
+  }
+  50% {
+    transform: translate(8%, 8%) scale(1.1);
+  }
+}
+.ambient-glow {
+  animation: ambient-drift 26s ease-in-out infinite;
+}
+
+/* Pulserende wachttijd-stip */
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(34, 197, 94, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-out infinite;
+}
+
+/* Reviews-marquee (twee richtingen), set is 4x gedupliceerd */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-25%);
+  }
+}
+@keyframes marquee-x-reverse {
+  from {
+    transform: translateX(-25%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.marquee {
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x 52s linear infinite;
+}
+.marquee-track.reverse {
+  animation-name: marquee-x-reverse;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Klachtselector: cursor-volgende preview.
+   Positie komt uit --tx/--ty (imperatief gezet), smoothing via transition. */
+.klacht-preview {
+  transform: translate3d(var(--tx, 24px), var(--ty, -110px), 0);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .klacht-preview {
+    transition: opacity 0.2s ease;
+  }
+}
+
+/* FAQ plus-teken */
+details > summary .faq-plus {
+  transition: transform 0.25s ease;
+}
+details[open] > summary .faq-plus {
+  transform: rotate(45deg);
+}
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Grijswaarden-logo's die op hover inkleuren */
+.logo-grey {
+  filter: grayscale(1);
+  opacity: 0.55;
+  transition:
+    filter 0.3s ease,
+    opacity 0.3s ease;
+}
+.logo-grey:hover {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+/* ============================================================
+   Respecteer prefers-reduced-motion volledig
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
+  .ambient-glow {
+    animation: none !important;
+  }
+}
