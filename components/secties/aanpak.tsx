@@ -24,11 +24,10 @@ export function Aanpak() {
       <Reveal>
         <p className="eyebrow">Zo werkt het</p>
         <h2 id="aanpak-titel" className="h2 mt-3 text-ink">
-          Van je eerste afspraak tot weer kunnen wat je wilt zonder pijn
+          {((praktijk as unknown) as { stappenKop?: string }).stappenKop ?? "Van je eerste afspraak tot weer kunnen wat je wilt zonder pijn"}
         </h2>
         <p className="lead mt-4">
-          Je weet vooraf wat er gebeurt, hoeveel tijd het kost en waar we naartoe
-          werken.
+          {((praktijk as unknown) as { stappenSub?: string }).stappenSub ?? "Je weet vooraf wat er gebeurt, hoeveel tijd het kost en waar we naartoe werken."}
         </p>
       </Reveal>
 
