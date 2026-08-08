@@ -59,7 +59,7 @@ export function Aanpak() {
               )}
             </div>
             <p className="eyebrow mt-5">
-              Stap {i + 1} &nbsp;/&nbsp; {stap.duur}
+              {((praktijk as unknown) as { stappenModus?: string }).stappenModus === "aanbod" ? stap.duur : <>Stap {i + 1} &nbsp;/&nbsp; {stap.duur}</>}
             </p>
             <h3 className="h3 mt-2 text-lg text-ink">{stap.titel}</h3>
             <p className="mt-2 text-ink-soft">{stap.tekst}</p>
