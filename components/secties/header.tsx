@@ -7,6 +7,18 @@ import { praktijk } from "@/content/praktijk";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+function accentKleur(): string {
+  if (typeof window === "undefined") return "#1b4de4";
+  const v = getComputedStyle(document.documentElement).getPropertyValue("--color-accent").trim();
+  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : "#1b4de4";
+}
+function mengMetWit(hex: string, deel: number): string {
+  const kanaal = (i: number) => parseInt(hex.slice(i, i + 2), 16);
+  const meng = (x: number) => Math.round(x + (255 - x) * deel).toString(16).padStart(2, "0");
+  return "#" + meng(kanaal(1)) + meng(kanaal(3)) + meng(kanaal(5));
+}
+
+
 const nav = [
   { label: "Klachten", href: "#klachten" },
   { label: "Aanpak", href: "#aanpak" },
@@ -50,7 +62,7 @@ export function Header() {
   const btnColor = useTransform(scrollY, (y) => {
     const off = klachtOffset.current || 1600;
     const t = Math.min(Math.max(y / off, 0), 1);
-    return lerpHex("#3f6ee3", "#1b4de4", t);
+    return lerpHex(mengMetWit(accentKleur(), 0.22), accentKleur(), t);
   });
 
   return (
