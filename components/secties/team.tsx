@@ -11,8 +11,8 @@ export function Team() {
   const uitgelicht = praktijk.team.filter((t) => t.uitgelicht).slice(0, 6);
 
   const images = [
-    { src: slimmeFoto(praktijk.teamShowcase.groepsfoto, 700, 420), alt: `Het team van ${praktijk.naam}` },
-    ...uitgelicht.map((lid) => ({ src: slimmeFoto(lid.foto, 700, 420), alt: lid.naam })),
+    { src: slimmeFoto(praktijk.teamShowcase.groepsfoto, 700, 420), alt: `Het team van ${praktijk.naam}`, portret: false },
+    ...uitgelicht.map((lid) => ({ src: slimmeFoto(lid.foto, 480, 640), alt: lid.naam || "Teamlid", portret: true })),
   ];
 
   return (
@@ -35,20 +35,20 @@ export function Team() {
       <div className="mx-auto max-w-6xl px-5 pb-16 lg:pb-24">
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
           {uitgelicht.map((lid, i) => (
-            <RevealCard key={lid.naam} delay={i * 0.07}>
+            <RevealCard key={lid.naam || lid.foto || i} delay={i * 0.07}>
               <figure>
                 <div className="overflow-hidden rounded-[16px] border border-line bg-ink">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={slimmeFoto(lid.foto, 600, 750)}
-                    alt={lid.naam}
+                    alt={lid.naam || "Teamlid"}
                     className="aspect-[4/5] w-full object-cover"
                   />
                 </div>
                 <figcaption className="mt-3">
-                  <p className="h3 text-ink">{lid.naam}</p>
-                  <p className="mt-0.5 text-sm text-accent">{lid.functie}</p>
-                  <p className="mt-0.5 text-sm text-muted">{lid.specialisatie}</p>
+                  {lid.naam ? <p className="h3 text-ink">{lid.naam}</p> : null}
+                  {lid.functie ? <p className="mt-0.5 text-sm text-accent">{lid.functie}</p> : null}
+                  {lid.specialisatie ? <p className="mt-0.5 text-sm text-muted">{lid.specialisatie}</p> : null}
                 </figcaption>
               </figure>
             </RevealCard>
