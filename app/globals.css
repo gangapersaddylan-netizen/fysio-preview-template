@@ -15,6 +15,9 @@
   --color-muted: #6b7a76;
   --color-accent: #1b4de4;
   --color-accent-soft: #e9eefd;
+  --color-accent-dark: #1533a8;
+  --color-accent-grad: color-mix(in srgb, var(--color-accent) 78%, #ffffff);
+  --color-accent-grad-soft: color-mix(in srgb, var(--color-accent) 48%, #ffffff);
   --color-amber: #e8a33d;
 
   /* shadcn/ui token-mapping */
