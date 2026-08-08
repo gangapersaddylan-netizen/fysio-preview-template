@@ -26,9 +26,12 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const kleuren = ((praktijk as unknown) as { kleuren?: { primair: string; donker: string; licht: string } }).kleuren ?? { primair: "#1b4de4", donker: "#1533a8", licht: "#e9eefd" };
+  const kleurCss = ":root{--color-accent:" + kleuren.primair + ";--color-accent-soft:" + kleuren.licht + ";--color-accent-dark:" + kleuren.donker + ";--color-primary:" + kleuren.primair + ";--color-ring:" + kleuren.primair + ";}";
+
   return (
     <html lang="nl" className={`${bricolage.variable} ${instrument.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased"><style dangerouslySetInnerHTML={{ __html: kleurCss }} />{children}</body>
     </html>
   );
 }
