@@ -5,12 +5,26 @@ import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
 import { buttonVariants } from "@/components/ui/button";
 import ScrollExpandMedia from "@/components/blocks/scroll-expansion-hero";
 
+// Cloudinary-optimalisatie: kleinere/snellere video + direct zichtbare poster (eerste frame)
+function snelleVideo(url: string): string {
+  return url.includes("/video/upload/") && !url.includes("/video/upload/q_")
+    ? url.replace("/video/upload/", "/video/upload/q_auto,vc_auto,w_1440/")
+    : url;
+}
+function videoPoster(url: string): string | undefined {
+  return url.includes("/video/upload/")
+    ? url.replace("/video/upload/", "/video/upload/so_0,w_1200,q_auto/").replace(/\.mp4($|\?)/, ".jpg$1")
+    : undefined;
+}
+
 export function Hero() {
   return (
     <div id="top">
+      <link rel="preconnect" href="https://res.cloudinary.com" />
       <ScrollExpandMedia
         mediaType="video"
-        mediaSrc={praktijk.heroVideo}
+        mediaSrc={snelleVideo(praktijk.heroVideo)}
+        posterSrc={videoPoster(praktijk.heroVideo)}
         title={praktijk.heroTitel}
         date={`Fysiotherapie in ${praktijk.plaats}`}
         scrollToExpand="Scroll om de video te openen"
