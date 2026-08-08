@@ -2,6 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { praktijk } from "@/content/praktijk";
+import { slimmeFoto } from "@/lib/utils";
 import { Reveal, RevealCard } from "@/components/anim/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ZoomParallax } from "@/components/ui/zoom-parallax";
@@ -11,7 +12,7 @@ export function Team() {
 
   const images = [
     { src: praktijk.teamShowcase.groepsfoto, alt: `Het team van ${praktijk.naam}` },
-    ...uitgelicht.map((lid) => ({ src: lid.foto, alt: lid.naam })),
+    ...uitgelicht.map((lid) => ({ src: slimmeFoto(lid.foto, 700, 420), alt: lid.naam })),
   ];
 
   return (
@@ -39,7 +40,7 @@ export function Team() {
                 <div className="overflow-hidden rounded-[16px] border border-line bg-ink">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={lid.foto}
+                    src={slimmeFoto(lid.foto, 600, 750)}
                     alt={lid.naam}
                     className="aspect-[4/5] w-full object-cover"
                   />
