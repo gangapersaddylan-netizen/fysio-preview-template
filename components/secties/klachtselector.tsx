@@ -81,7 +81,7 @@ function KlachtKaart({
       </div>
 
       <div className="relative">
-        <h3 className="display text-xl leading-tight text-ink">
+        <h3 className="display text-xl leading-tight text-ink break-words hyphens-auto">
           {klacht.label}
         </h3>
         <p className="mt-1.5 text-sm leading-snug text-ink-soft">{klacht.sub}</p>
