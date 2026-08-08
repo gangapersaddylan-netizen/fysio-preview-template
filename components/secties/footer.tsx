@@ -2,7 +2,7 @@ import { Phone } from "lucide-react";
 import { praktijk } from "@/content/praktijk";
 
 const HEADER_FADE =
-  "linear-gradient(to bottom, #f7f5f0 0%, #8ea6ec 55%, #3f6ee3 100%)";
+  "linear-gradient(to bottom, #f7f5f0 0%, var(--color-accent-grad-soft) 55%, var(--color-accent-grad) 100%)";
 
 export function Footer() {
   return (
