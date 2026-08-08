@@ -11,7 +11,7 @@ export function Team() {
   const uitgelicht = praktijk.team.filter((t) => t.uitgelicht).slice(0, 6);
 
   const images = [
-    { src: praktijk.teamShowcase.groepsfoto, alt: `Het team van ${praktijk.naam}` },
+    { src: slimmeFoto(praktijk.teamShowcase.groepsfoto, 700, 420), alt: `Het team van ${praktijk.naam}` },
     ...uitgelicht.map((lid) => ({ src: slimmeFoto(lid.foto, 700, 420), alt: lid.naam })),
   ];
 
