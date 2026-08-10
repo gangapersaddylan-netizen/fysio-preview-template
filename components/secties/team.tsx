@@ -14,8 +14,8 @@ export function Team() {
   // Ontbrekende portretten worden aangevuld met teamShowcase.extraFotos: eerst extra echte foto's
   // van dezelfde persoon/personen elders op de site, dan echte praktijkfoto's. Nooit verzonnen content
   // en nooit foto's van andere/onbekende personen (dat blijft voorbehouden aan praktijk.team).
-  const extraShowcaseFotos: string[] =
-    ((praktijk.teamShowcase as { groepsfoto: string; extraFotos?: string[] }).extraFotos) ?? [];
+  const teamShowcase: { groepsfoto: string; extraFotos?: readonly string[] } = praktijk.teamShowcase;
+  const extraShowcaseFotos: readonly string[] = teamShowcase.extraFotos ?? [];
 
   const portretTegels = [
     ...uitgelicht.map((lid) => ({ src: lid.foto, alt: lid.naam || "Teamlid" })),
