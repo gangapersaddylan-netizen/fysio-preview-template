@@ -10,9 +10,21 @@ import { ZoomParallax } from "@/components/ui/zoom-parallax";
 export function Team() {
   const uitgelicht = praktijk.team.filter((t) => t.uitgelicht).slice(0, 6);
 
+  // Hero-parallax toont altijd 7 tegels (1 groepsfoto + 6 portretten), ook bij een solopraktijk.
+  // Ontbrekende portretten worden aangevuld met teamShowcase.extraFotos: eerst extra echte foto's
+  // van dezelfde persoon/personen elders op de site, dan echte praktijkfoto's. Nooit verzonnen content
+  // en nooit foto's van andere/onbekende personen (dat blijft voorbehouden aan praktijk.team).
+  const extraShowcaseFotos: string[] =
+    ((praktijk.teamShowcase as { groepsfoto: string; extraFotos?: string[] }).extraFotos) ?? [];
+
+  const portretTegels = [
+    ...uitgelicht.map((lid) => ({ src: lid.foto, alt: lid.naam || "Teamlid" })),
+    ...extraShowcaseFotos.map((url) => ({ src: url, alt: `Sfeerbeeld van ${praktijk.naam}` })),
+  ].slice(0, 6);
+
   const images = [
     { src: slimmeFoto(praktijk.teamShowcase.groepsfoto, 700, 420), alt: `Het team van ${praktijk.naam}`, portret: false },
-    ...uitgelicht.map((lid) => ({ src: slimmeFoto(lid.foto, 480, 640), alt: lid.naam || "Teamlid", portret: true })),
+    ...portretTegels.map((tegel) => ({ src: slimmeFoto(tegel.src, 480, 640), alt: tegel.alt, portret: true })),
   ];
 
   return (

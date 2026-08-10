@@ -367,6 +367,9 @@ export const praktijk = {
 
   teamShowcase: {
     groepsfoto: "/team/groep.jpg",
+    // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
+    // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
+    extraFotos: [] as string[],
   },
 
   vergoeding: {
