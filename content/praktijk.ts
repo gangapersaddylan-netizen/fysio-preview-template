@@ -370,6 +370,8 @@ export const praktijk = {
     // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
     // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
     extraFotos: [] as string[],
+    // "contain" voor bijna-vierkante/staande covers (bv. team-collages) zodat ze niet gecropt worden.
+    coverFit: "cover" as "cover" | "contain",
   },
 
   vergoeding: {

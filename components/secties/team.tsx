@@ -14,7 +14,7 @@ export function Team() {
   // Ontbrekende portretten worden aangevuld met teamShowcase.extraFotos: eerst extra echte foto's
   // van dezelfde persoon/personen elders op de site, dan echte praktijkfoto's. Nooit verzonnen content
   // en nooit foto's van andere/onbekende personen (dat blijft voorbehouden aan praktijk.team).
-  const teamShowcase: { groepsfoto: string; extraFotos?: readonly string[] } = praktijk.teamShowcase;
+  const teamShowcase: { groepsfoto: string; extraFotos?: readonly string[]; coverFit?: "cover" | "contain" } = praktijk.teamShowcase;
   const extraShowcaseFotos: readonly string[] = teamShowcase.extraFotos ?? [];
 
   const portretTegels = [
@@ -23,7 +23,7 @@ export function Team() {
   ].slice(0, 6);
 
   const images = [
-    { src: slimmeFoto(praktijk.teamShowcase.groepsfoto, 700, 420), alt: `Het team van ${praktijk.naam}`, portret: false },
+    { src: slimmeFoto(teamShowcase.groepsfoto, 700, 420, teamShowcase.coverFit ?? "cover"), alt: `Het team van ${praktijk.naam}`, portret: false },
     ...portretTegels.map((tegel) => ({ src: slimmeFoto(tegel.src, 480, 640), alt: tegel.alt, portret: true })),
   ];
 
