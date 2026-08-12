@@ -184,14 +184,14 @@ export default function ScrollExpandMedia({
                     loop
                     playsInline
                     preload="auto"
-                    className="h-full w-full rounded-[16px] object-cover"
+                    className="h-full w-full rounded-[16px] object-cover object-top"
                   />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={mediaSrc}
                     alt={title ?? "media"}
-                    className="h-full w-full rounded-[16px] object-cover"
+                    className="h-full w-full rounded-[16px] object-cover object-top"
                   />
                 )}
                 <div
