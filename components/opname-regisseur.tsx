@@ -2,8 +2,6 @@
 
 import { useEffect } from "react";
 
-// Volgorde van scriptsecties zoals door Claude gegenereerd (deel_b).
-// 'geruststelling' deelt zijn DOM-anker met 'hero' (zelfde component, geen aparte sectie).
 const VOLGORDE_MET_VERZEKERING = [
   "hero", "geruststelling", "vertrouwen", "waar_heb_je_last_van",
   "reviews", "herkenbaar", "zo_werkt_het", "team", "verzekering", "faq", "cta",
@@ -13,24 +11,16 @@ const VOLGORDE_ZONDER_VERZEKERING = [
   "reviews", "herkenbaar", "zo_werkt_het", "team", "faq", "cta",
 ];
 const ANKER = {
-  hero: "hero",
-  geruststelling: "hero",
-  vertrouwen: "vertrouwen",
-  waar_heb_je_last_van: "waar_heb_je_last_van",
-  reviews: "reviews",
-  herkenbaar: "herkenbaar",
-  zo_werkt_het: "zo_werkt_het",
-  team: "team",
-  verzekering: "verzekering",
-  faq: "faq",
-  cta: "cta",
+  hero: "hero", geruststelling: "hero", vertrouwen: "vertrouwen",
+  waar_heb_je_last_van: "waar_heb_je_last_van", reviews: "reviews",
+  herkenbaar: "herkenbaar", zo_werkt_het: "zo_werkt_het", team: "team",
+  verzekering: "verzekering", faq: "faq", cta: "cta",
 };
 
 function wachtOp(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Scrollt element in beeld binnen een vaste, voorspelbare tijd (i.p.v. de variabele browser-smooth-scroll). */
 function scrollNaarBinnenTijd(el, duurMs) {
   return new Promise((resolve) => {
     const startY = window.scrollY;
@@ -60,13 +50,8 @@ export function OpnameRegisseur() {
     let geannuleerd = false;
 
     async function speelAf() {
-      window.dispatchEvent(new Event("opname:expand-hero"));
-      await new Promise((resolve) => {
-        let klaar = false;
-        const onKlaar = () => { klaar = true; window.removeEventListener("opname:hero-expanded", onKlaar); resolve(); };
-        window.addEventListener("opname:hero-expanded", onKlaar);
-        setTimeout(() => { if (!klaar) resolve(); }, 400);
-      });
+      // De hero-component expandeert zichzelf (zie scroll-expansion-hero.tsx), geen event-handshake nodig.
+      await wachtOp(300);
       if (geannuleerd) return;
 
       const volgorde = duren.length === 11 ? VOLGORDE_MET_VERZEKERING : VOLGORDE_ZONDER_VERZEKERING;
