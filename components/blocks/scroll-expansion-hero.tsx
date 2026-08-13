@@ -52,16 +52,31 @@ export default function ScrollExpandMedia({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // OPNAMEMODUS: staat ?autoscroll= in de URL, dan direct volledig openklappen.
-  // Zo hoeft er geen scroll-wiel gesimuleerd te worden tijdens de video-opname.
+  // OPNAMEMODUS: staat ?autoscroll= in de URL, dan klapt de hero-video zichzelf
+  // geanimeerd open (alsof er iemand scrolt), zodat het effect zichtbaar blijft
+  // in de opname. Timergebaseerd, want requestAnimationFrame pauzeert in een
+  // onzichtbaar tabblad.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     if (!params.get("autoscroll")) return;
     setOpnameModus(true);
-    setScrollProgress(1);
-    setMediaFullyExpanded(true);
-    setShowContent(true);
+    const WACHT_MS = 900;      // heel even de dichte staat tonen
+    const KLAP_MS = 2600;      // duur van de uitklap-animatie
+    const start = Date.now();
+    const interval = window.setInterval(() => {
+      const verstreken = Date.now() - start;
+      if (verstreken < WACHT_MS) return;
+      const t = Math.min(1, (verstreken - WACHT_MS) / KLAP_MS);
+      const ease = 1 - Math.pow(1 - t, 3);
+      setScrollProgress(ease);
+      if (t >= 1) {
+        setMediaFullyExpanded(true);
+        setShowContent(true);
+        window.clearInterval(interval);
+      }
+    }, 40);
+    return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -250,6 +265,7 @@ export default function ScrollExpandMedia({
             </div>
 
             <motion.section
+              data-opname="geruststelling"
               className="relative z-10 flex w-full flex-col px-6 py-16 md:px-12 lg:py-24"
               animate={{ opacity: showContent ? 1 : 0 }}
               transition={{ duration: 0.7 }}
