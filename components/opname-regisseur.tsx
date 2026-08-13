@@ -21,10 +21,9 @@ function wachtOp(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function scrollNaarBinnenTijd(el: Element, duurMs: number): Promise<void> {
+function scrollNaarBinnenTijd(doelY: number, duurMs: number): Promise<void> {
   return new Promise((resolve) => {
     const startY = window.scrollY;
-    const doelY = startY + el.getBoundingClientRect().top;
     const start = performance.now();
     function stap(nu: number) {
       const t = Math.min(1, (nu - start) / duurMs);
@@ -47,6 +46,12 @@ export function OpnameRegisseur() {
     const duren = ruw.split(",").map((x) => parseFloat(x)).filter((x) => !isNaN(x) && x > 0);
     if (duren.length < 2) return;
 
+    // BELANGRIJK: de site gebruikt scroll-behavior: smooth. Dat vecht met onze eigen
+    // frame-voor-frame animatie (elke scrollTo start een nieuwe trage animatie), waardoor
+    // de pagina in de praktijk helemaal niet beweegt. Tijdens opname dus uitzetten.
+    const vorigeBehavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = "auto";
+
     let geannuleerd = false;
 
     async function speelAf() {
@@ -64,12 +69,17 @@ export function OpnameRegisseur() {
         else stappen.push({ anker: anker, duurSec: duur });
       });
 
+      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+
       for (let i = 0; i < stappen.length; i++) {
         if (geannuleerd) return;
         const stap = stappen[i];
         if (i > 0) {
           const el = document.querySelector('[data-opname="' + stap.anker + '"]');
-          if (el) await scrollNaarBinnenTijd(el, 700);
+          if (el) {
+            const doelY = Math.min(maxY, el.getBoundingClientRect().top + window.scrollY);
+            await scrollNaarBinnenTijd(doelY, 700);
+          }
           await wachtOp(Math.max(0, stap.duurSec * 1000 - 700));
         } else {
           await wachtOp(stap.duurSec * 1000);
@@ -78,7 +88,10 @@ export function OpnameRegisseur() {
     }
 
     speelAf();
-    return () => { geannuleerd = true; };
+    return () => {
+      geannuleerd = true;
+      document.documentElement.style.scrollBehavior = vorigeBehavior;
+    };
   }, []);
 
   return null;
