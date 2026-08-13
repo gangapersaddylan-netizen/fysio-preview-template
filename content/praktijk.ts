@@ -58,7 +58,7 @@ export const praktijk = {
   "heroTitel": "Fijner Leven",
   "trust": {
     "googleScore": 4.8,
-    "aantalReviews": 127,
+    "aantalReviews": 142,
     "wachttijdDagen": 2,
     "bigRegistratie": "BIG geregistreerd",
     "bigSub": "Kwaliteitsregister Fysiotherapie"
@@ -66,33 +66,33 @@ export const praktijk = {
   "klachten": [
     {
       "label": "Schouder",
-      "sub": "Frozen shoulder en andere schouderklachten",
-      "slug": "schouderklachten",
+      "sub": "Frozen shoulder en chronische schouderklachten",
+      "slug": "schouder",
+      "icoon": "PersonStanding"
+    },
+    {
+      "label": "Rug & Nek",
+      "sub": "Rugpijn, nekklachten en wervelkolomaandoeningen",
+      "slug": "rug-nek",
       "icoon": "Bone"
     },
     {
-      "label": "Sportblessure",
-      "sub": "Herstel en preventie van sportblessures",
+      "label": "Sportblessures",
+      "sub": "Herstel en preventie van sportgerelateerde klachten",
       "slug": "sportblessures",
       "icoon": "Activity"
     },
     {
-      "label": "Postoperatief",
-      "sub": "Revalidatie na chirurgische ingrepen",
-      "slug": "postoperatief",
-      "icoon": "HeartPulse"
-    },
-    {
-      "label": "Spierklachten",
-      "sub": "Triggerpointtherapie en spierknopen",
-      "slug": "spierklachten",
+      "label": "Revalidatie",
+      "sub": "Postoperatief herstel en medische fitness",
+      "slug": "revalidatie",
       "icoon": "Dumbbell"
     },
     {
-      "label": "Mobiliteit",
-      "sub": "Verbetering bewegingsbereik en vitaliteit",
-      "slug": "mobiliteit",
-      "icoon": "PersonStanding"
+      "label": "Bewegingsbepe",
+      "sub": "Mobiliteit en bewegingsbereik vergroten",
+      "slug": "bewegingsbeperking",
+      "icoon": "HeartPulse"
     }
   ],
   "reviews": [
@@ -101,106 +101,106 @@ export const praktijk = {
       "klacht": "Schouder",
       "plaats": "Amsterdam",
       "sterren": 5,
-      "quote": "Na maanden schouderpijn eindelijk weer normaal kunnen bewegen. De persoonlijke aanpak maakte echt het verschil.",
+      "quote": "Na maanden schouderpijn eindelijk de juiste hulp gevonden. Ik kan mijn arm weer normaal bewegen en de pijn is weg.",
       "toestemming": true
     },
     {
       "naam": "Marco",
-      "klacht": "Sportblessure",
+      "klacht": "Sportblessures",
       "plaats": "Lelystad",
       "sterren": 5,
-      "quote": "Dankzij de behandeling kon ik snel weer sporten. Het team nam echt de tijd om mijn blessure grondig te onderzoeken.",
+      "quote": "Professionele begeleiding bij mijn knieblessure. Ik sport nu weer op mijn oude niveau, dankzij het maatwerk traject.",
       "toestemming": true
     },
     {
       "naam": "Fatima",
-      "klacht": "Mobiliteit",
+      "klacht": "Rug & Nek",
       "plaats": "Amsterdam",
       "sterren": 5,
-      "quote": "Ik kan weer traplopen zonder pijn. De oefeningen waren precies afgestemd op mijn situatie.",
+      "quote": "Mijn rugklachten zijn sterk verminderd. Ze namen echt de tijd om te begrijpen waar het vandaan kwam.",
       "toestemming": true
     },
     {
       "naam": "Peter",
-      "klacht": "Postoperatief",
-      "plaats": "Lelystad",
+      "klacht": "Revalidatie",
+      "plaats": "Almere",
       "sterren": 5,
-      "quote": "Het revalidatieprogramma na mijn operatie was geweldig. Ik voelde me goed begeleid tijdens het hele herstelproces.",
+      "quote": "Na mijn operatie super geholpen met de revalidatie. Het herstel verliep voorspoedig en ik voelde me goed begeleid.",
       "toestemming": true
     },
     {
       "naam": "Lisa",
-      "klacht": "Spierklachten",
+      "klacht": "Bewegingsbepe",
       "plaats": "Amsterdam",
       "sterren": 4,
-      "quote": "De triggerpointtherapie hielp enorm tegen mijn nekklachten. Ik merk nu pas hoe gespannen ik altijd was.",
+      "quote": "Fijne praktijk met persoonlijke aandacht. Ik ben weer veel beweeglijker geworden en dat maakt een enorm verschil in mijn dagelijks leven.",
       "toestemming": true
     },
     {
       "naam": "Ahmed",
-      "klacht": "Schouder",
+      "klacht": "Rug & Nek",
       "plaats": "Lelystad",
       "sterren": 5,
-      "quote": "Vriendelijk team dat echt naar je luistert. Mijn frozen shoulder is eindelijk aan het verbeteren.",
+      "quote": "Eindelijk iemand die écht luistert. Mijn nekpijn is na jaren eindelijk verholpen.",
       "toestemming": true
     },
     {
-      "naam": "Ingrid",
-      "klacht": "Mobiliteit",
+      "naam": "Marieke",
+      "klacht": "Schouder",
+      "plaats": "Diemen",
+      "sterren": 5,
+      "quote": "Ik kon mijn arm niet meer omhoog krijgen. Nu kan ik gewoon weer alles doen, ook mijn werk zonder klachten.",
+      "toestemming": true
+    },
+    {
+      "naam": "Jeroen",
+      "klacht": "Sportblessures",
       "plaats": "Amsterdam",
       "sterren": 5,
-      "quote": "De behandeling aan huis was super handig voor mij. Professioneel en persoonlijk, precies wat ik nodig had.",
-      "toestemming": true
-    },
-    {
-      "naam": "Dennis",
-      "klacht": "Sportblessure",
-      "plaats": "Lelystad",
-      "sterren": 5,
-      "quote": "Van blessure naar topprestatie. Het preventieplan helpt me om blessurevrij te blijven trainen.",
+      "quote": "Top team dat weet waar ze mee bezig zijn. Ik ben sneller hersteld dan verwacht en kreeg veel nuttige tips mee.",
       "toestemming": true
     }
   ],
   "empathie": {
     "regels": [
       {
-        "tekst": "Je favoriete sport ligt al maanden stil, je lichaam houdt je tegen terwijl je niets liever wilt dan gewoon weer actief zijn.",
+        "tekst": "Je sportschoenen staan al maanden in de kast, omdat bewegen gewoon te veel pijn doet en dat deel van je leven stilstaat.",
         "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/1_2_yzrvxh.jpg"
       },
       {
-        "tekst": "Je weet dat je iets moet doen, maar uitstellen lijkt makkelijker dan de onzekerheid over waar je terecht kunt en of het wel helpt.",
+        "tekst": "Je stelt het uitzoeken van je klachten steeds maar uit, omdat je niet weet waar je terecht kunt en het gevoel hebt er alleen voor te staan.",
         "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/2_2_hy32i6.jpg"
       },
       {
-        "tekst": "Elke keer een nieuw gezicht, steeds opnieuw uitleggen wat er speelt, zonder dat iemand je verhaal echt kent.",
+        "tekst": "Je ziet elke keer een ander gezicht in de praktijk en moet je verhaal steeds opnieuw vertellen, zonder dat iemand je echt kent.",
         "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/3_2_uw0d3t.jpg"
       },
       {
-        "tekst": "Je krijgt standaardoefeningen mee, maar niemand neemt de tijd om uit te zoeken waarom je klachten steeds terugkomen.",
+        "tekst": "Je krijgt standaard oefeningen mee zonder dat iemand echt uitzoekt waar je klacht vandaan komt en waarom het niet overgaat.",
         "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/4_2_rngnnd.jpg"
       }
     ],
-    "afsluiting": "Bij TMC Fysiotherapie draait alles om jou. We nemen de tijd om te begrijpen wat er speelt, zoeken samen naar de oorzaak en begeleiden je persoonlijk naar herstel en vitaliteit.",
+    "afsluiting": "Bij TMC Fysiotherapie staat persoonlijke aandacht voorop: wij nemen de tijd om uw verhaal te horen, de oorzaak te achterhalen en een behandelplan op maat samen te stellen. Zo komen we samen tot duurzaam herstel.",
     "oplossingAfbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/5_lwtck4.jpg"
   },
   "stappen": [
     {
       "titel": "Intake en diagnose",
-      "tekst": "We luisteren naar jouw verhaal en onderzoeken grondig wat de oorzaak van je klachten is. Samen krijgen we helder wat er nodig is.",
+      "tekst": "In het eerste gesprek luisteren we naar uw verhaal en voeren we een grondig onderzoek uit om de oorzaak van uw klachten te achterhalen.",
       "duur": "45 minuten",
       "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920974/intake_zlwfha.mp4",
       "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920974/intake_zlwfha.mp4"
     },
     {
       "titel": "Persoonlijk behandelplan",
-      "tekst": "Op basis van onze bevindingen stellen we een behandelplan op maat samen, afgestemd op jouw doelen en levensstijl.",
-      "duur": "Binnen 1 week",
+      "tekst": "Op basis van de diagnose stellen we samen met u een behandelplan op maat op, afgestemd op uw doelen en levensstijl.",
+      "duur": "30 minuten",
       "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920976/behandel_plan_x0kzje.mp4",
       "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920976/behandel_plan_x0kzje.mp4"
     },
     {
-      "titel": "Behandeling en resultaat",
-      "tekst": "We begeleiden je stap voor stap naar herstel met hands-on therapie, oefeningen en persoonlijke aandacht tot je weer kunt doen wat je wilt.",
+      "titel": "Behandeling en herstel",
+      "tekst": "We begeleiden u stap voor stap naar uw doel met hands-on therapie, oefeningen en begeleiding totdat u weer klachtenvrij bent.",
       "duur": "6-12 weken",
       "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920977/begeleiding_d5ziie.mp4",
       "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920977/begeleiding_d5ziie.mp4"
@@ -210,7 +210,7 @@ export const praktijk = {
     {
       "naam": "Ali Abbasi",
       "functie": "Fysiotherapeut",
-      "specialisatie": "Mobiliteit en pijnklachten",
+      "specialisatie": "Dry needling, oefentherapie",
       "foto": "https://www.tmcfysiotherapie.nl/wp-content/uploads/2026/04/Screenshot-2026-04-14-145909.png",
       "uitgelicht": true
     }
@@ -284,33 +284,33 @@ export const praktijk = {
   },
   "faq": [
     {
-      "vraag": "Heb ik een verwijzing nodig?",
-      "antwoord": "Nee, u kunt zonder verwijzing bij ons terecht. Fysiotherapie is in Nederland vrij toegankelijk, u kunt direct een afspraak maken."
+      "vraag": "Heb ik een verwijzing nodig voor fysiotherapie?",
+      "antwoord": "Nee, een verwijzing is niet nodig. U kunt direct een afspraak maken bij onze praktijk. Voor vergoeding door uw zorgverzekeraar is soms wel een verwijzing vereist, afhankelijk van uw polis."
     },
     {
-      "vraag": "Hoeveel behandelingen heb ik nodig?",
-      "antwoord": "Dat verschilt per persoon en klacht. Na de intake bespreken we een behandelplan met een inschatting van het aantal benodigde sessies, meestal tussen de 6 en 12 behandelingen."
+      "vraag": "Hoeveel behandelingen heb ik gemiddeld nodig?",
+      "antwoord": "Het aantal behandelingen verschilt per persoon en klacht. Gemiddeld hebben cliënten tussen de 6 en 12 sessies nodig, maar dit bespreken we tijdens de intake op basis van uw specifieke situatie."
     },
     {
-      "vraag": "Hoe lang is de wachttijd?",
-      "antwoord": "Wij streven ernaar u binnen 2 werkdagen te kunnen ontvangen. Voor spoedgevallen doen we ons uiterste best om nog sneller een plek te vinden."
+      "vraag": "Hoe lang moet ik wachten op een afspraak?",
+      "antwoord": "We streven ernaar om u binnen 2 werkdagen te kunnen ontvangen. Bij spoed proberen we altijd een plek te vinden op korte termijn."
     },
     {
-      "vraag": "Krijg ik steeds dezelfde therapeut?",
-      "antwoord": "Ja, bij TMC krijgt u een vaste therapeut die uw verhaal kent en u persoonlijk begeleidt tijdens het hele traject. Continuïteit staat bij ons centraal."
+      "vraag": "Word ik altijd door dezelfde fysiotherapeut behandeld?",
+      "antwoord": "Ja, bij TMC hechten we veel waarde aan continuïteit. U wordt gedurende het gehele traject behandeld door uw vaste fysiotherapeut, die uw klacht kent en uw voortgang nauwlettend volgt."
     },
     {
-      "vraag": "Wat zijn de kosten zonder verzekering?",
-      "antwoord": "Heeft u geen fysiotherapie in uw pakket? Wij bieden een aantrekkelijke tariefregeling voor particuliere behandelingen. Neem contact op voor de mogelijkheden."
+      "vraag": "Wat zijn de kosten als ik geen fysiotherapie in mijn verzekering heb?",
+      "antwoord": "Voor cliënten zonder fysiotherapie in hun pakket bieden wij aantrekkelijke tarieven aan. Een behandeling kost € 47,50 en we hebben ook voordeelpakketten beschikbaar. Neem contact op voor meer informatie."
     }
   ],
   "stappenKop": "Uw weg naar herstel",
-  "stappenSub": "Van eerste afspraak tot blijvend resultaat, wij begeleiden u persoonlijk.",
+  "stappenSub": "Van eerste afspraak tot duurzaam resultaat, we begeleiden u persoonlijk.",
   "stappenModus": "traject",
   "kleuren": {
-    "primair": "#d4a84a",
-    "donker": "#9d7831",
-    "licht": "#fdf6e8"
+    "primair": "#D4A136",
+    "donker": "#B88A2B",
+    "licht": "#FBF5E8"
   }
 } as const;
 
