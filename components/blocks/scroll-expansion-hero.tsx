@@ -31,6 +31,7 @@ export default function ScrollExpandMedia({
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [opnameModus, setOpnameModus] = useState(false);
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,22 +52,20 @@ export default function ScrollExpandMedia({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Opnamemodus: forceer directe volledige expansie zonder scroll-wiel-interactie te simuleren.
+  // OPNAMEMODUS: staat ?autoscroll= in de URL, dan direct volledig openklappen.
+  // Zo hoeft er geen scroll-wiel gesimuleerd te worden tijdens de video-opname.
   useEffect(() => {
-    const forceer = () => {
-      setScrollProgress(1);
-      setMediaFullyExpanded(true);
-      setShowContent(true);
-    };
-    window.addEventListener("opname:expand-hero", forceer);
-    return () => window.removeEventListener("opname:expand-hero", forceer);
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get("autoscroll")) return;
+    setOpnameModus(true);
+    setScrollProgress(1);
+    setMediaFullyExpanded(true);
+    setShowContent(true);
   }, []);
 
   useEffect(() => {
-    if (mediaFullyExpanded) window.dispatchEvent(new Event("opname:hero-expanded"));
-  }, [mediaFullyExpanded]);
-
-  useEffect(() => {
+    if (opnameModus) return; // in opnamemodus geen wiel/touch-afhandeling
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const advance = (delta: number) => {
@@ -128,7 +127,7 @@ export default function ScrollExpandMedia({
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollProgress, mediaFullyExpanded, touchStartY]);
+  }, [scrollProgress, mediaFullyExpanded, touchStartY, opnameModus]);
 
   const mediaWidth = 300 + scrollProgress * (isMobile ? 650 : 1250);
   const mediaHeight = 400 + scrollProgress * (isMobile ? 200 : 400);
@@ -224,7 +223,7 @@ export default function ScrollExpandMedia({
                   </p>
                 )}
 
-                {scrollToExpand && (
+                {scrollToExpand && !opnameModus && (
                   <div
                     className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-2 ${
                       textBlend ? "mix-blend-difference" : ""
