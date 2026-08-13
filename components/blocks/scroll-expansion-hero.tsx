@@ -51,6 +51,21 @@ export default function ScrollExpandMedia({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Opnamemodus: forceer directe volledige expansie zonder scroll-wiel-interactie te simuleren.
+  useEffect(() => {
+    const forceer = () => {
+      setScrollProgress(1);
+      setMediaFullyExpanded(true);
+      setShowContent(true);
+    };
+    window.addEventListener("opname:expand-hero", forceer);
+    return () => window.removeEventListener("opname:expand-hero", forceer);
+  }, []);
+
+  useEffect(() => {
+    if (mediaFullyExpanded) window.dispatchEvent(new Event("opname:hero-expanded"));
+  }, [mediaFullyExpanded]);
+
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
