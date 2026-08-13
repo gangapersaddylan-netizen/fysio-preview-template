@@ -21,18 +21,21 @@ function wachtOp(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Timergebaseerd i.p.v. requestAnimationFrame: rAF wordt gepauzeerd zodra het tabblad
+// niet zichtbaar is, waardoor de opname in sommige omgevingen helemaal stil bleef staan.
 function scrollNaarBinnenTijd(doelY: number, duurMs: number): Promise<void> {
   return new Promise((resolve) => {
     const startY = window.scrollY;
-    const start = performance.now();
-    function stap(nu: number) {
-      const t = Math.min(1, (nu - start) / duurMs);
+    const start = Date.now();
+    const interval = window.setInterval(() => {
+      const t = Math.min(1, (Date.now() - start) / duurMs);
       const ease = 1 - Math.pow(1 - t, 3);
       window.scrollTo(0, startY + (doelY - startY) * ease);
-      if (t < 1) requestAnimationFrame(stap);
-      else resolve();
-    }
-    requestAnimationFrame(stap);
+      if (t >= 1) {
+        window.clearInterval(interval);
+        resolve();
+      }
+    }, 25);
   });
 }
 
@@ -46,16 +49,15 @@ export function OpnameRegisseur() {
     const duren = ruw.split(",").map((x) => parseFloat(x)).filter((x) => !isNaN(x) && x > 0);
     if (duren.length < 2) return;
 
-    // BELANGRIJK: de site gebruikt scroll-behavior: smooth. Dat vecht met onze eigen
-    // frame-voor-frame animatie (elke scrollTo start een nieuwe trage animatie), waardoor
-    // de pagina in de praktijk helemaal niet beweegt. Tijdens opname dus uitzetten.
+    // De site gebruikt scroll-behavior: smooth. Dat vecht met onze eigen stapsgewijze
+    // animatie (elke scrollTo start een nieuwe trage animatie), dus tijdens opname uit.
     const vorigeBehavior = document.documentElement.style.scrollBehavior;
     document.documentElement.style.scrollBehavior = "auto";
 
     let geannuleerd = false;
 
     async function speelAf() {
-      await wachtOp(300);
+      await wachtOp(400);
       if (geannuleerd) return;
 
       const volgorde = duren.length === 11 ? VOLGORDE_MET_VERZEKERING : VOLGORDE_ZONDER_VERZEKERING;
@@ -69,14 +71,13 @@ export function OpnameRegisseur() {
         else stappen.push({ anker: anker, duurSec: duur });
       });
 
-      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-
       for (let i = 0; i < stappen.length; i++) {
         if (geannuleerd) return;
         const stap = stappen[i];
         if (i > 0) {
           const el = document.querySelector('[data-opname="' + stap.anker + '"]');
           if (el) {
+            const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
             const doelY = Math.min(maxY, el.getBoundingClientRect().top + window.scrollY);
             await scrollNaarBinnenTijd(doelY, 700);
           }
