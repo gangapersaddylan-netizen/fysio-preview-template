@@ -53,16 +53,18 @@ export default function ScrollExpandMedia({
   }, []);
 
   // OPNAMEMODUS: staat ?autoscroll= in de URL, dan klapt de hero-video zichzelf
-  // geanimeerd open (alsof er iemand scrolt), zodat het effect zichtbaar blijft
-  // in de opname. Timergebaseerd, want requestAnimationFrame pauzeert in een
-  // onzichtbaar tabblad.
+  // geanimeerd open alsof er iemand scrolt. In de intro-opname (2-3 tijden) blijft
+  // de video eerst ~5 seconden dicht zodat de kijker de kleine variant ziet;
+  // in de volledige opname begint het uitklappen vrijwel direct.
   useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
-    if (!params.get("autoscroll")) return;
+    const ruw = params.get("autoscroll");
+    if (!ruw) return;
     setOpnameModus(true);
-    const WACHT_MS = 900;      // heel even de dichte staat tonen
-    const KLAP_MS = 2600;      // duur van de uitklap-animatie
+    const aantal = ruw.split(",").filter((x) => !isNaN(parseFloat(x))).length;
+    const WACHT_MS = aantal < 6 ? 5000 : 900;
+    const KLAP_MS = 2600;
     const start = Date.now();
     const interval = window.setInterval(() => {
       const verstreken = Date.now() - start;
@@ -77,6 +79,42 @@ export default function ScrollExpandMedia({
       }
     }, 40);
     return () => window.clearInterval(interval);
+  }, []);
+
+  // Open-dicht-demo: op het bounce-signaal van de regie klapt de video twee keer
+  // dicht en weer open, zodat de kijker het interactieve scroll-effect echt ziet.
+  useEffect(() => {
+    let interval: number | undefined;
+    const bounce = () => {
+      const segmenten = [
+        { van: 1, naar: 0.25, ms: 1100 },
+        { van: 0.25, naar: 1, ms: 1250 },
+        { van: 1, naar: 0.25, ms: 1100 },
+        { van: 0.25, naar: 1, ms: 1250 },
+      ];
+      let idx = 0;
+      let start = Date.now();
+      if (interval) window.clearInterval(interval);
+      interval = window.setInterval(() => {
+        const s = segmenten[idx];
+        const t = Math.min(1, (Date.now() - start) / s.ms);
+        const ease = 0.5 - Math.cos(Math.PI * t) / 2;
+        setScrollProgress(s.van + (s.naar - s.van) * ease);
+        if (t >= 1) {
+          idx += 1;
+          start = Date.now();
+          if (idx >= segmenten.length) {
+            if (interval) window.clearInterval(interval);
+            setScrollProgress(1);
+          }
+        }
+      }, 40);
+    };
+    window.addEventListener("opname:hero-bounce", bounce);
+    return () => {
+      window.removeEventListener("opname:hero-bounce", bounce);
+      if (interval) window.clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
