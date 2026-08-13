@@ -11,28 +11,34 @@ import { Faq } from "@/components/secties/faq";
 import { SlotCta } from "@/components/secties/slot-cta";
 import { Footer } from "@/components/secties/footer";
 import { Meetlat } from "@/components/secties/meetlat";
+import { OpnameRegisseur } from "@/components/opname-regisseur";
 
 export default function Home() {
   return (
     <>
+      <OpnameRegisseur />
       <Header />
       <main>
-        <Hero />
-        <Trustbalk />
-        <Klachtselector />
-        <div className="mx-auto max-w-6xl px-5">
-          <Meetlat />
+        <div data-opname="hero"><Hero /></div>
+        <div data-opname="vertrouwen"><Trustbalk /></div>
+        <div data-opname="waar_heb_je_last_van">
+          <Klachtselector />
+          <div className="mx-auto max-w-6xl px-5">
+            <Meetlat />
+          </div>
         </div>
-        <Reviews />
-        <Empathie />
-        <div className="mx-auto max-w-6xl px-5">
-          <Meetlat />
+        <div data-opname="reviews"><Reviews /></div>
+        <div data-opname="herkenbaar">
+          <Empathie />
+          <div className="mx-auto max-w-6xl px-5">
+            <Meetlat />
+          </div>
         </div>
-        <Aanpak />
-        <Team />
-        <Vergoeding />
-        <Faq />
-        <SlotCta />
+        <div data-opname="zo_werkt_het"><Aanpak /></div>
+        <div data-opname="team"><Team /></div>
+        <div data-opname="verzekering"><Vergoeding /></div>
+        <div data-opname="faq"><Faq /></div>
+        <div data-opname="cta"><SlotCta /></div>
       </main>
       <Footer />
     </>
