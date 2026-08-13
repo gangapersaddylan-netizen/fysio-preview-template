@@ -10,8 +10,6 @@ const VOLGORDE_ZONDER_VERZEKERING: string[] = [
   "hero", "geruststelling", "vertrouwen", "waar_heb_je_last_van",
   "reviews", "herkenbaar", "zo_werkt_het", "team", "faq", "cta",
 ];
-// geruststelling heeft nu een eigen anker (binnen de hero-component), zodat de
-// pagina daadwerkelijk doorscrolt wanneer de spreker bij dat deel is.
 const ANKER: Record<string, string> = {
   hero: "hero", geruststelling: "geruststelling", vertrouwen: "vertrouwen",
   waar_heb_je_last_van: "waar_heb_je_last_van", reviews: "reviews",
@@ -37,7 +35,7 @@ function scrollMetEase(doelY: number, duurMs: number): Promise<void> {
   });
 }
 
-// Lineair, voor rustige doorloop-scroll binnen een sectie (geen versnelling).
+// Lineair, voor rustige gelijkmatige scroll (geen versnelling).
 function scrollLineair(doelY: number, duurMs: number): Promise<void> {
   return new Promise((resolve) => {
     const startY = window.scrollY;
@@ -71,19 +69,22 @@ export function OpnameRegisseur() {
     let geannuleerd = false;
 
     async function speelAf() {
-      await wachtOp(400);
+      const t0 = Date.now();
+      await wachtOp(300);
       if (geannuleerd) return;
       const vh = window.innerHeight || 900;
 
-      // INTRO-MODUS (opening + stilte, 2-3 waardes): openingszin bovenaan laten,
-      // daarna een rustige teaser-scroll over het eerste stuk van de site.
+      // INTRO-MODUS (2-3 waardes): eerste ~5 seconden helemaal stil met de hero-video
+      // nog klein; rond 5s klapt de hero zichzelf open (zit in de hero-component, oogt
+      // als scrollen); daarna rustig en gelijkmatig de hele site door als teaser.
       if (duren.length < 6) {
-        const openingMs = duren[0] * 1000;
-        const restMs = duren.slice(1).reduce((a, b) => a + b, 0) * 1000;
-        await wachtOp(openingMs);
+        const totaalMs = duren.reduce((a, b) => a + b, 0) * 1000;
+        // stil + uitklaptijd: tot ~8 seconden na de start niets scrollen
+        const wachtTot = Math.min(8000, totaalMs * 0.35);
+        await wachtOp(Math.max(0, wachtTot - (Date.now() - t0)));
         if (geannuleerd) return;
-        const doel = Math.min(maxScroll(), vh * 1.6);
-        await scrollLineair(doel, restMs);
+        const restMs = Math.max(1000, totaalMs - (Date.now() - t0) - 300);
+        await scrollLineair(maxScroll(), restMs);
         return;
       }
 
@@ -103,22 +104,43 @@ export function OpnameRegisseur() {
         const stap = stappen[i];
         const beschikbaarMs = stap.duurSec * 1000;
 
-        // Hero: bovenaan blijven; de hero-component klapt zichzelf geanimeerd open.
-        if (i === 0) { await wachtOp(beschikbaarMs); continue; }
+        // Hero: bovenaan blijven; de hero klapt zichzelf geanimeerd open. Tegen het einde
+        // van de hero-spreektijd (waar het script de interactiviteit benoemt) doet de hero
+        // een open-dicht-demo via het bounce-event.
+        if (i === 0) {
+          const BOUNCE_MS = 6500; // moment voor het einde waarop de demo start
+          if (beschikbaarMs > BOUNCE_MS + 5000) {
+            await wachtOp(beschikbaarMs - BOUNCE_MS);
+            if (geannuleerd) return;
+            window.dispatchEvent(new Event("opname:hero-bounce"));
+            await wachtOp(BOUNCE_MS);
+          } else {
+            await wachtOp(beschikbaarMs);
+          }
+          continue;
+        }
 
         const el = document.querySelector('[data-opname="' + stap.anker + '"]');
         if (!el) { await wachtOp(beschikbaarMs); continue; }
 
         const rect = el.getBoundingClientRect();
-        const topY = Math.min(maxScroll(), rect.top + window.scrollY);
+        const topY = rect.top + window.scrollY;
         const hoogte = rect.height;
 
-        const sprongMs = Math.min(700, beschikbaarMs * 0.2);
-        await scrollMetEase(topY, sprongMs);
-        if (geannuleerd) return;
-        let restMs = beschikbaarMs - sprongMs;
+        // Korte secties (zoals de trustbalk) niet tegen de bovenrand plakken maar
+        // comfortabel in beeld zetten, anders lijkt de pagina te ver doorgescrold.
+        let doelY = topY;
+        if (hoogte < vh * 0.7) {
+          doelY = Math.max(0, topY - (vh - hoogte) * 0.35);
+        }
+        doelY = Math.min(maxScroll(), doelY);
 
-        const overloop = hoogte - vh;
+        const sprongMs = Math.min(700, beschikbaarMs * 0.2);
+        await scrollMetEase(doelY, sprongMs);
+        if (geannuleerd) return;
+        const restMs = beschikbaarMs - sprongMs;
+
+        const overloop = (topY + hoogte) - (doelY + vh);
         if (overloop > vh * 0.15) {
           // Sectie is hoger dan het scherm: er rustig en gelijkmatig doorheen scrollen
           // (scrollgevoelige secties zoals herkenbaar en team komen zo tot hun recht).
@@ -127,7 +149,7 @@ export function OpnameRegisseur() {
           const scrollMs = Math.max(600, restMs - stilVoorMs - stilNaMs);
           await wachtOp(stilVoorMs);
           if (geannuleerd) return;
-          const eindY = Math.min(maxScroll(), topY + overloop);
+          const eindY = Math.min(maxScroll(), doelY + overloop);
           await scrollLineair(eindY, scrollMs);
           if (geannuleerd) return;
           await wachtOp(stilNaMs);
