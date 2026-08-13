@@ -2,31 +2,31 @@
 
 import { useEffect } from "react";
 
-const VOLGORDE_MET_VERZEKERING = [
+const VOLGORDE_MET_VERZEKERING: string[] = [
   "hero", "geruststelling", "vertrouwen", "waar_heb_je_last_van",
   "reviews", "herkenbaar", "zo_werkt_het", "team", "verzekering", "faq", "cta",
 ];
-const VOLGORDE_ZONDER_VERZEKERING = [
+const VOLGORDE_ZONDER_VERZEKERING: string[] = [
   "hero", "geruststelling", "vertrouwen", "waar_heb_je_last_van",
   "reviews", "herkenbaar", "zo_werkt_het", "team", "faq", "cta",
 ];
-const ANKER = {
+const ANKER: Record<string, string> = {
   hero: "hero", geruststelling: "hero", vertrouwen: "vertrouwen",
   waar_heb_je_last_van: "waar_heb_je_last_van", reviews: "reviews",
   herkenbaar: "herkenbaar", zo_werkt_het: "zo_werkt_het", team: "team",
   verzekering: "verzekering", faq: "faq", cta: "cta",
 };
 
-function wachtOp(ms) {
+function wachtOp(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function scrollNaarBinnenTijd(el, duurMs) {
+function scrollNaarBinnenTijd(el: Element, duurMs: number): Promise<void> {
   return new Promise((resolve) => {
     const startY = window.scrollY;
     const doelY = startY + el.getBoundingClientRect().top;
     const start = performance.now();
-    function stap(nu) {
+    function stap(nu: number) {
       const t = Math.min(1, (nu - start) / duurMs);
       const ease = 1 - Math.pow(1 - t, 3);
       window.scrollTo(0, startY + (doelY - startY) * ease);
@@ -50,13 +50,12 @@ export function OpnameRegisseur() {
     let geannuleerd = false;
 
     async function speelAf() {
-      // De hero-component expandeert zichzelf (zie scroll-expansion-hero.tsx), geen event-handshake nodig.
       await wachtOp(300);
       if (geannuleerd) return;
 
       const volgorde = duren.length === 11 ? VOLGORDE_MET_VERZEKERING : VOLGORDE_ZONDER_VERZEKERING;
 
-      const stappen = [];
+      const stappen: { anker: string; duurSec: number }[] = [];
       volgorde.forEach((key, i) => {
         const duur = duren[i] != null ? duren[i] : 3;
         const anker = ANKER[key] || key;
