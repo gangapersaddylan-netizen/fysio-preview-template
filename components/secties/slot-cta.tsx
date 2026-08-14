@@ -10,7 +10,7 @@ const HEADER_FADE =
 
 export function SlotCta() {
   return (
-    <section aria-labelledby="slot-titel" className="px-5 py-16 lg:py-24">
+    <section id="cta" aria-labelledby="slot-titel" className="px-5 py-16 lg:py-24">
       <div
         className="relative mx-auto max-w-6xl overflow-hidden rounded-[28px] px-6 py-16 text-ink lg:px-16 lg:py-24"
         style={{ background: HEADER_FADE }}
