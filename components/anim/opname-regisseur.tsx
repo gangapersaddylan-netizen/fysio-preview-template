@@ -156,7 +156,21 @@ function wachtOpMedia(): Promise<void> {
       setTimeout(() => r(), 4000);
     });
     const fontsKlaar = document.fonts ? document.fonts.ready : Promise.resolve();
-    Promise.all([videoKlaar, fontsKlaar]).then(() => resolve());
+    // Alle afbeeldingen voorladen voordat de tijdlijn start: anders scrollen we
+    // tijdens de opname langs secties waarvan de foto's nog aan het laden zijn
+    // (lege vlakken in beeld). Max 8s wachten, daarna gewoon starten.
+    const afbeeldingenKlaar = Promise.all(
+      Array.from(document.images).map(
+        (img) =>
+          new Promise<void>((r) => {
+            if (img.complete) return r();
+            img.addEventListener("load", () => r(), { once: true });
+            img.addEventListener("error", () => r(), { once: true });
+          })
+      )
+    );
+    const maxWachten = new Promise<void>((r) => setTimeout(() => r(), 8000));
+    Promise.all([videoKlaar, fontsKlaar, Promise.race([afbeeldingenKlaar, maxWachten])]).then(() => resolve());
   });
 }
 
@@ -193,21 +207,35 @@ async function draaiDeelB(duren: number[]) {
   });
 
   // 2) geruststelling: onder de geopende hero staan de geruststellingen en de twee
-  // knoppen (WhatsApp/Plan). Eerst was dit alleen een stille wacht, waardoor het
-  // leek alsof de opname er zonder iets te doen voorbij sprintte. Nu een klein,
-  // gecontroleerd stapje naar beneden zodat die knoppen echt in beeld komen en
-  // even blijven staan, voordat we doorgaan naar vertrouwen.
+  // knoppen (WhatsApp/Plan). We zoeken de WhatsApp-knop op en scrollen zo ver dat
+  // die op ~60% van het scherm staat (dynamisch gemeten, niet gegokt), zodat de
+  // knoppen echt in beeld komen en even blijven staan.
   if (geruststelling > 0) {
-    const stapDuur = Math.min(900, geruststelling * 1000 * 0.45);
-    await animeer(stapDuur, (t) => {
-      window.scrollTo(0, 190 * t);
-    });
+    const waKnop = Array.from(document.querySelectorAll("a")).find((a) =>
+      ((a as HTMLAnchorElement).href || "").includes("wa.me")
+    );
+    let doelY = 620;
+    if (waKnop) {
+      const r = waKnop.getBoundingClientRect();
+      doelY = Math.max(0, r.top + window.scrollY - window.innerHeight * 0.6);
+    }
+    const stapDuur = Math.min(1300, geruststelling * 1000 * 0.5);
+    await scrollNaar(doelY, stapDuur);
     await wacht(Math.max(0, geruststelling * 1000 - stapDuur));
   }
 
-  // 3) vertrouwen
-  await scrollNaar(elementTop("vertrouwen"), 1200);
-  await wacht(Math.max(0, vertrouwen * 1000 - 1200));
+  // 3) vertrouwen: de balk is laag (~130px), dus niet bovenaan plakken maar
+  // verticaal centreren - dan is de balk echt het onderwerp in beeld.
+  {
+    const el = document.getElementById("vertrouwen");
+    let doelY = elementTop("vertrouwen");
+    if (el) {
+      const rest = Math.max(0, window.innerHeight - el.offsetHeight);
+      doelY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - rest * 0.45);
+    }
+    await scrollNaar(doelY, 1200);
+    await wacht(Math.max(0, vertrouwen * 1000 - 1200));
+  }
 
   // 4) waar_heb_je_last_van: naartoe scrollen, dan een vloeiende (niet-happerige)
   // heen-en-weer als interactiviteitsdemo, en daarna een iets rustiger overgang
@@ -233,7 +261,7 @@ async function draaiDeelB(duren: number[]) {
   // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
   // via de geëaste animeer(), waardoor de eerste foto's lang bleven staan en de
   // latere (3, 4, 5) werden weggesprint door de cubic-ease. Nu lineaire drift
-  // zodat elke foto ongeveel evenveel tijd krijgt.
+  // zodat elke foto ongeveer evenveel tijd krijgt.
   await driftDoorSectie("herkenbaar", herkenbaar, 800);
 
   // 7) zo_werkt_het (aanpak)
