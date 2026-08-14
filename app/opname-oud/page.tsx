@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 function ease(t: number) {
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
@@ -29,30 +29,33 @@ function animeer(duurMs: number, onTick: (t: number) => void): Promise<void> {
 }
 
 export default function OpnameOudePagina() {
-  const [src, setSrc] = useState<string | null>(null);
   const gestart = useRef(false);
 
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search);
-    setSrc(p.get("img"));
-  }, []);
-
-  useEffect(() => {
-    if (gestart.current || !src) return;
+    if (gestart.current) return;
     gestart.current = true;
 
     const p = new URLSearchParams(window.location.search);
+    const src = p.get("img");
+    const img = document.getElementById("opname-img") as HTMLImageElement | null;
+    if (!src || !img) return;
+
     const duren = (p.get("duren") || "")
       .split(",")
       .map((x) => parseFloat(x))
       .filter((x) => !isNaN(x));
     const start = parseFloat(p.get("start") || "0.5");
 
+    // Src via de DOM zetten (geen setState in effect nodig; de pagina hoeft niet
+    // te her-renderen, alleen het plaatje te tonen en te scrollen).
+    img.src = src;
+    img.style.display = "block";
+
     (async () => {
       await new Promise<void>((resolve) => {
-        const img = document.getElementById("opname-img") as HTMLImageElement | null;
-        if (img && img.complete) return resolve();
-        img?.addEventListener("load", () => resolve(), { once: true });
+        if (img.complete && img.naturalWidth > 0) return resolve();
+        img.addEventListener("load", () => resolve(), { once: true });
+        img.addEventListener("error", () => resolve(), { once: true });
         setTimeout(() => resolve(), 6000);
       });
       await wacht(start * 1000);
@@ -72,19 +75,17 @@ export default function OpnameOudePagina() {
         const restMs = Math.max(0, duren[i] * 1000 - scrollDuur);
         await wacht(restMs);
       }
+      document.documentElement.setAttribute("data-opname-klaar", "1");
     })();
-  }, [src]);
-
-  if (!src) return null;
+  }, []);
 
   return (
     <div style={{ margin: 0, padding: 0, background: "#fff" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         id="opname-img"
-        src={src}
         alt=""
-        style={{ display: "block", width: "100vw", height: "auto" }}
+        style={{ display: "none", width: "100vw", height: "auto" }}
       />
     </div>
   );
