@@ -32,7 +32,9 @@ export function Aanpak() {
       </Reveal>
 
       <ol className="mt-12 grid gap-8 lg:grid-cols-3 lg:items-start">
-        {praktijk.stappen.map((stap, i) => (
+        {praktijk.stappen.map((ruweStap, i) => {
+          const stap = ruweStap as { titel: string; tekst: string; duur: string; foto?: string; video?: string };
+          return (
           <RevealCard
             as="li"
             key={i}
@@ -64,7 +66,8 @@ export function Aanpak() {
             <h3 className="h3 mt-2 text-lg text-ink">{stap.titel}</h3>
             <p className="mt-2 text-ink-soft">{stap.tekst}</p>
           </RevealCard>
-        ))}
+          );
+        })}
       </ol>
 
       <Reveal delay={0.1} className="mt-12 flex flex-wrap items-center gap-4">
