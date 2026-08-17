@@ -321,9 +321,11 @@ async function draaiDeelB(duren: number[]) {
   // zodat elke foto ongeveer evenveel tijd krijgt.
   await driftDoorSectie("herkenbaar", herkenbaar);
 
-  // 7) zo_werkt_het (aanpak)
-  const aanpakEntree = await scrollNaarSnelheid(elementTop("aanpak"));
-  await wacht(Math.max(0, zoWerktHet * 1000 - aanpakEntree));
+  // 7) zo_werkt_het (aanpak): deze sectie is hoger dan het scherm (kop plus drie
+  // stapkaarten), dus alleen naar de bovenkant scrollen liet de kaarten buiten
+  // beeld. Zelfde aanpak als herkenbaar en team: naar de sectie toe en er daarna
+  // rustig doorheen glijden zodat de hele sectie voorbijkomt.
+  await driftDoorSectie("aanpak", zoWerktHet);
 
   // 8) team: zelfde probleem als herkenbaar als de teamsectie hoger is dan het
   // scherm (meerdere teamkaarten) - nu ook lineaire drift in plaats van een
