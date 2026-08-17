@@ -26,9 +26,14 @@ const HEADER_HOOGTE = 64;
 // die worden uit de resterende spreektijd afgeleid en gaan al goed.
 // ---------------------------------------------------------------------------
 const SNELHEID_STANDAARD = 400;
+// Rustiger tempo voor het stuk dat nog DOOR een hoge sectie heen loopt. Dat is
+// geen sprong tussen secties maar inhoud die langs moet komen, dus dat mag
+// trager. Te overschrijven met ?snelheid_binnen=
+const SNELHEID_BINNEN_STANDAARD = 260;
 const MIN_SPRONG_MS = 450;
 
 let snelheidPxS = SNELHEID_STANDAARD;
+let snelheidBinnenPxS = SNELHEID_BINNEN_STANDAARD;
 
 // Sinus in/uit: start op snelheid nul, versnelt, remt weer af naar nul.
 function easeSinus(t: number) {
@@ -127,13 +132,14 @@ function sectieInterneHoogte(id: string): number {
 // Sprong naar de volgende sectie op een vaste snelheid in px/s.
 // Geeft terug hoeveel milliseconden het kostte, zodat de rest van de
 // spreektijd als stilstand kan worden opgemaakt.
-async function scrollNaarSnelheid(y: number): Promise<number> {
+async function scrollNaarSnelheid(y: number, snelheid?: number): Promise<number> {
   const startY = window.scrollY;
   const afstand = Math.abs(y - startY);
   if (afstand < 1) return 0;
   // De snelheid is leidend, punt. Duurt de overgang langer dan de spreektijd
   // van de volgende sectie, dan schuift de rest van de tijdlijn mee op.
-  const duurMs = Math.max(MIN_SPRONG_MS, (afstand / snelheidPxS) * 1000);
+  const px = snelheid && snelheid > 0 ? snelheid : snelheidPxS;
+  const duurMs = Math.max(MIN_SPRONG_MS, (afstand / px) * 1000);
   await animeerMet(duurMs, easeSinus, (t) => {
     window.scrollTo(0, startY + (y - startY) * t);
   });
@@ -166,6 +172,8 @@ function parseFase(): Fase {
   const start = parseFloat(p.get("start") || "0.5");
   const snelheid = parseFloat(p.get("snelheid") || "");
   if (!isNaN(snelheid) && snelheid > 0) snelheidPxS = snelheid;
+  const snelheidBinnen = parseFloat(p.get("snelheid_binnen") || "");
+  if (!isNaN(snelheidBinnen) && snelheidBinnen > 0) snelheidBinnenPxS = snelheidBinnen;
   if (modus === "intro") {
     return {
       modus: "intro",
@@ -302,8 +310,18 @@ async function draaiDeelB(duren: number[]) {
     await wacht(restKlachten * 1000);
   }
 
-  // 5) reviews (iets langzamere, rustigere overgang dan voorheen)
-  const reviewsEntree = await scrollNaarSnelheid(elementTop("reviews"));
+  // 5) reviews. De heen-en-weer eindigt bovenaan de klachtensectie, en die sectie
+  // is hoger dan het scherm. In een keer naar reviews springen betekende dus dat de
+  // hele resterende klachtensectie in een klap voorbij vloog. Nu in twee stukken:
+  // eerst rustig door de rest van de klachtensectie heen (dat is inhoud, geen
+  // sprong, dus op het lagere binnen-tempo), en dan pas de korte sprong naar reviews.
+  const reviewsTop = elementTop("reviews");
+  const klachtenEind = Math.min(klachtenTop + klachtenIntern, reviewsTop);
+  let reviewsEntree = 0;
+  if (klachtenIntern > 40 && window.scrollY < klachtenEind - 40) {
+    reviewsEntree += await scrollNaarSnelheid(klachtenEind, snelheidBinnenPxS);
+  }
+  reviewsEntree += await scrollNaarSnelheid(reviewsTop);
   await wacht(Math.max(0, reviews * 1000 - reviewsEntree));
 
   // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
