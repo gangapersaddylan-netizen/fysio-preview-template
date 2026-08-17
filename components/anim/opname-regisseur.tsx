@@ -160,7 +160,13 @@ async function driftDoorSectie(id: string, duurSec: number) {
   if (intern > 40 && restMs > 0) {
     // Drift binnen de sectie blijft lineair over de resterende tijd: elke
     // stap/foto/kaart krijgt evenveel tijd. Bewust niet snelheidsgestuurd.
-    await driftLineair(top, top + intern, restMs);
+    // Eindpunt: onderkant van de sectie gelijk aan onderkant van het scherm.
+    // elementTop() trekt de headerhoogte eraf om netjes onder de sticky header te
+    // beginnen, en zonder die 64 px er aan het eind weer bij te tellen blijft
+    // precies die strook van de sectie buiten beeld.
+    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const eind = Math.min(maxY, top + intern + HEADER_HOOGTE);
+    await driftLineair(top, eind, restMs);
   } else {
     await wacht(restMs);
   }
