@@ -26,17 +26,14 @@ const HEADER_HOOGTE = 64;
 // die worden uit de resterende spreektijd afgeleid en gaan al goed.
 // ---------------------------------------------------------------------------
 const SNELHEID_STANDAARD = 400;
-// Rustiger tempo voor het stuk dat nog DOOR een hoge sectie heen loopt. Dat is
-// geen sprong tussen secties maar inhoud die langs moet komen, dus dat mag
-// trager. Te overschrijven met ?snelheid_binnen=
-const SNELHEID_BINNEN_STANDAARD = 260;
-// De sprong van de klachtensectie naar reviews krijgt een eigen tempo, op verzoek
-// rustiger dan de andere overgangen. Te overschrijven met ?snelheid_reviews=
+// De overgang van de klachtensectie naar reviews is de langste van de site en
+// krijgt daarom een eigen, lager tempo. Verder verandert er niets aan die
+// beweging: het blijft een doorlopende scroll, alleen rustiger.
+// Te overschrijven met ?snelheid_reviews=
 const SNELHEID_REVIEWS_STANDAARD = 300;
 const MIN_SPRONG_MS = 450;
 
 let snelheidPxS = SNELHEID_STANDAARD;
-let snelheidBinnenPxS = SNELHEID_BINNEN_STANDAARD;
 let snelheidReviewsPxS = SNELHEID_REVIEWS_STANDAARD;
 
 // Sinus in/uit: start op snelheid nul, versnelt, remt weer af naar nul.
@@ -176,8 +173,6 @@ function parseFase(): Fase {
   const start = parseFloat(p.get("start") || "0.5");
   const snelheid = parseFloat(p.get("snelheid") || "");
   if (!isNaN(snelheid) && snelheid > 0) snelheidPxS = snelheid;
-  const snelheidBinnen = parseFloat(p.get("snelheid_binnen") || "");
-  if (!isNaN(snelheidBinnen) && snelheidBinnen > 0) snelheidBinnenPxS = snelheidBinnen;
   const snelheidReviews = parseFloat(p.get("snelheid_reviews") || "");
   if (!isNaN(snelheidReviews) && snelheidReviews > 0) snelheidReviewsPxS = snelheidReviews;
   if (modus === "intro") {
@@ -316,18 +311,8 @@ async function draaiDeelB(duren: number[]) {
     await wacht(restKlachten * 1000);
   }
 
-  // 5) reviews. De heen-en-weer eindigt bovenaan de klachtensectie, en die sectie
-  // is hoger dan het scherm. In een keer naar reviews springen betekende dus dat de
-  // hele resterende klachtensectie in een klap voorbij vloog. Nu in twee stukken:
-  // eerst rustig door de rest van de klachtensectie heen (dat is inhoud, geen
-  // sprong, dus op het lagere binnen-tempo), en dan pas de korte sprong naar reviews.
-  const reviewsTop = elementTop("reviews");
-  const klachtenEind = Math.min(klachtenTop + klachtenIntern, reviewsTop);
-  let reviewsEntree = 0;
-  if (klachtenIntern > 40 && window.scrollY < klachtenEind - 40) {
-    reviewsEntree += await scrollNaarSnelheid(klachtenEind, snelheidBinnenPxS);
-  }
-  reviewsEntree += await scrollNaarSnelheid(reviewsTop, snelheidReviewsPxS);
+  // 5) reviews (iets langzamere, rustigere overgang dan voorheen)
+  const reviewsEntree = await scrollNaarSnelheid(elementTop("reviews"), snelheidReviewsPxS);
   await wacht(Math.max(0, reviews * 1000 - reviewsEntree));
 
   // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
