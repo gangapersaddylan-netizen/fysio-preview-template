@@ -30,10 +30,14 @@ const SNELHEID_STANDAARD = 400;
 // geen sprong tussen secties maar inhoud die langs moet komen, dus dat mag
 // trager. Te overschrijven met ?snelheid_binnen=
 const SNELHEID_BINNEN_STANDAARD = 260;
+// De sprong van de klachtensectie naar reviews krijgt een eigen tempo, op verzoek
+// rustiger dan de andere overgangen. Te overschrijven met ?snelheid_reviews=
+const SNELHEID_REVIEWS_STANDAARD = 300;
 const MIN_SPRONG_MS = 450;
 
 let snelheidPxS = SNELHEID_STANDAARD;
 let snelheidBinnenPxS = SNELHEID_BINNEN_STANDAARD;
+let snelheidReviewsPxS = SNELHEID_REVIEWS_STANDAARD;
 
 // Sinus in/uit: start op snelheid nul, versnelt, remt weer af naar nul.
 function easeSinus(t: number) {
@@ -174,6 +178,8 @@ function parseFase(): Fase {
   if (!isNaN(snelheid) && snelheid > 0) snelheidPxS = snelheid;
   const snelheidBinnen = parseFloat(p.get("snelheid_binnen") || "");
   if (!isNaN(snelheidBinnen) && snelheidBinnen > 0) snelheidBinnenPxS = snelheidBinnen;
+  const snelheidReviews = parseFloat(p.get("snelheid_reviews") || "");
+  if (!isNaN(snelheidReviews) && snelheidReviews > 0) snelheidReviewsPxS = snelheidReviews;
   if (modus === "intro") {
     return {
       modus: "intro",
@@ -321,7 +327,7 @@ async function draaiDeelB(duren: number[]) {
   if (klachtenIntern > 40 && window.scrollY < klachtenEind - 40) {
     reviewsEntree += await scrollNaarSnelheid(klachtenEind, snelheidBinnenPxS);
   }
-  reviewsEntree += await scrollNaarSnelheid(reviewsTop);
+  reviewsEntree += await scrollNaarSnelheid(reviewsTop, snelheidReviewsPxS);
   await wacht(Math.max(0, reviews * 1000 - reviewsEntree));
 
   // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
