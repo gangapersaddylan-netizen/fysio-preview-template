@@ -9,15 +9,37 @@ type Fase =
 
 const HEADER_HOOGTE = 64;
 
-function ease(t: number) {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+// ---------------------------------------------------------------------------
+// SNELHEID TUSSEN SECTIES
+// De sprong van de ene sectie naar de volgende duurde hiervoor een VAST aantal
+// milliseconden (1400 naar reviews, 1200 naar vertrouwen, enzovoort), ongeacht
+// de afstand. Hoe verder de volgende sectie stond, hoe harder hij ging.
+// Nu volgt de duur uit de afstand: duur = afstand / snelheid.
+//
+// Dit is een GEMIDDELDE snelheid. De easing is een sinus in/uit, die halverwege
+// op circa 1,57x het gemiddelde piekt en op nul begint en eindigt. 400 px/s
+// betekent dus een piek van ongeveer 630 px/s.
+//
+// Per opname te overschrijven met ?snelheid=300 (of 400, 600, ...).
+// Alleen de sprongen TUSSEN secties gebruiken dit. De heen-en-weer demo in de
+// klachtensectie en de lineaire drift door herkenbaar/team blijven ongemoeid,
+// die worden uit de resterende spreektijd afgeleid en gaan al goed.
+// ---------------------------------------------------------------------------
+const SNELHEID_STANDAARD = 400;
+const MIN_SPRONG_MS = 450;
+
+let snelheidPxS = SNELHEID_STANDAARD;
+
+// Sinus in/uit: start op snelheid nul, versnelt, remt weer af naar nul.
+function easeSinus(t: number) {
+  return -(Math.cos(Math.PI * t) - 1) / 2;
 }
 
-function wacht(ms: number) {
-  return new Promise<void>((r) => setTimeout(r, Math.max(0, ms)));
-}
-
-function animeer(duurMs: number, onTick: (t: number) => void): Promise<void> {
+function animeerMet(
+  duurMs: number,
+  curve: (t: number) => number,
+  onTick: (t: number) => void
+): Promise<void> {
   return new Promise((resolve) => {
     if (duurMs <= 0) {
       onTick(1);
@@ -27,12 +49,16 @@ function animeer(duurMs: number, onTick: (t: number) => void): Promise<void> {
     const t0 = performance.now();
     function stap(nu: number) {
       const t = Math.min(1, (nu - t0) / duurMs);
-      onTick(ease(t));
+      onTick(curve(t));
       if (t < 1) requestAnimationFrame(stap);
       else resolve();
     }
     requestAnimationFrame(stap);
   });
+}
+
+function wacht(ms: number) {
+  return new Promise<void>((r) => setTimeout(r, Math.max(0, ms)));
 }
 
 // Lineaire (niet-geëaste) drift: elk stukje van de sectie krijgt evenveel tijd.
@@ -98,11 +124,20 @@ function sectieInterneHoogte(id: string): number {
   return el ? Math.max(0, el.offsetHeight - window.innerHeight) : 0;
 }
 
-function scrollNaar(y: number, duurMs: number) {
+// Sprong naar de volgende sectie op een vaste snelheid in px/s.
+// Geeft terug hoeveel milliseconden het kostte, zodat de rest van de
+// spreektijd als stilstand kan worden opgemaakt.
+async function scrollNaarSnelheid(y: number): Promise<number> {
   const startY = window.scrollY;
-  return animeer(duurMs, (t) => {
+  const afstand = Math.abs(y - startY);
+  if (afstand < 1) return 0;
+  // De snelheid is leidend, punt. Duurt de overgang langer dan de spreektijd
+  // van de volgende sectie, dan schuift de rest van de tijdlijn mee op.
+  const duurMs = Math.max(MIN_SPRONG_MS, (afstand / snelheidPxS) * 1000);
+  await animeerMet(duurMs, easeSinus, (t) => {
     window.scrollTo(0, startY + (y - startY) * t);
   });
+  return duurMs;
 }
 
 // Generieke "drift door sectie": scrollt naar het begin van de sectie, en als de
@@ -110,17 +145,17 @@ function scrollNaar(y: number, duurMs: number) {
 // glijdt daarna LINEAIR (constante snelheid) door de rest van de sectie zodat
 // elke stap evenveel tijd krijgt in plaats van dat latere stappen worden
 // weggesprint. Voor korte secties (past in één scherm) gewoon scrollen + wachten.
-async function driftDoorSectie(id: string, duurSec: number, entreeMs = 900) {
+async function driftDoorSectie(id: string, duurSec: number) {
   const top = elementTop(id);
   const intern = sectieInterneHoogte(id);
-  if (intern > 40 && duurSec * 1000 > entreeMs) {
-    await scrollNaar(top, entreeMs);
-    const restMs = Math.max(0, duurSec * 1000 - entreeMs);
+  const entreeMs = await scrollNaarSnelheid(top);
+  const restMs = Math.max(0, duurSec * 1000 - entreeMs);
+  if (intern > 40 && restMs > 0) {
+    // Drift binnen de sectie blijft lineair over de resterende tijd: elke
+    // stap/foto/kaart krijgt evenveel tijd. Bewust niet snelheidsgestuurd.
     await driftLineair(top, top + intern, restMs);
   } else {
-    const scrollDuur = Math.min(1200, duurSec * 1000);
-    await scrollNaar(top, scrollDuur);
-    await wacht(Math.max(0, duurSec * 1000 - scrollDuur));
+    await wacht(restMs);
   }
 }
 
@@ -129,6 +164,8 @@ function parseFase(): Fase {
   const p = new URLSearchParams(window.location.search);
   const modus = p.get("opname");
   const start = parseFloat(p.get("start") || "0.5");
+  const snelheid = parseFloat(p.get("snelheid") || "");
+  if (!isNaN(snelheid) && snelheid > 0) snelheidPxS = snelheid;
   if (modus === "intro") {
     return {
       modus: "intro",
@@ -198,13 +235,25 @@ async function draaiDeelB(duren: number[]) {
     cta = 0,
   ] = duren;
 
-  // 1) Hero: dicht blijven, dan gecontroleerd open in de laatste ~30% van de sectieduur.
-  const openDuur = Math.min(3.5, Math.max(1.5, hero * 0.3));
-  const dichtDuur = Math.max(0, hero - openDuur);
-  await wacht(dichtDuur * 1000);
-  await animeer(openDuur * 1000, (t) => {
-    window.dispatchEvent(new CustomEvent("opname:hero", { detail: { progress: t } }));
-  });
+  // 1) Hero: eerst helemaal stil, dan rustig open, even terug richting dicht om te
+  // laten zien dat het echt op scrollen reageert, en dan helemaal open.
+  // De eerste opening gaat bewust tot 0,92 en niet tot 1: bij 1 zet de hero zichzelf
+  // op "volledig uitgeklapt" en toont hij de tekst, en dan kan hij niet meer dicht.
+  const HERO_OPEN_MS = 2600;
+  const HERO_DICHT_MS = 1400;
+  const HERO_HEROPEN_MS = 2200;
+  const heroBewegingMs = HERO_OPEN_MS + HERO_DICHT_MS + HERO_HEROPEN_MS;
+  const dichtDuur = Math.max(0, hero * 1000 - heroBewegingMs);
+  await wacht(dichtDuur);
+  const heroNaar = (van: number, naar: number, duurMs: number) =>
+    animeerMet(duurMs, easeSinus, (t) => {
+      window.dispatchEvent(
+        new CustomEvent("opname:hero", { detail: { progress: van + (naar - van) * t } })
+      );
+    });
+  await heroNaar(0, 0.92, HERO_OPEN_MS);
+  await heroNaar(0.92, 0.3, HERO_DICHT_MS);
+  await heroNaar(0.3, 1, HERO_HEROPEN_MS);
 
   // 2) geruststelling: onder de geopende hero staan de geruststellingen en de twee
   // knoppen (WhatsApp/Plan). We zoeken de WhatsApp-knop op en scrollen zo ver dat
@@ -219,8 +268,7 @@ async function draaiDeelB(duren: number[]) {
       const r = waKnop.getBoundingClientRect();
       doelY = Math.max(0, r.top + window.scrollY - window.innerHeight * 0.6);
     }
-    const stapDuur = Math.min(1300, geruststelling * 1000 * 0.5);
-    await scrollNaar(doelY, stapDuur);
+    const stapDuur = await scrollNaarSnelheid(doelY);
     await wacht(Math.max(0, geruststelling * 1000 - stapDuur));
   }
 
@@ -233,8 +281,8 @@ async function draaiDeelB(duren: number[]) {
       const rest = Math.max(0, window.innerHeight - el.offsetHeight);
       doelY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - rest * 0.45);
     }
-    await scrollNaar(doelY, 1200);
-    await wacht(Math.max(0, vertrouwen * 1000 - 1200));
+    const stapDuur = await scrollNaarSnelheid(doelY);
+    await wacht(Math.max(0, vertrouwen * 1000 - stapDuur));
   }
 
   // 4) waar_heb_je_last_van: naartoe scrollen, dan een vloeiende (niet-happerige)
@@ -242,8 +290,8 @@ async function draaiDeelB(duren: number[]) {
   // naar reviews (voorheen sprong dit te snel door).
   const klachtenTop = elementTop("klachten");
   const klachtenIntern = sectieInterneHoogte("klachten");
-  await scrollNaar(klachtenTop, 1200);
-  const restKlachten = Math.max(0, waarLast - 1.2);
+  const klachtenEntree = await scrollNaarSnelheid(klachtenTop);
+  const restKlachten = Math.max(0, waarLast - klachtenEntree / 1000);
   if (restKlachten > 4 && klachtenIntern > 40) {
     const amplitude = klachtenIntern * 0.55;
     const overgangReserve = 600;
@@ -255,35 +303,35 @@ async function draaiDeelB(duren: number[]) {
   }
 
   // 5) reviews (iets langzamere, rustigere overgang dan voorheen)
-  await scrollNaar(elementTop("reviews"), 1400);
-  await wacht(Math.max(0, reviews * 1000 - 1400));
+  const reviewsEntree = await scrollNaarSnelheid(elementTop("reviews"));
+  await wacht(Math.max(0, reviews * 1000 - reviewsEntree));
 
   // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
   // via de geëaste animeer(), waardoor de eerste foto's lang bleven staan en de
   // latere (3, 4, 5) werden weggesprint door de cubic-ease. Nu lineaire drift
   // zodat elke foto ongeveer evenveel tijd krijgt.
-  await driftDoorSectie("herkenbaar", herkenbaar, 800);
+  await driftDoorSectie("herkenbaar", herkenbaar);
 
   // 7) zo_werkt_het (aanpak)
-  await scrollNaar(elementTop("aanpak"), 1000);
-  await wacht(Math.max(0, zoWerktHet * 1000 - 1000));
+  const aanpakEntree = await scrollNaarSnelheid(elementTop("aanpak"));
+  await wacht(Math.max(0, zoWerktHet * 1000 - aanpakEntree));
 
   // 8) team: zelfde probleem als herkenbaar als de teamsectie hoger is dan het
   // scherm (meerdere teamkaarten) - nu ook lineaire drift in plaats van een
   // vaste scroll gevolgd door een abrupte sprong naar de volgende sectie.
-  await driftDoorSectie("team", team, 900);
+  await driftDoorSectie("team", team);
 
   // 9) verzekering (vergoeding)
-  await scrollNaar(elementTop("vergoeding"), 1000);
-  await wacht(Math.max(0, verzekering * 1000 - 1000));
+  const vergoedingEntree = await scrollNaarSnelheid(elementTop("vergoeding"));
+  await wacht(Math.max(0, verzekering * 1000 - vergoedingEntree));
 
   // 10) faq
-  await scrollNaar(elementTop("faq"), 1000);
-  await wacht(Math.max(0, faq * 1000 - 1000));
+  const faqEntree = await scrollNaarSnelheid(elementTop("faq"));
+  await wacht(Math.max(0, faq * 1000 - faqEntree));
 
   // 11) cta
-  await scrollNaar(elementTop("cta"), 1000);
-  await wacht(Math.max(0, cta * 1000 - 1000));
+  const ctaEntree = await scrollNaarSnelheid(elementTop("cta"));
+  await wacht(Math.max(0, cta * 1000 - ctaEntree));
 }
 
 export function OpnameRegisseur() {
