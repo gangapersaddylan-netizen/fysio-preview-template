@@ -152,20 +152,30 @@ async function scrollNaarSnelheid(y: number, snelheid?: number): Promise<number>
 // glijdt daarna LINEAIR (constante snelheid) door de rest van de sectie zodat
 // elke stap evenveel tijd krijgt in plaats van dat latere stappen worden
 // weggesprint. Voor korte secties (past in één scherm) gewoon scrollen + wachten.
-async function driftDoorSectie(id: string, duurSec: number) {
+// eindSelector: optioneel element waarvan de ONDERKANT het eindpunt bepaalt.
+// Zonder eindSelector eindigt de drift met de onderkant van de hele sectie
+// onderaan het scherm. Met eindSelector eindigt hij zodra dat element volledig
+// in beeld staat, ook als de sectie daaronder nog doorloopt.
+async function driftDoorSectie(id: string, duurSec: number, eindSelector?: string) {
   const top = elementTop(id);
   const intern = sectieInterneHoogte(id);
   const entreeMs = await scrollNaarSnelheid(top);
   const restMs = Math.max(0, duurSec * 1000 - entreeMs);
-  if (intern > 40 && restMs > 0) {
+
+  const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  let eind = Math.min(maxY, top + intern + HEADER_HOOGTE);
+  if (eindSelector) {
+    const eindEl = document.querySelector(eindSelector);
+    if (eindEl) {
+      const EIND_MARGE = 24;
+      const onderkant = eindEl.getBoundingClientRect().bottom + window.scrollY;
+      eind = Math.min(maxY, onderkant + EIND_MARGE - window.innerHeight);
+    }
+  }
+
+  if (eind > top + 4 && restMs > 0) {
     // Drift binnen de sectie blijft lineair over de resterende tijd: elke
     // stap/foto/kaart krijgt evenveel tijd. Bewust niet snelheidsgestuurd.
-    // Eindpunt: onderkant van de sectie gelijk aan onderkant van het scherm.
-    // elementTop() trekt de headerhoogte eraf om netjes onder de sticky header te
-    // beginnen, en zonder die 64 px er aan het eind weer bij te tellen blijft
-    // precies die strook van de sectie buiten beeld.
-    const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    const eind = Math.min(maxY, top + intern + HEADER_HOOGTE);
     await driftLineair(top, eind, restMs);
   } else {
     await wacht(restMs);
@@ -331,7 +341,10 @@ async function draaiDeelB(duren: number[]) {
   // stapkaarten), dus alleen naar de bovenkant scrollen liet de kaarten buiten
   // beeld. Zelfde aanpak als herkenbaar en team: naar de sectie toe en er daarna
   // rustig doorheen glijden zodat de hele sectie voorbijkomt.
-  await driftDoorSectie("aanpak", zoWerktHet);
+  // Eindpunt: de drie stapkaarten (de <ol>) volledig in beeld, de knoppen eronder
+  // hoeven niet mee. Zonder dit eindpunt scrolde hij door tot de onderkant van de
+  // sectie en verdween de kop achter de header.
+  await driftDoorSectie("aanpak", zoWerktHet, "#aanpak ol");
 
   // 8) team: zelfde probleem als herkenbaar als de teamsectie hoger is dan het
   // scherm (meerdere teamkaarten) - nu ook lineaire drift in plaats van een
