@@ -31,6 +31,9 @@ const SNELHEID_STANDAARD = 400;
 // beweging: het blijft een doorlopende scroll, alleen rustiger.
 // Te overschrijven met ?snelheid_reviews=
 const SNELHEID_REVIEWS_STANDAARD = 300;
+// Tempo waarmee door de klachtenkaarten wordt gescrold (heen en terug). Rustiger
+// dan een sprong, want hier moet je de kaarten een voor een zien verschijnen.
+const SNELHEID_KAARTEN = 300;
 const MIN_SPRONG_MS = 450;
 
 let snelheidPxS = SNELHEID_STANDAARD;
@@ -83,37 +86,6 @@ function driftLineair(vanY: number, naarY: number, duurMs: number): Promise<void
       window.scrollTo(0, vanY + (naarY - vanY) * t);
       if (t < 1) requestAnimationFrame(stap);
       else resolve();
-    }
-    requestAnimationFrame(stap);
-  });
-}
-
-// Vloeiende, continue heen-en-weer beweging (raised-cosine) rond basisY.
-// Geen losse legs meer die elk apart optrekken/afremmen (dat gaf het happerige
-// gevoel) - dit is één doorlopende golf die precies op basisY eindigt.
-function scrollOscillatie(
-  basisY: number,
-  amplitude: number,
-  duurMs: number,
-  cycli: number
-): Promise<void> {
-  return new Promise((resolve) => {
-    if (duurMs <= 0) {
-      window.scrollTo(0, basisY);
-      resolve();
-      return;
-    }
-    const t0 = performance.now();
-    function stap(nu: number) {
-      const t = Math.min(1, (nu - t0) / duurMs);
-      const fase = t * cycli * Math.PI * 2;
-      const y = basisY + amplitude * 0.5 * (1 - Math.cos(fase));
-      window.scrollTo(0, y);
-      if (t < 1) requestAnimationFrame(stap);
-      else {
-        window.scrollTo(0, basisY);
-        resolve();
-      }
     }
     requestAnimationFrame(stap);
   });
@@ -294,21 +266,37 @@ async function draaiDeelB(duren: number[]) {
     await wacht(Math.max(0, vertrouwen * 1000 - stapDuur));
   }
 
-  // 4) waar_heb_je_last_van: naartoe scrollen, dan een vloeiende (niet-happerige)
-  // heen-en-weer als interactiviteitsdemo, en daarna een iets rustiger overgang
-  // naar reviews (voorheen sprong dit te snel door).
+  // 4) waar_heb_je_last_van. De kaarten verschijnen op scrollvoortgang binnen de
+  // vastgepinde sectie (0..1). Alle kaarten staan vanaf ~0,70; vanaf 0,84 faden ze
+  // weer uit. Choreografie: naar de sectie, rustig omlaag tot alle kaarten er staan,
+  // ~10 s wachten, een stuk terug omhoog zodat de laatste kaarten weer verdwijnen,
+  // even wachten, weer omlaag tot ze allemaal terug zijn, en dan pas door.
   const klachtenTop = elementTop("klachten");
+  const klachtenEl = document.getElementById("klachten");
+  const klachtenEchteTop = klachtenEl
+    ? klachtenEl.getBoundingClientRect().top + window.scrollY
+    : klachtenTop + HEADER_HOOGTE;
   const klachtenIntern = sectieInterneHoogte("klachten");
   const klachtenEntree = await scrollNaarSnelheid(klachtenTop);
-  const restKlachten = Math.max(0, waarLast - klachtenEntree / 1000);
-  if (restKlachten > 4 && klachtenIntern > 40) {
-    const amplitude = klachtenIntern * 0.55;
-    const overgangReserve = 600;
-    const oscillatieDuur = Math.max(0, restKlachten * 1000 - overgangReserve);
-    await scrollOscillatie(klachtenTop, amplitude, oscillatieDuur, 2);
-    await wacht(overgangReserve);
+  const restKlachtenMs = Math.max(0, waarLast * 1000 - klachtenEntree);
+  if (restKlachtenMs > 4000 && klachtenIntern > 40) {
+    const P_ALLES = 0.76;   // alle kaarten volledig in beeld, nog voor de fade
+    const P_TERUG = 0.35;   // kaarten 4 t/m 6 weer weg, 1 t/m 3 staan nog
+    const yAlles = klachtenEchteTop + klachtenIntern * P_ALLES;
+    const yTerug = klachtenEchteTop + klachtenIntern * P_TERUG;
+    const heenMs = Math.abs(yAlles - window.scrollY) / SNELHEID_KAARTEN * 1000;
+    const terugMs = Math.abs(yAlles - yTerug) / SNELHEID_KAARTEN * 1000;
+    const bewegingMs = heenMs + terugMs * 2;
+    const PAUZE_TERUG_MS = 1500;
+    const pauzeAlles = Math.max(1000, Math.min(10000, restKlachtenMs - bewegingMs - PAUZE_TERUG_MS - 1000));
+    await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
+    await wacht(pauzeAlles);
+    await scrollNaarSnelheid(yTerug, SNELHEID_KAARTEN);
+    await wacht(PAUZE_TERUG_MS);
+    await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
+    await wacht(Math.max(0, restKlachtenMs - bewegingMs - pauzeAlles - PAUZE_TERUG_MS));
   } else {
-    await wacht(restKlachten * 1000);
+    await wacht(restKlachtenMs);
   }
 
   // 5) reviews (iets langzamere, rustigere overgang dan voorheen)
@@ -319,7 +307,35 @@ async function draaiDeelB(duren: number[]) {
   // via de geëaste animeer(), waardoor de eerste foto's lang bleven staan en de
   // latere (3, 4, 5) werden weggesprint door de cubic-ease. Nu lineaire drift
   // zodat elke foto ongeveer evenveel tijd krijgt.
-  await driftDoorSectie("herkenbaar", herkenbaar);
+  // 6) herkenbaar: N punten in een vastgepinde sectie (hoogte N x 100vh). Punt i is
+  // actief zolang de scroll in band i zit. Per punt: kort naar het midden van de
+  // band, dan stilstaan; de beschikbare tijd wordt gelijk over de punten verdeeld.
+  {
+    const el = document.getElementById("herkenbaar");
+    const top = elementTop("herkenbaar");
+    const entreeMs = await scrollNaarSnelheid(top);
+    const restMs = Math.max(0, herkenbaar * 1000 - entreeMs);
+    const echteTop = el ? el.getBoundingClientRect().top + window.scrollY : top + HEADER_HOOGTE;
+    const totaal = el ? Math.max(0, el.offsetHeight - window.innerHeight) : 0;
+    const N = el ? Math.max(1, Math.round(el.offsetHeight / window.innerHeight)) : 1;
+    if (totaal > 40 && N > 1) {
+      const band = totaal / N;
+      let gebruikt = 0;
+      for (let i = 0; i < N; i++) {
+        const y = echteTop + band * i + band * 0.5;
+        gebruikt += await scrollNaarSnelheid(y);
+        const overige = N - i;
+        const perPunt = Math.max(0, (restMs - gebruikt) / overige);
+        // schat de resterende bewegingen zodat elk punt evenveel stilstand krijgt
+        const bewegingSchatting = (band / snelheidPxS) * 1000 * Math.max(0, overige - 1) / overige;
+        const stil = Math.max(0, perPunt - bewegingSchatting);
+        await wacht(stil);
+        gebruikt += stil;
+      }
+    } else {
+      await wacht(restMs);
+    }
+  }
 
   // 7) zo_werkt_het (aanpak)
   const aanpakEntree = await scrollNaarSnelheid(elementTop("aanpak"));
