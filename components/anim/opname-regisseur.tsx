@@ -39,7 +39,7 @@ const MIN_SPRONG_MS = 450;
 // waardoor de beweging hapert terwijl de tijdlijn zelf wel klopt. Een vaste tijdstap via
 // setInterval staat los van de framelevering van de compositor en geeft een gelijkmatige
 // opname. De positie wordt nog steeds uit de klok berekend, dus de duur blijft exact.
-const STAP_MS = 20;
+const STAP_MS = 16;
 
 let snelheidPxS = SNELHEID_STANDAARD;
 let snelheidReviewsPxS = SNELHEID_REVIEWS_STANDAARD;
@@ -382,6 +382,11 @@ export function OpnameRegisseur() {
     if (fase.modus === "geen") return;
     gestart.current = true;
     document.documentElement.setAttribute("data-opname", "1");
+    // globals.css zet html { scroll-behavior: smooth }. Daardoor animeert de browser elke
+    // scrollTo van de regisseur zelf OOK nog eens naar het doel: twee animaties over elkaar.
+    // In een gewone browser vangt de GPU dat op, in de opnamebrowser botsen ze en zie je
+    // dat als haperen. In opnamemodus is de regisseur de enige die mag bewegen.
+    document.documentElement.style.scrollBehavior = "auto";
 
     (async () => {
       await wachtOpMedia();
