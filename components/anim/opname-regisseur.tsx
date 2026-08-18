@@ -35,6 +35,11 @@ const SNELHEID_REVIEWS_STANDAARD = 300;
 // dan een sprong, want hier moet je de kaarten een voor een zien verschijnen.
 const SNELHEID_KAARTEN = 300;
 const MIN_SPRONG_MS = 450;
+// De opnamebrowser levert zijn beeldframes niet gelijkmatig aan tijdens het filmen,
+// waardoor de beweging hapert terwijl de tijdlijn zelf wel klopt. Een vaste tijdstap via
+// setInterval staat los van de framelevering van de compositor en geeft een gelijkmatige
+// opname. De positie wordt nog steeds uit de klok berekend, dus de duur blijft exact.
+const STAP_MS = 20;
 
 let snelheidPxS = SNELHEID_STANDAARD;
 let snelheidReviewsPxS = SNELHEID_REVIEWS_STANDAARD;
@@ -56,13 +61,14 @@ function animeerMet(
       return;
     }
     const t0 = performance.now();
-    function stap(nu: number) {
-      const t = Math.min(1, (nu - t0) / duurMs);
+    const timer = window.setInterval(() => {
+      const t = Math.min(1, (performance.now() - t0) / duurMs);
       onTick(curve(t));
-      if (t < 1) requestAnimationFrame(stap);
-      else resolve();
-    }
-    requestAnimationFrame(stap);
+      if (t >= 1) {
+        window.clearInterval(timer);
+        resolve();
+      }
+    }, STAP_MS);
   });
 }
 
@@ -81,13 +87,14 @@ function driftLineair(vanY: number, naarY: number, duurMs: number): Promise<void
       return;
     }
     const t0 = performance.now();
-    function stap(nu: number) {
-      const t = Math.min(1, (nu - t0) / duurMs);
+    const timer = window.setInterval(() => {
+      const t = Math.min(1, (performance.now() - t0) / duurMs);
       window.scrollTo(0, vanY + (naarY - vanY) * t);
-      if (t < 1) requestAnimationFrame(stap);
-      else resolve();
-    }
-    requestAnimationFrame(stap);
+      if (t >= 1) {
+        window.clearInterval(timer);
+        resolve();
+      }
+    }, STAP_MS);
   });
 }
 
