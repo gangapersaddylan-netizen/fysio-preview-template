@@ -236,6 +236,13 @@ async function draaiDeelB(duren: number[]) {
   await heroNaar(0.92, 0.3, HERO_DICHT_MS);
   await heroNaar(0.3, 1, HERO_HEROPEN_MS);
 
+  // De heldenvideo bleef doordraaien terwijl we wegscrollen naar de volgende sectie.
+  // De opnamebrowser heeft geen GPU, dus dat decoderen vecht met de scroll en dat zie
+  // je terug als haperen. Hij heeft zijn werk gedaan, dus we zetten de heldenvideo stil.
+  try {
+    document.querySelector("video")?.pause();
+  } catch {}
+
   // 2) geruststelling: onder de geopende hero staan de geruststellingen en de twee
   // knoppen (WhatsApp/Plan). We zoeken de WhatsApp-knop op en scrollen zo ver dat
   // die op ~60% van het scherm staat (dynamisch gemeten, niet gegokt), zodat de
