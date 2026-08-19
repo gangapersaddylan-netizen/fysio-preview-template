@@ -62,6 +62,7 @@ export function Empathie() {
   return (
     <section
       ref={sectionRef}
+      id="herkenbaar"
       aria-labelledby="empathie-titel"
       className="relative bg-card"
       style={{ height: `${N * 100}vh` }}
