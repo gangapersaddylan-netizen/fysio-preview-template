@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
+import { opnameActief } from "@/lib/opname";
 
 interface ScrollExpandMediaProps {
   mediaType?: "video" | "image";
@@ -31,7 +32,6 @@ export default function ScrollExpandMedia({
   const [mediaFullyExpanded, setMediaFullyExpanded] = useState(false);
   const [touchStartY, setTouchStartY] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [opnameModus, setOpnameModus] = useState(false);
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
@@ -52,73 +52,28 @@ export default function ScrollExpandMedia({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // OPNAMEMODUS: staat ?autoscroll= in de URL, dan klapt de hero-video zichzelf
-  // geanimeerd open alsof er iemand scrolt. In de intro-opname (2-3 tijden) blijft
-  // de video eerst ~5 seconden dicht zodat de kijker de kleine variant ziet;
-  // in de volledige opname begint het uitklappen vrijwel direct.
+  // In opnamemodus wordt de expansie extern aangestuurd door de OpnameRegisseur
+  // via een CustomEvent, in plaats van door echte wheel/touch/scroll-input.
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-    const ruw = params.get("autoscroll");
-    if (!ruw) return;
-    setOpnameModus(true);
-    const aantal = ruw.split(",").filter((x) => !isNaN(parseFloat(x))).length;
-    const WACHT_MS = aantal < 6 ? 5000 : 900;
-    const KLAP_MS = 2600;
-    const start = Date.now();
-    const interval = window.setInterval(() => {
-      const verstreken = Date.now() - start;
-      if (verstreken < WACHT_MS) return;
-      const t = Math.min(1, (verstreken - WACHT_MS) / KLAP_MS);
-      const ease = 1 - Math.pow(1 - t, 3);
-      setScrollProgress(ease);
-      if (t >= 1) {
+    if (!opnameActief()) return;
+
+    const onOpnameHero = (e: Event) => {
+      const detail = (e as CustomEvent<{ progress: number }>).detail;
+      const p = Math.min(Math.max(detail?.progress ?? 0, 0), 1);
+      setScrollProgress(p);
+      if (p >= 1) {
         setMediaFullyExpanded(true);
         setShowContent(true);
-        window.clearInterval(interval);
       }
-    }, 40);
-    return () => window.clearInterval(interval);
-  }, []);
+    };
 
-  // Open-dicht-demo: op het bounce-signaal van de regie klapt de video twee keer
-  // dicht en weer open, zodat de kijker het interactieve scroll-effect echt ziet.
-  useEffect(() => {
-    let interval: number | undefined;
-    const bounce = () => {
-      const segmenten = [
-        { van: 1, naar: 0.25, ms: 1100 },
-        { van: 0.25, naar: 1, ms: 1250 },
-        { van: 1, naar: 0.25, ms: 1100 },
-        { van: 0.25, naar: 1, ms: 1250 },
-      ];
-      let idx = 0;
-      let start = Date.now();
-      if (interval) window.clearInterval(interval);
-      interval = window.setInterval(() => {
-        const s = segmenten[idx];
-        const t = Math.min(1, (Date.now() - start) / s.ms);
-        const ease = 0.5 - Math.cos(Math.PI * t) / 2;
-        setScrollProgress(s.van + (s.naar - s.van) * ease);
-        if (t >= 1) {
-          idx += 1;
-          start = Date.now();
-          if (idx >= segmenten.length) {
-            if (interval) window.clearInterval(interval);
-            setScrollProgress(1);
-          }
-        }
-      }, 40);
-    };
-    window.addEventListener("opname:hero-bounce", bounce);
-    return () => {
-      window.removeEventListener("opname:hero-bounce", bounce);
-      if (interval) window.clearInterval(interval);
-    };
+    window.addEventListener("opname:hero", onOpnameHero as EventListener);
+    return () => window.removeEventListener("opname:hero", onOpnameHero as EventListener);
   }, []);
 
   useEffect(() => {
-    if (opnameModus) return; // in opnamemodus geen wiel/touch-afhandeling
+    if (opnameActief()) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const advance = (delta: number) => {
@@ -180,7 +135,7 @@ export default function ScrollExpandMedia({
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [scrollProgress, mediaFullyExpanded, touchStartY, opnameModus]);
+  }, [scrollProgress, mediaFullyExpanded, touchStartY]);
 
   const mediaWidth = 300 + scrollProgress * (isMobile ? 650 : 1250);
   const mediaHeight = 400 + scrollProgress * (isMobile ? 200 : 400);
@@ -276,7 +231,7 @@ export default function ScrollExpandMedia({
                   </p>
                 )}
 
-                {scrollToExpand && !opnameModus && (
+                {scrollToExpand && (
                   <div
                     className={`absolute inset-x-0 bottom-4 z-10 flex flex-col items-center gap-2 ${
                       textBlend ? "mix-blend-difference" : ""
@@ -303,7 +258,6 @@ export default function ScrollExpandMedia({
             </div>
 
             <motion.section
-              data-opname="geruststelling"
               className="relative z-10 flex w-full flex-col px-6 py-16 md:px-12 lg:py-24"
               animate={{ opacity: showContent ? 1 : 0 }}
               transition={{ duration: 0.7 }}
