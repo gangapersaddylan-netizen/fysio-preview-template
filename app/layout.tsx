@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Instrument_Sans } from "next/font/google";
 import { praktijk } from "@/content/praktijk";
+import { OpnameRegisseur } from "@/components/anim/opname-regisseur";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -31,7 +32,7 @@ export default function RootLayout({
 
   return (
     <html lang="nl" className={`${bricolage.variable} ${instrument.variable}`}>
-      <body className="antialiased"><style dangerouslySetInnerHTML={{ __html: kleurCss }} />{children}</body>
+      <body className="antialiased"><style dangerouslySetInnerHTML={{ __html: kleurCss }} />{children}<OpnameRegisseur /></body>
     </html>
   );
 }
