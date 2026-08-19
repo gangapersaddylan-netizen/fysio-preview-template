@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 type Fase =
   | { modus: "geen" }
   | { modus: "intro"; open: number; stil: number; start: number }
-  | { modus: "b"; duren: number[]; start: number };
+  | { modus: "b"; duren: number[]; start: number; heromarks: number[]; klachtmark: number };
 
 const HEADER_HOOGTE = 64;
 
@@ -167,7 +167,14 @@ function parseFase(): Fase {
       .split(",")
       .map((x) => parseFloat(x))
       .filter((x) => !isNaN(x));
-    return { modus: "b", duren, start };
+    // heromarks=open,dicht,tekst (seconden, audio-relatief). Sync de hero-animatie op de woorden.
+    const heromarks = (p.get("heromarks") || "")
+      .split(",")
+      .map((x) => parseFloat(x))
+      .filter((x) => !isNaN(x));
+    // klachtmark = seconde waarop de stem over de kaarten begint; pas dan de heen-en-weer demo.
+    const klachtmark = parseFloat(p.get("klachtmark") || "");
+    return { modus: "b", duren, start, heromarks, klachtmark: isNaN(klachtmark) ? 0 : klachtmark };
   }
   return { modus: "geen" };
 }
@@ -204,7 +211,11 @@ async function draaiIntro(open: number, stil: number) {
   await wacht((open + stil) * 1000);
 }
 
-async function draaiDeelB(duren: number[]) {
+async function draaiDeelB(
+  duren: number[],
+  heromarks: number[] = [],
+  klachtmark = 0
+) {
   if (duren.length < 11) {
     // eslint-disable-next-line no-console
     console.warn("opname=b verwacht 11 duren (hero..cta), kreeg " + duren.length);
@@ -223,38 +234,60 @@ async function draaiDeelB(duren: number[]) {
     cta = 0,
   ] = duren;
 
-  // 1) Hero: eerst helemaal stil, dan rustig open, even terug richting dicht om te
-  // laten zien dat het echt op scrollen reageert, en dan helemaal open.
-  // De eerste opening gaat bewust tot 0,92 en niet tot 1: bij 1 zet de hero zichzelf
-  // op "volledig uitgeklapt" en toont hij de tekst, en dan kan hij niet meer dicht.
-  const HERO_OPEN_MS = 2600;
-  const HERO_DICHT_MS = 1400;
-  const HERO_HEROPEN_MS = 2200;
-  const heroBewegingMs = HERO_OPEN_MS + HERO_DICHT_MS + HERO_HEROPEN_MS;
-  const dichtDuur = Math.max(0, hero * 1000 - heroBewegingMs);
-  await wacht(dichtDuur);
-  const heroNaar = (van: number, naar: number, duurMs: number) =>
-    animeerMet(duurMs, easeSinus, (t) => {
-      window.dispatchEvent(
-        new CustomEvent("opname:hero", { detail: { progress: van + (naar - van) * t } })
-      );
-    });
-  await heroNaar(0, 0.92, HERO_OPEN_MS);
-  await heroNaar(0.92, 0.3, HERO_DICHT_MS);
-  await heroNaar(0.3, 1, HERO_HEROPEN_MS);
+  // ABSOLUTE TIJDLIJN. Voorheen wachtte elke sectie een RELATIEVE tijd (sectie - reistijd).
+  // Kleine afrondingen en de extra hero-/klachtenchoreografie stapelden dan op, waardoor
+  // het beeld verderop seconden voor kon lopen op de voice-over. Nu rekenen we per sectie
+  // een absoluut aankomsttijdstip uit vanaf het begin van deel B, en wachten we exact tot
+  // dat tijdstip. Zo kan er geen drift meer ontstaan: elke sectie begint gegarandeerd op de
+  // seconde waarop de stem erover begint.
+  const t0 = performance.now();
+  const verstreken = () => performance.now() - t0;
+  const wachtTot = (sec: number) => wacht(Math.max(0, sec * 1000 - verstreken()));
+  const grens = [0];
+  for (const d of duren) grens.push(grens[grens.length - 1] + d);
+  // grens[i] = starttijd van sectie i (0=hero .. 10=cta), grens[11] = einde.
 
-  // De heldenvideo bleef doordraaien terwijl we wegscrollen naar de volgende sectie.
-  // De opnamebrowser heeft geen GPU, dus dat decoderen vecht met de scroll en dat zie
-  // je terug als haperen. Hij heeft zijn werk gedaan, dus we zetten de heldenvideo stil.
+  const heroZet = (progress: number) =>
+    window.dispatchEvent(new CustomEvent("opname:hero", { detail: { progress } }));
+
+  // 1) Hero. Als heromarks (open, dicht, tekst) zijn meegegeven, laten we de hero-animatie
+  // exact op de gesproken woorden vallen: dicht (de twee titelwoorden zichtbaar) tot "scrollt
+  // naar beneden, dan opent hij" -> open; op "scrollt terug, dan sluit hij weer" -> even dicht;
+  // dan weer open en open blijven; en op "blijven bewegen" -> weer dicht zodat je de twee
+  // uitkomstwoorden ziet. We gaan nooit exact naar 1, want dan zet de hero zichzelf op
+  // "volledig uitgeklapt" en kan hij niet meer dicht.
+  if (heromarks.length >= 3) {
+    const [hOpen, hDicht, hTekst] = heromarks;
+    heroZet(0);
+    await wachtTot(hOpen);
+    await animeerMet(1600, easeSinus, (t) => heroZet(0 + 0.92 * t));
+    await wachtTot(hDicht);
+    await animeerMet(1400, easeSinus, (t) => heroZet(0.92 + (0.3 - 0.92) * t));
+    await animeerMet(1600, easeSinus, (t) => heroZet(0.3 + (0.92 - 0.3) * t));
+    await wachtTot(hTekst);
+    await animeerMet(1400, easeSinus, (t) => heroZet(0.92 + (0 - 0.92) * t));
+    await wachtTot(grens[1]);
+  } else {
+    // Terugval: oude vaste choreografie aan het einde van het hero-blok.
+    const HERO_OPEN_MS = 2600;
+    const HERO_DICHT_MS = 1400;
+    const HERO_HEROPEN_MS = 2200;
+    const heroBewegingMs = HERO_OPEN_MS + HERO_DICHT_MS + HERO_HEROPEN_MS;
+    await wacht(Math.max(0, hero * 1000 - heroBewegingMs));
+    await animeerMet(HERO_OPEN_MS, easeSinus, (t) => heroZet(0 + 0.92 * t));
+    await animeerMet(HERO_DICHT_MS, easeSinus, (t) => heroZet(0.92 + (0.3 - 0.92) * t));
+    await animeerMet(HERO_HEROPEN_MS, easeSinus, (t) => heroZet(0.3 + (1 - 0.3) * t));
+    await wachtTot(grens[1]);
+  }
+
+  // De heldenvideo bleef doordraaien terwijl we wegscrollen. De opnamebrowser heeft geen GPU,
+  // dus dat decoderen vecht met de scroll. Hij heeft zijn werk gedaan, dus we zetten hem stil.
   try {
     document.querySelector("video")?.pause();
   } catch {}
 
-  // 2) geruststelling: onder de geopende hero staan de geruststellingen en de twee
-  // knoppen (WhatsApp/Plan). We zoeken de WhatsApp-knop op en scrollen zo ver dat
-  // die op ~60% van het scherm staat (dynamisch gemeten, niet gegokt), zodat de
-  // knoppen echt in beeld komen en even blijven staan.
-  if (geruststelling > 0) {
+  // 2) geruststelling: scroll tot de WhatsApp-knop op ~60% van het scherm staat.
+  {
     const waKnop = Array.from(document.querySelectorAll("a")).find((a) =>
       ((a as HTMLAnchorElement).href || "").includes("wa.me")
     );
@@ -263,12 +296,11 @@ async function draaiDeelB(duren: number[]) {
       const r = waKnop.getBoundingClientRect();
       doelY = Math.max(0, r.top + window.scrollY - window.innerHeight * 0.6);
     }
-    const stapDuur = await scrollNaarSnelheid(doelY);
-    await wacht(Math.max(0, geruststelling * 1000 - stapDuur));
+    await scrollNaarSnelheid(doelY);
+    await wachtTot(grens[2]);
   }
 
-  // 3) vertrouwen: de balk is laag (~130px), dus niet bovenaan plakken maar
-  // verticaal centreren - dan is de balk echt het onderwerp in beeld.
+  // 3) vertrouwen: de balk verticaal centreren zodat die echt het onderwerp in beeld is.
   {
     const el = document.getElementById("vertrouwen");
     let doelY = elementTop("vertrouwen");
@@ -276,101 +308,96 @@ async function draaiDeelB(duren: number[]) {
       const rest = Math.max(0, window.innerHeight - el.offsetHeight);
       doelY = Math.max(0, el.getBoundingClientRect().top + window.scrollY - rest * 0.45);
     }
-    const stapDuur = await scrollNaarSnelheid(doelY);
-    await wacht(Math.max(0, vertrouwen * 1000 - stapDuur));
+    await scrollNaarSnelheid(doelY);
+    await wachtTot(grens[3]);
   }
 
-  // 4) waar_heb_je_last_van. De kaarten verschijnen op scrollvoortgang binnen de
-  // vastgepinde sectie (0..1). Alle kaarten staan vanaf ~0,70; vanaf 0,84 faden ze
-  // weer uit. Choreografie: naar de sectie, rustig omlaag tot alle kaarten er staan,
-  // ~10 s wachten, een stuk terug omhoog zodat de laatste kaarten weer verdwijnen,
-  // even wachten, weer omlaag tot ze allemaal terug zijn, en dan pas door.
-  const klachtenTop = elementTop("klachten");
-  const klachtenEl = document.getElementById("klachten");
-  const klachtenEchteTop = klachtenEl
-    ? klachtenEl.getBoundingClientRect().top + window.scrollY
-    : klachtenTop + HEADER_HOOGTE;
-  const klachtenIntern = sectieInterneHoogte("klachten");
-  const klachtenEntree = await scrollNaarSnelheid(klachtenTop);
-  const restKlachtenMs = Math.max(0, waarLast * 1000 - klachtenEntree);
-  if (restKlachtenMs > 4000 && klachtenIntern > 40) {
-    const P_ALLES = 0.76;   // alle kaarten volledig in beeld, nog voor de fade
-    const P_TERUG = 0.35;   // kaarten 4 t/m 6 weer weg, 1 t/m 3 staan nog
-    const yAlles = klachtenEchteTop + klachtenIntern * P_ALLES;
-    const yTerug = klachtenEchteTop + klachtenIntern * P_TERUG;
-    const heenMs = Math.abs(yAlles - window.scrollY) / SNELHEID_KAARTEN * 1000;
-    const terugMs = Math.abs(yAlles - yTerug) / SNELHEID_KAARTEN * 1000;
-    const bewegingMs = heenMs + terugMs * 2;
-    const PAUZE_TERUG_MS = 1500;
-    const pauzeAlles = Math.max(1000, Math.min(10000, restKlachtenMs - bewegingMs - PAUZE_TERUG_MS - 1000));
-    await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
-    await wacht(pauzeAlles);
-    await scrollNaarSnelheid(yTerug, SNELHEID_KAARTEN);
-    await wacht(PAUZE_TERUG_MS);
-    await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
-    await wacht(Math.max(0, restKlachtenMs - bewegingMs - pauzeAlles - PAUZE_TERUG_MS));
-  } else {
-    await wacht(restKlachtenMs);
+  // 4) waar_heb_je_last_van. De kaarten verschijnen op scrollvoortgang binnen de vastgepinde
+  // sectie. We scrollen meteen tot alle kaarten in beeld staan en HOUDEN dat vast terwijl de
+  // stem herkenning en cognitive load uitlegt. Pas op klachtmark ("maar een rij kaarten") doen
+  // we de heen-en-weer demo: kaarten 4-6 verdwijnen en komen terug. Zo begint de beweging niet
+  // te vroeg, maar precies wanneer de stem over de kaarten praat.
+  {
+    const klachtenTop = elementTop("klachten");
+    const klachtenEl = document.getElementById("klachten");
+    const klachtenEchteTop = klachtenEl
+      ? klachtenEl.getBoundingClientRect().top + window.scrollY
+      : klachtenTop + HEADER_HOOGTE;
+    const klachtenIntern = sectieInterneHoogte("klachten");
+    await scrollNaarSnelheid(klachtenTop);
+    if (klachtenIntern > 40) {
+      const P_ALLES = 0.76;
+      const P_TERUG = 0.35;
+      const yAlles = klachtenEchteTop + klachtenIntern * P_ALLES;
+      const yTerug = klachtenEchteTop + klachtenIntern * P_TERUG;
+      await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
+      // vasthouden tot de stem over de kaarten begint
+      const demoStart = klachtmark > 0 ? klachtmark : grens[3] + (grens[4] - grens[3]) * 0.6;
+      await wachtTot(demoStart);
+      // heen-en-weer: kaarten 4-6 weg, even wachten, weer terug
+      await scrollNaarSnelheid(yTerug, SNELHEID_KAARTEN);
+      await wacht(1500);
+      await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
+      await wachtTot(grens[4]);
+    } else {
+      await wachtTot(grens[4]);
+    }
   }
 
-  // 5) reviews (iets langzamere, rustigere overgang dan voorheen)
-  const reviewsEntree = await scrollNaarSnelheid(elementTop("reviews"), snelheidReviewsPxS);
-  await wacht(Math.max(0, reviews * 1000 - reviewsEntree));
+  // 5) reviews (rustigere overgang)
+  await scrollNaarSnelheid(elementTop("reviews"), snelheidReviewsPxS);
+  await wachtTot(grens[5]);
 
-  // 6) herkenbaar (empathie): meerdere foto's/slides na elkaar. Voorheen liep dit
-  // via de geëaste animeer(), waardoor de eerste foto's lang bleven staan en de
-  // latere (3, 4, 5) werden weggesprint door de cubic-ease. Nu lineaire drift
-  // zodat elke foto ongeveer evenveel tijd krijgt.
-  // 6) herkenbaar: N punten in een vastgepinde sectie (hoogte N x 100vh). Punt i is
-  // actief zolang de scroll in band i zit. Per punt: kort naar het midden van de
-  // band, dan stilstaan; de beschikbare tijd wordt gelijk over de punten verdeeld.
+  // 6) herkenbaar: N punten in een vastgepinde sectie. Per punt kort naar het midden van de
+  // band, dan stilstaan; de tijd tot de volgende sectie gelijk over de punten verdeeld.
   {
     const el = document.getElementById("herkenbaar");
     const top = elementTop("herkenbaar");
-    const entreeMs = await scrollNaarSnelheid(top);
-    const restMs = Math.max(0, herkenbaar * 1000 - entreeMs);
+    await scrollNaarSnelheid(top);
     const echteTop = el ? el.getBoundingClientRect().top + window.scrollY : top + HEADER_HOOGTE;
     const totaal = el ? Math.max(0, el.offsetHeight - window.innerHeight) : 0;
     const N = el ? Math.max(1, Math.round(el.offsetHeight / window.innerHeight)) : 1;
     if (totaal > 40 && N > 1) {
       const band = totaal / N;
-      let gebruikt = 0;
       for (let i = 0; i < N; i++) {
         const y = echteTop + band * i + band * 0.5;
-        gebruikt += await scrollNaarSnelheid(y);
+        await scrollNaarSnelheid(y);
+        // verdeel de resterende tijd tot grens[6] gelijk over de nog te tonen punten
         const overige = N - i;
-        const perPunt = Math.max(0, (restMs - gebruikt) / overige);
-        // schat de resterende bewegingen zodat elk punt evenveel stilstand krijgt
-        const bewegingSchatting = (band / snelheidPxS) * 1000 * Math.max(0, overige - 1) / overige;
-        const stil = Math.max(0, perPunt - bewegingSchatting);
-        await wacht(stil);
-        gebruikt += stil;
+        const doel = verstreken() / 1000 + (grens[6] - verstreken() / 1000) * (1 / overige);
+        await wachtTot(doel);
       }
-    } else {
-      await wacht(restMs);
     }
+    await wachtTot(grens[6]);
   }
 
   // 7) zo_werkt_het (aanpak)
-  const aanpakEntree = await scrollNaarSnelheid(elementTop("aanpak"));
-  await wacht(Math.max(0, zoWerktHet * 1000 - aanpakEntree));
+  await scrollNaarSnelheid(elementTop("aanpak"));
+  await wachtTot(grens[7]);
 
-  // 8) team: zelfde probleem als herkenbaar als de teamsectie hoger is dan het
-  // scherm (meerdere teamkaarten) - nu ook lineaire drift in plaats van een
-  // vaste scroll gevolgd door een abrupte sprong naar de volgende sectie.
-  await driftDoorSectie("team", team);
+  // 8) team: lineaire drift door de sectie als die hoger is dan het scherm.
+  {
+    const top = elementTop("team");
+    const intern = sectieInterneHoogte("team");
+    await scrollNaarSnelheid(top);
+    if (intern > 40) {
+      const restMs = Math.max(0, grens[8] * 1000 - verstreken());
+      await driftLineair(top, top + intern, restMs);
+    }
+    await wachtTot(grens[8]);
+  }
 
   // 9) verzekering (vergoeding)
-  const vergoedingEntree = await scrollNaarSnelheid(elementTop("vergoeding"));
-  await wacht(Math.max(0, verzekering * 1000 - vergoedingEntree));
+  await scrollNaarSnelheid(elementTop("vergoeding"));
+  await wachtTot(grens[9]);
 
   // 10) faq
-  const faqEntree = await scrollNaarSnelheid(elementTop("faq"));
-  await wacht(Math.max(0, faq * 1000 - faqEntree));
+  await scrollNaarSnelheid(elementTop("faq"));
+  await wachtTot(grens[10]);
 
   // 11) cta
-  const ctaEntree = await scrollNaarSnelheid(elementTop("cta"));
-  await wacht(Math.max(0, cta * 1000 - ctaEntree));
+  await scrollNaarSnelheid(elementTop("cta"));
+  await wachtTot(grens[11]);
 }
 
 export function OpnameRegisseur() {
@@ -394,7 +421,7 @@ export function OpnameRegisseur() {
       if (fase.modus === "intro") {
         await draaiIntro(fase.open, fase.stil);
       } else if (fase.modus === "b") {
-        await draaiDeelB(fase.duren);
+        await draaiDeelB(fase.duren, fase.heromarks, fase.klachtmark);
       }
       document.documentElement.setAttribute("data-opname-klaar", "1");
     })();
