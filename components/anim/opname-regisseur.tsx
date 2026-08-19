@@ -214,7 +214,8 @@ async function draaiIntro(open: number, stil: number) {
 async function draaiDeelB(
   duren: number[],
   heromarks: number[] = [],
-  klachtmark = 0
+  klachtmark = 0,
+  t0Abs?: number
 ) {
   if (duren.length < 11) {
     // eslint-disable-next-line no-console
@@ -240,7 +241,12 @@ async function draaiDeelB(
   // een absoluut aankomsttijdstip uit vanaf het begin van deel B, en wachten we exact tot
   // dat tijdstip. Zo kan er geen drift meer ontstaan: elke sectie begint gegarandeerd op de
   // seconde waarop de stem erover begint.
-  const t0 = performance.now();
+  //
+  // t0Abs wordt door OpnameRegisseur meegegeven en is verankerd aan het moment dat de useEffect
+  // startte (dicht bij het begin van de opname), NIET aan het moment dat deze functie begint te
+  // draaien. Dat is cruciaal: wachtOpMedia() kan een paar seconden duren en zou anders de hele
+  // tijdlijn (en dus de hero-markers) net zoveel te laat laten vallen als die wachttijd.
+  const t0 = t0Abs != null ? t0Abs : performance.now();
   const verstreken = () => performance.now() - t0;
   const wachtTot = (sec: number) => wacht(Math.max(0, sec * 1000 - verstreken()));
   const grens = [0];
@@ -327,12 +333,13 @@ async function draaiDeelB(
     await scrollNaarSnelheid(klachtenTop);
     if (klachtenIntern > 40) {
       const P_ALLES = 0.76;
-      const P_TERUG = 0.35;
+      const P_TERUG = 0.55;   // maar ~2 kaarten terug, zodat je de beweging ziet zonder alles te verbergen
       const yAlles = klachtenEchteTop + klachtenIntern * P_ALLES;
       const yTerug = klachtenEchteTop + klachtenIntern * P_TERUG;
       await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
       // vasthouden tot de stem over de kaarten begint
-      const demoStart = klachtmark > 0 ? klachtmark : grens[3] + (grens[4] - grens[3]) * 0.6;
+      // start de heen-en-weer iets voor de zin, zodat de beweging samenvalt met "de kaarten bewegen mee"
+      const demoStart = klachtmark > 0 ? Math.max(grens[3], klachtmark - 2) : grens[3] + (grens[4] - grens[3]) * 0.6;
       await wachtTot(demoStart);
       // heen-en-weer: kaarten 4-6 weg, even wachten, weer terug
       await scrollNaarSnelheid(yTerug, SNELHEID_KAARTEN);
@@ -408,6 +415,9 @@ export function OpnameRegisseur() {
     const fase = parseFase();
     if (fase.modus === "geen") return;
     gestart.current = true;
+    // Referentiemoment zo vroeg mogelijk vastleggen: dit is de nul van de tijdlijn, los van
+    // hoe lang wachtOpMedia() daarna nog duurt.
+    const tRef = performance.now();
     document.documentElement.setAttribute("data-opname", "1");
     // globals.css zet html { scroll-behavior: smooth }. Daardoor animeert de browser elke
     // scrollTo van de regisseur zelf OOK nog eens naar het doel: twee animaties over elkaar.
@@ -417,11 +427,18 @@ export function OpnameRegisseur() {
 
     (async () => {
       await wachtOpMedia();
-      await wacht(fase.start * 1000);
       if (fase.modus === "intro") {
+        await wacht(fase.start * 1000);
         await draaiIntro(fase.open, fase.stil);
       } else if (fase.modus === "b") {
-        await draaiDeelB(fase.duren, fase.heromarks, fase.klachtmark);
+        // Tijdlijn-nul = tRef + start. De audio in de montage begint op datzelfde start-moment,
+        // dus de hero-markers (audio-relatief) vallen precies goed, ongeacht wachtOpMedia.
+        await draaiDeelB(
+          fase.duren,
+          fase.heromarks,
+          fase.klachtmark,
+          tRef + fase.start * 1000
+        );
       }
       document.documentElement.setAttribute("data-opname-klaar", "1");
     })();
