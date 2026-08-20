@@ -61,6 +61,7 @@ export default function ScrollExpandMedia({
       const detail = (e as CustomEvent<{ progress: number }>).detail;
       const p = Math.min(Math.max(detail?.progress ?? 0, 0), 1);
       setScrollProgress(p);
+      if (p >= 0.9) setShowContent(true);
       if (p >= 1) {
         setMediaFullyExpanded(true);
         setShowContent(true);
