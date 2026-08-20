@@ -333,7 +333,8 @@ async function draaiDeelB(
     await scrollNaarSnelheid(klachtenTop);
     if (klachtenIntern > 40) {
       const P_ALLES = 0.76;
-      const P_TERUG = 0.55;   // maar ~2 kaarten terug, zodat je de beweging ziet zonder alles te verbergen
+      const KAARTEN = Math.max(1, Math.round(klachtenEl ? klachtenEl.offsetHeight / (window.innerHeight * 0.55) : 5));
+      const P_TERUG = Math.max(0, ((KAARTEN - 2) / KAARTEN) * 0.72 - 0.03);   // precies twee kaarten terug, ongeacht hoeveel kaarten deze praktijk heeft
       const yAlles = klachtenEchteTop + klachtenIntern * P_ALLES;
       const yTerug = klachtenEchteTop + klachtenIntern * P_TERUG;
       await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
@@ -343,7 +344,7 @@ async function draaiDeelB(
       await wachtTot(demoStart);
       // heen-en-weer: kaarten 4-6 weg, even wachten, weer terug
       await scrollNaarSnelheid(yTerug, SNELHEID_KAARTEN);
-      await wacht(1500);
+      await wacht(900);
       await scrollNaarSnelheid(yAlles, SNELHEID_KAARTEN);
       await wachtTot(grens[4]);
     } else {
