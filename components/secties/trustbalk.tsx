@@ -42,7 +42,7 @@ function CountUp({
 export function Trustbalk() {
   const { trust } = praktijk;
   return (
-    <section aria-label="Vertrouwen en kwaliteit" className="border-y border-line bg-card">
+    <section id="vertrouwen" aria-label="Vertrouwen en kwaliteit" className="border-y border-line bg-card">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-px px-5 min-[860px]:grid-cols-4">
         <div className="flex flex-col gap-1.5 py-7 pr-4">
           <div className="flex items-center gap-2">

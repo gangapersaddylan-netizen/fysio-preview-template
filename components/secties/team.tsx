@@ -45,7 +45,7 @@ export function Team() {
       <ZoomParallax images={images} />
 
       <div className="mx-auto max-w-6xl px-5 pb-16 lg:pb-24">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,180px))] justify-center gap-x-4 gap-y-8">
           {uitgelicht.map((lid, i) => (
             <RevealCard key={(lid.naam || "lid") + "-" + i} delay={i * 0.07}>
               <figure>

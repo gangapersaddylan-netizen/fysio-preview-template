@@ -55,6 +55,7 @@ export function Reviews() {
 
   return (
     <section
+      id="reviews"
       aria-labelledby="reviews-titel"
       className="border-y border-line bg-paper py-16 lg:py-24"
     >

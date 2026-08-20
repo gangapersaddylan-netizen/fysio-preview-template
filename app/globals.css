@@ -282,3 +282,39 @@ details > summary::-webkit-details-marker {
     animation: none !important;
   }
 }
+
+/* ============================================================
+   OPNAMESTAND: lichtere pagina tijdens het filmen
+
+   De opnamebrowser van Urlbox heeft geen videokaart. Alles wat bij een
+   bezoeker door de GPU wordt gedaan, kost daar processortijd, en dat is
+   precies wat je terugziet als haperen in de video. Deze regels gelden
+   ALLEEN als de opnameregisseur data-opname op het html-element zet, dus
+   een echte bezoeker ziet hier niets van.
+
+   Drie dingen gaan eruit:
+   1. backdrop-filter. Verreweg het duurst: de browser moet bij elke frame
+      opnieuw bemonsteren wat er achter het element ligt en dat vervagen.
+      Tijdens scrollen verandert die achtergrond continu. De doorzichtige
+      achtergrond wordt dekkender gemaakt zodat de tekst leesbaar blijft.
+   2. Slagschaduwen van 60 tot 80 pixels blur op grote vlakken. Die worden
+      teruggebracht naar een korte schaduw: visueel bijna gelijk, veel goedkoper.
+   3. De pulserende wachttijd-stip. Die animeert box-shadow, oneindig lang,
+      de hele opname door, ook buiten beeld.
+   ============================================================ */
+html[data-opname] [class*="backdrop-blur"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+html[data-opname] [class*="backdrop-blur"][class*="bg-white/"] {
+  background-color: rgba(255, 255, 255, 0.93) !important;
+}
+html[data-opname] [class*="backdrop-blur"][class*="bg-black/"] {
+  background-color: rgba(0, 0, 0, 0.55) !important;
+}
+html[data-opname] [class*="shadow-["] {
+  box-shadow: 0 8px 20px -8px rgba(20, 32, 29, 0.45) !important;
+}
+html[data-opname] .pulse-dot {
+  animation: none !important;
+}

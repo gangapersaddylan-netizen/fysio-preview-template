@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
+import { opnameActief } from "@/lib/opname";
 
 interface ScrollExpandMediaProps {
   mediaType?: "video" | "image";
@@ -51,7 +52,28 @@ export default function ScrollExpandMedia({
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // In opnamemodus wordt de expansie extern aangestuurd door de OpnameRegisseur
+  // via een CustomEvent, in plaats van door echte wheel/touch/scroll-input.
   useEffect(() => {
+    if (!opnameActief()) return;
+
+    const onOpnameHero = (e: Event) => {
+      const detail = (e as CustomEvent<{ progress: number }>).detail;
+      const p = Math.min(Math.max(detail?.progress ?? 0, 0), 1);
+      setScrollProgress(p);
+      if (p >= 1) {
+        setMediaFullyExpanded(true);
+        setShowContent(true);
+      }
+    };
+
+    window.addEventListener("opname:hero", onOpnameHero as EventListener);
+    return () => window.removeEventListener("opname:hero", onOpnameHero as EventListener);
+  }, []);
+
+  useEffect(() => {
+    if (opnameActief()) return;
+
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const advance = (delta: number) => {
@@ -184,14 +206,14 @@ export default function ScrollExpandMedia({
                     loop
                     playsInline
                     preload="auto"
-                    className="h-full w-full rounded-[16px] object-cover"
+                    className="h-full w-full rounded-[16px] object-cover object-top"
                   />
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={mediaSrc}
                     alt={title ?? "media"}
-                    className="h-full w-full rounded-[16px] object-cover"
+                    className="h-full w-full rounded-[16px] object-cover object-top"
                   />
                 )}
                 <div
