@@ -32,11 +32,12 @@ export function Hero() {
       >
         <div className="mx-auto max-w-3xl text-center text-white">
           <h2 className="h2 text-white">
-            Weer tillen, rennen en slapen zonder erover na te denken
+            {((praktijk as unknown) as { algemeneVervanging?: { heroKop?: string } }).algemeneVervanging?.heroKop ??
+              "Weer tillen, rennen en slapen zonder erover na te denken"}
           </h2>
           <p className="mx-auto mt-4 max-w-[46ch] text-lg leading-relaxed text-white/80">
-            Een vaste therapeut, een behandelplan met een einddatum en binnen
-            twee dagen je eerste afspraak. Zonder verwijzing van de huisarts.
+            {((praktijk as unknown) as { algemeneVervanging?: { heroTekst?: string } }).algemeneVervanging?.heroTekst ??
+              "Een vaste therapeut, een behandelplan met een einddatum en binnen twee dagen je eerste afspraak. Zonder verwijzing van de huisarts."}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
