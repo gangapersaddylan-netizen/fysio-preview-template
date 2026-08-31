@@ -26,7 +26,11 @@ export function Hero() {
         mediaSrc={snelleVideo(praktijk.heroVideo)}
         posterSrc={videoPoster(praktijk.heroVideo)}
         title={praktijk.heroTitel}
-        date={`Fysiotherapie in ${praktijk.plaats}`}
+        date={
+          ((praktijk as unknown) as { niche?: string }).niche === "overig"
+            ? praktijk.plaats
+            : `Fysiotherapie in ${praktijk.plaats}`
+        }
         scrollToExpand="Scroll om de video te openen"
         textBlend
       >
