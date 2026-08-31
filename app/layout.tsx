@@ -18,10 +18,19 @@ const instrument = Instrument_Sans({
   display: "swap",
 });
 
+const isOverigMeta = ((praktijk as unknown) as { niche?: string }).niche === "overig";
+const algemeneVervangingMeta = ((praktijk as unknown) as {
+  algemeneVervanging?: { heroTekst?: string };
+}).algemeneVervanging;
+
 export const metadata: Metadata = {
-  title: `${praktijk.naam} — Fysiotherapie in ${praktijk.plaats}`,
-  description:
-    "Een vaste therapeut, een behandelplan met een einddatum en binnen twee dagen je eerste afspraak. Zonder verwijzing van de huisarts.",
+  title: isOverigMeta
+    ? `${praktijk.naam} — ${praktijk.plaats}`
+    : `${praktijk.naam} — Fysiotherapie in ${praktijk.plaats}`,
+  description: isOverigMeta
+    ? algemeneVervangingMeta?.heroTekst ??
+      "Een vaste therapeut, een behandelplan met een einddatum en binnen twee dagen je eerste afspraak. Zonder verwijzing van de huisarts."
+    : "Een vaste therapeut, een behandelplan met een einddatum en binnen twee dagen je eerste afspraak. Zonder verwijzing van de huisarts.",
 };
 
 export default function RootLayout({
