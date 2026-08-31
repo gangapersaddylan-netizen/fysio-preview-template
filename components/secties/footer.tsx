@@ -1,6 +1,13 @@
 import { Phone } from "lucide-react";
 import { praktijk } from "@/content/praktijk";
 
+// Bij niche "overig" bevat praktijk geen vergoeding-object (dat bestaat alleen nog
+// voor fysio-praktijken), dus peiljaar valt dan terug op het huidige jaar - dat blijft
+// voor fysio exact hetzelfde getal als voorheen, want daar is vergoeding altijd gevuld.
+const copyrightJaar =
+  ((praktijk as unknown) as { vergoeding?: { peiljaar?: number } }).vergoeding
+    ?.peiljaar ?? new Date().getFullYear();
+
 const HEADER_FADE =
   "linear-gradient(to bottom, #f7f5f0 0%, var(--color-accent-grad-soft) 55%, var(--color-accent-grad) 100%)";
 
@@ -57,7 +64,7 @@ export function Footer() {
       <div className="border-t border-ink/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-ink/60 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {praktijk.vergoeding.peiljaar} {praktijk.naam}. Alle rechten
+            © {copyrightJaar} {praktijk.naam}. Alle rechten
             voorbehouden.
           </p>
           <p className="flex gap-4">
