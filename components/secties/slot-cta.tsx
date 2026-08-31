@@ -9,6 +9,8 @@ const HEADER_FADE =
   "linear-gradient(to bottom, #f7f5f0 0%, var(--color-accent-grad-soft) 55%, var(--color-accent-grad) 100%)";
 
 export function SlotCta() {
+  const isOverig = ((praktijk as unknown) as { niche?: string }).niche === "overig";
+
   return (
     <section id="cta" aria-labelledby="slot-titel" className="px-5 py-16 lg:py-24">
       <div
@@ -18,8 +20,11 @@ export function SlotCta() {
         <Reveal className="relative max-w-2xl">
           <p className="eyebrow">Klaar om te beginnen</p>
           <h2 id="slot-titel" className="h2 mt-3 text-ink">
-            Volgende week deze tijd ben je al bezig met het &quot;Pijnvrij
-            plan&quot;
+            {isOverig
+              ? "Volgende week deze tijd ben je al bezig met de aanpak die voor jou werkt"
+              : (
+                <>Volgende week deze tijd ben je al bezig met het &quot;Pijnvrij plan&quot;</>
+              )}
           </h2>
           <p className="mt-4 max-w-[46ch] text-ink-soft">
             Plan je intake online, ook &apos;s avonds. Of bel ons even als je
