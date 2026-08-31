@@ -19,11 +19,15 @@ function mengMetWit(hex: string, deel: number): string {
 }
 
 
+const navVergoedingLabel =
+  ((praktijk as unknown) as { algemeneVervanging?: { navLabel?: string } }).algemeneVervanging?.navLabel ??
+  "Vergoeding";
+
 const nav = [
   { label: "Klachten", href: "#klachten" },
   { label: "Aanpak", href: "#aanpak" },
   { label: "Team", href: "#team" },
-  { label: "Vergoeding", href: "#vergoeding" },
+  { label: navVergoedingLabel, href: "#vergoeding" },
   { label: "Vragen", href: "#faq" },
 ];
 
