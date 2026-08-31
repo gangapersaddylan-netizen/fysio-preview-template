@@ -27,6 +27,8 @@ export function Empathie() {
   const sectionRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
+  const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [panelHeight, setPanelHeight] = useState<number | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -50,6 +52,20 @@ export function Empathie() {
       window.removeEventListener("resize", onScroll);
     };
   }, [N]);
+
+  // Elke slide heeft eigen tekstlengte (verschilt per niche/prospect), dus de hoogte van
+  // dit paneel wordt gemeten in plaats van vast te staan (was h-[24rem] md:h-[19rem], afgestemd
+  // op de oude fysio-tekst — bij langere tekst (bv. niche=overig) liep de laatste regel over de
+  // voortgangsbolletjes eronder heen, zoals bij regel 01 "...zonder altijd moe te zijn.").
+  useEffect(() => {
+    const measure = () => {
+      const el = slideRefs.current[active];
+      if (el) setPanelHeight(el.scrollHeight);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [active, N]);
 
   const goTo = (i: number) => {
     const el = sectionRef.current;
@@ -77,13 +93,19 @@ export function Empathie() {
               </h2>
             </div>
 
-            <div className="relative h-[24rem] md:h-[19rem]">
+            <div
+              className="relative min-h-[19rem] transition-[height] duration-500 ease-out"
+              style={panelHeight ? { height: `${panelHeight}px` } : undefined}
+            >
               {slides.map((s, i) => (
                 <div
                   key={i}
+                  ref={(el) => {
+                    slideRefs.current[i] = el;
+                  }}
                   aria-hidden={i !== active}
                   className={cn(
-                    "absolute inset-0 flex flex-col justify-start transition-all duration-700 ease-out",
+                    "absolute inset-x-0 top-0 flex flex-col justify-start transition-all duration-700 ease-out",
                     i === active
                       ? "opacity-100 translate-y-0"
                       : "pointer-events-none translate-y-8 opacity-0"
