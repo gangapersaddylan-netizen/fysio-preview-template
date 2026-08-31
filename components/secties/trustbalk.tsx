@@ -59,9 +59,15 @@ export function Trustbalk() {
         <div className="flex flex-col gap-1.5 py-7 pr-4 min-[860px]:pl-6">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-accent" />
-            <span className="h3 text-ink">Vergoed door alle zorgverzekeraars</span>
+            <span className="h3 text-ink">
+              {((praktijk as unknown) as { algemeneVervanging?: { trustTitel?: string } }).algemeneVervanging?.trustTitel ??
+                "Vergoed door alle zorgverzekeraars"}
+            </span>
           </div>
-          <p className="text-sm text-muted">Geen verwijzing nodig</p>
+          <p className="text-sm text-muted">
+            {((praktijk as unknown) as { algemeneVervanging?: { trustSub?: string } }).algemeneVervanging?.trustSub ??
+              "Geen verwijzing nodig"}
+          </p>
         </div>
 
         <div className="flex flex-col gap-1.5 py-7 pr-4 min-[860px]:pl-6">
