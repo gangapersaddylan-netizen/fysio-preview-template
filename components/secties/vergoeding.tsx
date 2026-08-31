@@ -5,9 +5,73 @@ import { Check, ChevronDown } from "lucide-react";
 import { praktijk } from "@/content/praktijk";
 import { Reveal } from "@/components/anim/reveal";
 
+type VergoedingVervanger = {
+  eyebrow?: string;
+  titel?: string;
+  punten?: { titel: string; tekst: string }[];
+  ctaTekst?: string;
+};
+
 export function Vergoeding() {
-  const { feiten, verzekeraars, disclaimer } = praktijk.vergoeding;
+  // Hook altijd bovenaan en onvoorwaardelijk aanroepen (rules-of-hooks) - ook in de niet-fysio
+  // tak hieronder, ook al wordt hij daar niet gebruikt, blijft de aanroeper-volgorde zo altijd gelijk.
   const [gekozen, setGekozen] = useState<string>("");
+
+  const uitgebreid = (praktijk as unknown) as {
+    niche?: string;
+    vergoedingVervanger?: VergoedingVervanger | null;
+  };
+
+  // Niet-fysio praktijken hebben geen zorgverzekeraars: in plaats van de verzekeraar-kiezer
+  // hieronder tonen we hier het sterkste vertrouwenspunt dat uit hun eigen site komt (31-08-2026,
+  // afgesproken met Dylan). Zelfde sectie-id en dezelfde plek op de pagina, dus de scroll-opname
+  // (W5) hoeft dit niet apart te weten.
+  if (uitgebreid.niche === "overig" && uitgebreid.vergoedingVervanger) {
+    const { eyebrow, titel, punten, ctaTekst } = uitgebreid.vergoedingVervanger;
+    return (
+      <section
+        id="vergoeding"
+        aria-labelledby="vergoeding-titel"
+        className="border-y border-line bg-card"
+      >
+        <div className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
+          <Reveal>
+            <p className="eyebrow">{eyebrow || "Waarom dit werkt"}</p>
+            <h2 id="vergoeding-titel" className="h2 mt-3 text-ink">
+              {titel || ""}
+            </h2>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <ul className="mt-10 flex max-w-2xl flex-col gap-6">
+              {(punten || []).map((p) => (
+                <li key={p.titel} className="flex gap-4">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                    <Check className="h-4 w-4" strokeWidth={2.5} />
+                  </span>
+                  <span>
+                    <span className="block h3 text-ink">{p.titel}</span>
+                    <span className="mt-1 block text-ink-soft">{p.tekst}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+
+          {ctaTekst && (
+            <a
+              href={praktijk.boekUrl}
+              className="mt-10 inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-[0.95rem] font-medium text-white transition-all hover:brightness-110"
+            >
+              {ctaTekst}
+            </a>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  const { feiten, verzekeraars, disclaimer } = praktijk.vergoeding;
 
   const actief = verzekeraars.find((v) => v.naam === gekozen);
   const gecontracteerd = verzekeraars.filter((v) => v.gecontracteerd);
