@@ -8,6 +8,8 @@ const copyrightJaar =
   ((praktijk as unknown) as { vergoeding?: { peiljaar?: number } }).vergoeding
     ?.peiljaar ?? new Date().getFullYear();
 
+const isOverig = ((praktijk as unknown) as { niche?: string }).niche === "overig";
+
 const HEADER_FADE =
   "linear-gradient(to bottom, #f7f5f0 0%, var(--color-accent-grad-soft) 55%, var(--color-accent-grad) 100%)";
 
@@ -18,8 +20,9 @@ export function Footer() {
         <div>
           <p className="display text-lg text-ink">{praktijk.naam}</p>
           <p className="mt-3 text-sm">
-            Fysiotherapie in {praktijk.plaats}. Een vaste therapeut en een plan
-            met een einddatum.
+            {isOverig
+              ? `Persoonlijke begeleiding in ${praktijk.plaats}.`
+              : `Fysiotherapie in ${praktijk.plaats}. Een vaste therapeut en een plan met een einddatum.`}
           </p>
         </div>
 
@@ -54,9 +57,18 @@ export function Footer() {
         <div className="text-sm">
           <p className="mb-3 font-medium text-ink">Goed om te weten</p>
           <ul className="flex flex-col gap-2">
-            <li>Geen verwijzing nodig</li>
-            <li>BIG geregistreerd</li>
-            <li>Kwaliteitsregister Fysiotherapie</li>
+            {isOverig ? (
+              <>
+                <li>{praktijk.trust.bigRegistratie}</li>
+                <li>{praktijk.trust.bigSub}</li>
+              </>
+            ) : (
+              <>
+                <li>Geen verwijzing nodig</li>
+                <li>BIG geregistreerd</li>
+                <li>Kwaliteitsregister Fysiotherapie</li>
+              </>
+            )}
           </ul>
         </div>
       </div>
