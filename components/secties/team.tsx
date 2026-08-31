@@ -8,6 +8,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ZoomParallax } from "@/components/ui/zoom-parallax";
 
 export function Team() {
+  const isOverig = ((praktijk as unknown) as { niche?: string }).niche === "overig";
   const uitgelicht = praktijk.team.filter((t) => t.uitgelicht).slice(0, 6);
 
   // Hero-parallax toont altijd 7 tegels (1 groepsfoto + 6 portretten), ook bij een solopraktijk.
@@ -33,11 +34,12 @@ export function Team() {
         <Reveal>
           <p className="eyebrow">Het team</p>
           <h2 id="team-titel" className="h2 mt-3 text-ink">
-            Je weet vooraf wie je behandelt
+            {isOverig ? "Je weet vooraf wie je voor je hebt" : "Je weet vooraf wie je behandelt"}
           </h2>
           <p className="lead mt-4">
-            Vaste therapeut van intake tot laatste afspraak. Geen wisselende
-            gezichten, geen verhaal dat je elke keer opnieuw moet doen.
+            {isOverig
+              ? "Persoonlijk contact met dezelfde vaste begeleider. Geen wisselende gezichten, geen verhaal dat je elke keer opnieuw moet doen."
+              : "Vaste therapeut van intake tot laatste afspraak. Geen wisselende gezichten, geen verhaal dat je elke keer opnieuw moet doen."}
           </p>
         </Reveal>
       </div>
