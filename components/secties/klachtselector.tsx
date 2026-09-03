@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import {
   motion,
   useScroll,
@@ -80,12 +80,16 @@ function KlachtKaart({
         </span>
       </div>
 
-      <div className="relative">
-        <h3 className="display text-xl leading-tight text-ink break-words hyphens-auto">
+      {/* flex-1 + mt-auto op de link: tekst mag variëren, "Lees meer" staat in elke
+          kaart op dezelfde onderrand. line-clamp is het vangnet tegen te lange copy. */}
+      <div className="relative mt-4 flex flex-1 flex-col">
+        <h3 className="display line-clamp-2 text-xl leading-tight text-ink break-words hyphens-auto">
           {klacht.label}
         </h3>
-        <p className="mt-1.5 text-sm leading-snug text-ink-soft">{klacht.sub}</p>
-        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+        <p className="mt-1.5 line-clamp-3 text-sm leading-snug text-ink-soft break-words hyphens-auto">
+          {klacht.sub}
+        </p>
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium text-accent">
           Lees meer
           <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
         </span>
@@ -147,7 +151,12 @@ export function Klachtselector() {
         </div>
 
         <div className="relative z-10 flex flex-1 items-center">
-          <div className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 px-5 sm:grid-cols-3 lg:grid-cols-6">
+          {/* Kolommen volgen het aantal klachten (max 6): geen lege kolom en geen
+              te smalle kaarten bij 4 of 5 klachten. */}
+          <div
+            className="mx-auto grid w-full max-w-6xl grid-cols-2 gap-4 px-5 sm:grid-cols-3 lg:[grid-template-columns:repeat(var(--kolommen),minmax(0,1fr))]"
+            style={{ "--kolommen": Math.min(Math.max(N, 1), 6) } as CSSProperties}
+          >
             {praktijk.klachten.map((k, i) => (
               <KlachtKaart
                 key={k.slug}
