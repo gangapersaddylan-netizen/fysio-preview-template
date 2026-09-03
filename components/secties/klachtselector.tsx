@@ -83,7 +83,11 @@ function KlachtKaart({
       {/* flex-1 + mt-auto op de link: tekst mag variëren, "Lees meer" staat in elke
           kaart op dezelfde onderrand. line-clamp is het vangnet tegen te lange copy. */}
       <div className="relative mt-4 flex flex-1 flex-col">
-        <h3 className="display line-clamp-2 text-xl leading-tight text-ink break-words hyphens-auto">
+        {/* Bij 6 kaarten is een kolom maar ~172px: dan een maat kleiner, anders breekt
+            een woord als "Bekkenbodem" met een koppelteken over twee regels. */}
+        <h3
+          className={`display line-clamp-2 leading-tight text-ink break-words hyphens-auto ${count >= 6 ? "text-lg" : "text-xl"}`}
+        >
           {klacht.label}
         </h3>
         <p className="mt-1.5 line-clamp-3 text-sm leading-snug text-ink-soft break-words hyphens-auto">
