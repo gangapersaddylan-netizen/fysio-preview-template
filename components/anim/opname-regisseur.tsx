@@ -5,7 +5,16 @@ import { useEffect, useRef } from "react";
 type Fase =
   | { modus: "geen" }
   | { modus: "intro"; open: number; stil: number; start: number }
-  | { modus: "b"; duren: number[]; start: number; heromarks: number[]; klachtmark: number };
+  | {
+      modus: "b";
+      duren: number[];
+      start: number;
+      heromarks: number[];
+      klachtmark: number;
+      // wacht=1: de tijdlijn begint niet bij het laden van de pagina, maar op het startsignaal
+      // van de opnamedienst (zie OpnameRegisseur). Zonder wacht blijft het oude gedrag staan.
+      wacht: boolean;
+    };
 
 const HEADER_HOOGTE = 64;
 
@@ -174,7 +183,8 @@ function parseFase(): Fase {
       .filter((x) => !isNaN(x));
     // klachtmark = seconde waarop de stem over de kaarten begint; pas dan de heen-en-weer demo.
     const klachtmark = parseFloat(p.get("klachtmark") || "");
-    return { modus: "b", duren, start, heromarks, klachtmark: isNaN(klachtmark) ? 0 : klachtmark };
+    const wacht = p.get("wacht") === "1";
+    return { modus: "b", duren, start, heromarks, klachtmark: isNaN(klachtmark) ? 0 : klachtmark, wacht };
   }
   return { modus: "geen" };
 }
@@ -418,8 +428,47 @@ export function OpnameRegisseur() {
     gestart.current = true;
     // Referentiemoment zo vroeg mogelijk vastleggen: dit is de nul van de tijdlijn, los van
     // hoe lang wachtOpMedia() daarna nog duurt.
-    const tRef = performance.now();
+    let tRef = performance.now();
     document.documentElement.setAttribute("data-opname", "1");
+
+    // -----------------------------------------------------------------------------------------
+    // STARTSIGNAAL (03-09-2026). Het referentiemoment hierboven is het moment van hydratie, niet
+    // het moment waarop de opnamedienst begint te filmen. Urlbox begint pas na wait_until
+    // (requestsfinished): op een zware pagina met veel foto's en video's kan dat tientallen
+    // seconden later zijn. De hele tijdlijn (hero-markers, sectiegrenzen) liep dan precies die
+    // laadtijd VOOR op de opname en dus op de voice-over in de montage: de hero ging open terwijl
+    // de stem er nog niet over sprak, en elke sectie kwam te vroeg in beeld.
+    //
+    // Met ?wacht=1 wacht de regisseur op een startsignaal dat de opnamedienst vlak voor het
+    // eerste beeld afgeeft: window.__opnameStartAt = performance.now() gevolgd door een
+    // CustomEvent "opname:start" (W5 stuurt dit als js-optie mee aan Urlbox; capture.js op de
+    // eigen server injecteert hetzelfde onder de virtuele klok, waar performance.now() dan 0 is).
+    // Het signaal wint van hydratie, ongeacht de volgorde: staat de vlag er al bij het mounten,
+    // dan gebruiken we die; komt het event later, dan dat. Blijft het signaal 60 s na het laden
+    // van de media uit, dan starten we alsnog (startbron "timeout") zodat een opname nooit
+    // stilstaat; data-opname-startbron op <html> laat zien welke route het werd.
+    // -----------------------------------------------------------------------------------------
+    const wachtOpSignaal = fase.modus === "b" && fase.wacht;
+    let signaal: Promise<number> | null = null;
+    if (wachtOpSignaal) {
+      document.documentElement.setAttribute("data-opname-wacht", "1");
+      signaal = new Promise<number>((resolve) => {
+        const w = window as unknown as { __opnameStartAt?: number; __opnameStart?: () => void };
+        if (typeof w.__opnameStartAt === "number") {
+          resolve(w.__opnameStartAt);
+          return;
+        }
+        const ontvangen = () => {
+          resolve(typeof w.__opnameStartAt === "number" ? w.__opnameStartAt : performance.now());
+        };
+        window.addEventListener("opname:start", ontvangen, { once: true });
+        // Handmatig te geven vanuit de console of een injectiescript: window.__opnameStart()
+        w.__opnameStart = () => {
+          if (typeof w.__opnameStartAt !== "number") w.__opnameStartAt = performance.now();
+          ontvangen();
+        };
+      });
+    }
     // globals.css zet html { scroll-behavior: smooth }. Daardoor animeert de browser elke
     // scrollTo van de regisseur zelf OOK nog eens naar het doel: twee animaties over elkaar.
     // In een gewone browser vangt de GPU dat op, in de opnamebrowser botsen ze en zie je
@@ -432,6 +481,20 @@ export function OpnameRegisseur() {
         await wacht(fase.start * 1000);
         await draaiIntro(fase.open, fase.stil);
       } else if (fase.modus === "b") {
+        if (signaal) {
+          const timeout = new Promise<number>((r) => setTimeout(() => r(-1), 60000));
+          const t = await Promise.race([signaal, timeout]);
+          if (t >= 0) {
+            tRef = t;
+            document.documentElement.setAttribute("data-opname-startbron", "signaal");
+          } else {
+            tRef = performance.now();
+            document.documentElement.setAttribute("data-opname-startbron", "timeout");
+          }
+          document.documentElement.removeAttribute("data-opname-wacht");
+        } else {
+          document.documentElement.setAttribute("data-opname-startbron", "laden");
+        }
         // Tijdlijn-nul = tRef + start. De audio in de montage begint op datzelfde start-moment,
         // dus de hero-markers (audio-relatief) vallen precies goed, ongeacht wachtOpMedia.
         await draaiDeelB(
