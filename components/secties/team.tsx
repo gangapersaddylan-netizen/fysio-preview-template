@@ -2,7 +2,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { praktijk } from "@/content/praktijk";
-import { slimmeFoto, focusVoor, type FotoFocus } from "@/lib/utils";
+import { slimmeFoto, focusVoor, uitsnedeVoor, type FotoFocus, type FotoUitsnedeSet } from "@/lib/utils";
 import { Reveal, RevealCard } from "@/components/anim/reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { ZoomParallax } from "@/components/ui/zoom-parallax";
@@ -18,6 +18,9 @@ export function Team() {
   const teamShowcase: { groepsfoto: string; extraFotos?: readonly string[]; coverFit?: "cover" | "contain" } = praktijk.teamShowcase;
   // Focuspunten per foto-URL (gezicht), door de pipeline bepaald; ontbreekt bij handmatige/oude content.
   const fotoFocus = ((praktijk as unknown) as { fotoFocus?: Record<string, FotoFocus> }).fotoFocus;
+  // Gecontroleerde uitsneden per foto-URL en formaat (sinds 04-09-2026): gezicht gedetecteerd, uitsnede berekend
+  // en de echte render nogmaals gecontroleerd. Alleen echte foto's die deze controle haalden staan in praktijk.ts.
+  const fotoUitsnede = ((praktijk as unknown) as { fotoUitsnede?: Record<string, FotoUitsnedeSet> }).fotoUitsnede;
   const extraShowcaseFotos: readonly string[] = teamShowcase.extraFotos ?? [];
 
   const portretTegels = [
@@ -26,8 +29,8 @@ export function Team() {
   ].slice(0, 6);
 
   const images = [
-    { src: slimmeFoto(teamShowcase.groepsfoto, 700, 420, teamShowcase.coverFit ?? "cover", focusVoor(fotoFocus, teamShowcase.groepsfoto)), alt: `Het team van ${praktijk.naam}`, portret: false },
-    ...portretTegels.map((tegel) => ({ src: slimmeFoto(tegel.src, 480, 640, "cover", focusVoor(fotoFocus, tegel.src)), alt: tegel.alt, portret: true })),
+    { src: slimmeFoto(teamShowcase.groepsfoto, 700, 420, teamShowcase.coverFit ?? "cover", focusVoor(fotoFocus, teamShowcase.groepsfoto), uitsnedeVoor(fotoUitsnede, teamShowcase.groepsfoto, "cover")), alt: `Het team van ${praktijk.naam}`, portret: false },
+    ...portretTegels.map((tegel) => ({ src: slimmeFoto(tegel.src, 480, 640, "cover", focusVoor(fotoFocus, tegel.src), uitsnedeVoor(fotoUitsnede, tegel.src, "tegel")), alt: tegel.alt, portret: true })),
   ];
 
   return (
@@ -56,7 +59,7 @@ export function Team() {
                 <div className="overflow-hidden rounded-[16px] border border-line bg-ink">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={slimmeFoto(lid.foto, 600, 750, "cover", focusVoor(fotoFocus, lid.foto))}
+                    src={slimmeFoto(lid.foto, 600, 750, "cover", focusVoor(fotoFocus, lid.foto), uitsnedeVoor(fotoUitsnede, lid.foto, "kaart"))}
                     alt={lid.naam || "Teamlid"}
                     className="aspect-[4/5] w-full object-cover"
                   />
