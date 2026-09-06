@@ -55,7 +55,7 @@ export const praktijk = {
   "whatsapp": "https://wa.me/31552340350",
   "boekUrl": "https://fysiotherapiezegers.nl/contact/",
   "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/Fysio_Header_high_end_dstput.mp4",
-  "heroTitel": "Duurzaam Herstel",
+  "heroTitel": "Pijnvrij Bewegen",
   "trust": {
     "googleScore": 4.8,
     "aantalReviews": 187,
