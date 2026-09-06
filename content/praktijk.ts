@@ -1,14 +1,9 @@
 /* ============================================================
-   KLANTCONTENT — één bestand, één klant.
-   Voor een nieuwe klant: alleen dit bestand aanpassen.
-   De componenten in components/secties blijven ongewijzigd.
+   KLANTCONTENT — automatisch gegenereerd, niet handmatig bewerken.
    ============================================================ */
 
 export type Sterren = 1 | 2 | 3 | 4 | 5;
 
-/** Een review die een klacht/behandeling noemt is een gezondheidsgegeven (AVG).
- *  `toestemming` is verplicht `true`; reviews zonder toestemming worden
- *  vóór het renderen weggefilterd (zie components/secties/reviews.tsx). */
 export type Review = {
   naam: string;
   klacht: string;
@@ -31,8 +26,6 @@ export type Klacht = {
   sub: string;
   slug: string;
   icoon: string;
-  /** Optioneel: pad naar een echte praktijkfoto (bijv. /klachten/rug.jpg).
-   *  Leeg = merk-placeholder in de hover-preview. Geen stockfoto's. */
   afbeelding?: string;
 };
 
@@ -54,336 +47,446 @@ export type Verzekeraar = {
 export type Feit = { titel: string; tekst: string };
 export type FaqItem = { vraag: string; antwoord: string };
 
-/* ------------------------------------------------------------ */
-
-const klachten: Klacht[] = [
-  {
-    label: "Rugklachten",
-    sub: "Onderrug, hernia, ischias",
-    slug: "rugklachten",
-    icoon: "PersonStanding",
-    afbeelding: "/klachten/rugklachten.jpg",
-  },
-  {
-    label: "Nek en schouder",
-    sub: "Stijfheid, uitstraling naar de arm",
-    slug: "nek-en-schouder",
-    icoon: "Bone",
-    afbeelding: "/klachten/nek-en-schouder.jpg",
-  },
-  {
-    label: "Knieklachten",
-    sub: "Meniscus, kruisband, artrose",
-    slug: "knieklachten",
-    icoon: "Activity",
-    afbeelding: "/klachten/knieklachten.jpg",
-  },
-  {
-    label: "Sportblessure",
-    sub: "Hardlopen, voetbal, krachttraining",
-    slug: "sportblessure",
-    icoon: "Dumbbell",
-    afbeelding: "/klachten/sportblessure.jpg",
-  },
-  {
-    label: "Hoofdpijn",
-    sub: "Spanning, migraine, kaakklachten",
-    slug: "hoofdpijn",
-    icoon: "Brain",
-    afbeelding: "/klachten/hoofdpijn.jpg",
-  },
-  {
-    label: "Revalidatie",
-    sub: "Na operatie of ziekenhuisopname",
-    slug: "revalidatie",
-    icoon: "HeartPulse",
-    afbeelding: "/klachten/revalidatie.jpg",
-  },
-];
-
-const reviews: Review[] = [
-  {
-    naam: "Marloes de Vries",
-    klacht: "Rugklachten",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Na jaren rondlopen met onderrugpijn eindelijk iemand die uitlegde waar het vandaan kwam. Ik kreeg een plan met een einddatum en na zeven weken kon ik weer tuinieren zonder er de dag erna voor te boeten.",
-    toestemming: true,
-  },
-  {
-    naam: "Youssef El Amrani",
-    klacht: "Sportblessure",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Hardloopblessure vlak voor een halve marathon. Dezelfde week nog terecht, elke afspraak dezelfde therapeut. Ik heb de wedstrijd gewoon gelopen.",
-    toestemming: true,
-  },
-  {
-    naam: "Anouk Bakker",
-    klacht: "Nek en schouder",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Ik werk de hele dag achter een scherm en had constant uitstraling naar mijn arm. Ze keken ook naar mijn werkplek en houding, niet alleen naar de pijn zelf. Groot verschil.",
-    toestemming: true,
-  },
-  {
-    naam: "Peter Janssen",
-    klacht: "Knieklachten",
-    plaats: "Almere Haven",
-    sterren: 5,
-    quote:
-      "Na een meniscusoperatie hier gerevalideerd. Rustig opgebouwd, nooit het gevoel dat ik werd opgejaagd of juist aan het lijntje werd gehouden. Duidelijke doelen elke week.",
-    toestemming: true,
-  },
-  {
-    naam: "Sanne Visser",
-    klacht: "Hoofdpijn",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Al maanden spanningshoofdpijn waar de huisarts geen kant mee op kon. Bleek grotendeels uit mijn nek te komen. Na een paar behandelingen merkbaar minder.",
-    toestemming: true,
-  },
-  {
-    naam: "Rick Mulder",
-    klacht: "Revalidatie",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Na een ziekenhuisopname flink verzwakt. Ze hebben me stap voor stap weer op de been geholpen en precies verteld wat ik thuis moest doen. Ik voel me weer mezelf.",
-    toestemming: true,
-  },
-  {
-    naam: "Fatima Yildirim",
-    klacht: "Rugklachten",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Zwanger en veel bekken- en rugklachten. Fijn dat ze precies wisten wat wel en niet kon. Ik werd serieus genomen en kreeg oefeningen die echt hielpen.",
-    toestemming: true,
-  },
-  {
-    naam: "Thomas Koster",
-    klacht: "Sportblessure",
-    plaats: "Almere Haven",
-    sterren: 4,
-    quote:
-      "Voetbalknie die maar niet overging. Goede uitleg en een opbouwschema dat klopte. Ik sta weer op het veld, iets later dan gehoopt maar zonder terugval.",
-    toestemming: true,
-  },
-];
-
-const empathie = {
-  regels: [
-    {
-      tekst:
-        "Je het al een paar keer dacht op te lossen met rust, en het steeds terugkwam.",
-      afbeelding: "/empathie/1.jpg",
-    },
-    {
-      tekst: "Je al weken aan het wachten bent voordat je ergens terecht kunt.",
-      afbeelding: "/empathie/2.jpg",
-    },
-    {
-      tekst:
-        "Je elke afspraak een andere therapeut kreeg en je verhaal opnieuw moest doen.",
-      afbeelding: "/empathie/3.jpg",
-    },
-    {
-      tekst:
-        "Niemand je heeft uitgelegd waar het vandaan komt, alleen wat je moet laten.",
-      afbeelding: "/empathie/4.jpg",
-    },
-  ],
-  afsluiting:
-    "Dat is precies waar wij het anders doen. Je houdt dezelfde therapeut van intake tot laatste afspraak, en je gaat na de eerste keer naar huis met een verklaring in plaats van een vraagteken.",
-  oplossingAfbeelding: "/empathie/oplossing.jpg",
-};
-
-const stappen: Stap[] = [
-  {
-    titel: "We zoeken uit waar het vandaan komt",
-    duur: "45 minuten",
-    tekst:
-      "Een uitgebreide intake waarin we niet alleen kijken waar het pijn doet, maar waarom. Je gaat naar huis met een verklaring.",
-    foto: "/aanpak/intake.jpg",
-    video: "/aanpak/intake.mp4",
-  },
-  {
-    titel: "Je krijgt een plan met een einddatum",
-    duur: "Vanaf afspraak twee",
-    tekst:
-      "Geen open einde en geen strippenkaart die vanzelf doorloopt. We spreken af hoeveel behandelingen we verwachten en waar we op mikken.",
-    foto: "/aanpak/behandelplan.jpg",
-    video: "/aanpak/behandelplan.mp4",
-  },
-  {
-    titel: "Je doet weer wat je wilde doen",
-    duur: "Gemiddeld 6 tot 8 weken",
-    tekst:
-      "We stoppen als je doel gehaald is en je weet wat je zelf kunt doen om het zo te houden.",
-    foto: "/aanpak/oefenzaal.jpg",
-    video: "/aanpak/begeleiding.mp4",
-  },
-];
-
-const team: Teamlid[] = [
-  {
-    naam: "Lisa Hoekstra",
-    functie: "Fysiotherapeut MSc",
-    specialisatie: "Rug en nek",
-    foto: "/team/lid-1.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Daan van Leeuwen",
-    functie: "Sportfysiotherapeut",
-    specialisatie: "Hardloop- en knieblessures",
-    foto: "/team/lid-2.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Priya Ramdas",
-    functie: "Manueel therapeut",
-    specialisatie: "Nek, schouder en hoofdpijn",
-    foto: "/team/lid-3.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Bram de Wit",
-    functie: "Fysiotherapeut",
-    specialisatie: "Revalidatie na operatie",
-    foto: "/team/lid-4.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Esra Demir",
-    functie: "Geriatriefysiotherapeut",
-    specialisatie: "Herstel en mobiliteit",
-    foto: "/team/lid-5.jpg",
-    uitgelicht: true,
-  },
-  { naam: "Tom Bakker", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/lid-6.jpg", uitgelicht: true },
-  { naam: "Nadia el Haddaoui", functie: "Kinderfysiotherapeut", specialisatie: "Kind en motoriek", foto: "/team/nadia-el-haddaoui.jpg" },
-  { naam: "Sven Postma", functie: "Sportfysiotherapeut", specialisatie: "Kracht en preventie", foto: "/team/sven-postma.jpg" },
-  { naam: "Iris van Dijk", functie: "Manueel therapeut", specialisatie: "Wervelkolom", foto: "/team/iris-van-dijk.jpg" },
-  { naam: "Karim Bouazza", functie: "Fysiotherapeut", specialisatie: "Schouder", foto: "/team/karim-bouazza.jpg" },
-  { naam: "Femke Smit", functie: "Bekkenfysiotherapeut", specialisatie: "Zwangerschap en herstel", foto: "/team/femke-smit.jpg" },
-  { naam: "Jeroen Vos", functie: "Fysiotherapeut", specialisatie: "Knie en heup", foto: "/team/jeroen-vos.jpg" },
-  { naam: "Maud Peeters", functie: "Oedeemtherapeut", specialisatie: "Lymfe en herstel", foto: "/team/maud-peeters.jpg" },
-  { naam: "Wesley Groot", functie: "Sportfysiotherapeut", specialisatie: "Teamsport", foto: "/team/wesley-groot.jpg" },
-  { naam: "Amira Haddad", functie: "Fysiotherapeut", specialisatie: "Nek en hoofdpijn", foto: "/team/amira-haddad.jpg" },
-  { naam: "Gijs Molenaar", functie: "Manueel therapeut", specialisatie: "Rug", foto: "/team/gijs-molenaar.jpg" },
-  { naam: "Sophie Willems", functie: "Fysiotherapeut", specialisatie: "Revalidatie", foto: "/team/sophie-willems.jpg" },
-  { naam: "Ravi Sharma", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/ravi-sharma.jpg" },
-  { naam: "Julia Kramer", functie: "Sportfysiotherapeut", specialisatie: "Loopanalyse", foto: "/team/julia-kramer.jpg" },
-  { naam: "Mohammed Aziz", functie: "Praktijkmanager", specialisatie: "Zorg en planning", foto: "/team/mohammed-aziz.jpg" },
-];
-
-const verzekeraars: Verzekeraar[] = [
-  { naam: "Zilveren Kruis", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket." },
-  { naam: "CZ", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering." },
-  { naam: "VGZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt." },
-  { naam: "Menzis", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket." },
-  { naam: "ONVZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks." },
-  { naam: "DSW", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering." },
-  { naam: "Zorg en Zekerheid", logo: "", gecontracteerd: false, toelichting: "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit." },
-];
-
-const feiten: Feit[] = [
-  {
-    titel: "Geen verwijzing nodig",
-    tekst:
-      "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht.",
-  },
-  {
-    titel: "Meestal uit je aanvullende pakket",
-    tekst:
-      "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit.",
-  },
-  {
-    titel: "Geen eigen risico bij aanvullend",
-    tekst:
-      "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet.",
-  },
-];
-
-const faq: FaqItem[] = [
-  {
-    vraag: "Heb ik een verwijzing van de huisarts nodig?",
-    antwoord:
-      "Nee. Fysiotherapie is direct toegankelijk, je mag zelf een afspraak maken. Alleen bij een chronische indicatie is een verwijzing nodig, en dan helpen we je daarbij.",
-  },
-  {
-    vraag: "Hoeveel behandelingen heb ik nodig?",
-    antwoord:
-      "Dat hoor je na de intake, niet ervoor. Voor de meeste klachten zitten we tussen de zes en tien behandelingen. Je krijgt een inschatting op papier zodat je weet waar je aan toe bent.",
-  },
-  {
-    vraag: "Kan ik dezelfde week nog terecht?",
-    antwoord:
-      "Meestal wel. Onze actuele wachttijd staat bovenaan deze pagina en wordt elke maandag bijgewerkt. Bij acute klachten proberen we je binnen 24 uur in te plannen.",
-  },
-  {
-    vraag: "Krijg ik steeds dezelfde therapeut?",
-    antwoord:
-      "Ja. Je wordt gekoppeld aan één therapeut die je hele traject begeleidt. Alleen bij vakantie of ziekte neemt een collega waar, en die is dan volledig ingelezen.",
-  },
-  {
-    vraag: "Wat kost het als ik niet verzekerd ben voor fysiotherapie?",
-    antwoord:
-      "Een intake kost 60 euro en een vervolgbehandeling 38 euro. Je krijgt vooraf een inschatting van de totale kosten, zodat je nooit voor verrassingen komt te staan.",
-  },
-];
-
-/* ------------------------------------------------------------ */
-
 export const praktijk = {
-  naam: "FysioAlmere",
-  plaats: "Almere",
-  telefoon: "036 123 4567",
-  telefoonHref: "tel:+31361234567",
-  whatsapp: "https://wa.me/31361234567",
-  boekUrl: "https://afspraak.example.nl",
-  heroVideo: "/hero/hero.mp4",
-  heroTitel: "Pijnvrij Bewegen",
-
-  trust: {
-    googleScore: 4.9,
-    aantalReviews: 218,
-    wachttijdDagen: 2,
-    bigRegistratie: "BIG geregistreerd",
-    bigSub: "Kwaliteitsregister Fysiotherapie",
+  "naam": "SMC Amersfoort",
+  "plaats": "Amersfoort",
+  "telefoon": "033 461 8800",
+  "telefoonHref": "tel:+31334618800",
+  "whatsapp": "https://wa.me/31334618800",
+  "boekUrl": "https://smcamersfoort.nl/afspraak/",
+  "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/Fysio_Header_high_end_dstput.mp4",
+  "heroTitel": "Sport Beter",
+  "trust": {
+    "googleScore": 4.8,
+    "aantalReviews": 287,
+    "wachttijdDagen": 2,
+    "bigRegistratie": "BIG geregistreerd",
+    "bigSub": "Kwaliteitsregister Fysiotherapie"
   },
-
-  klachten,
-  reviews,
-  empathie,
-  stappen,
-  team,
-
-  teamShowcase: {
-    groepsfoto: "/team/groep.jpg",
-    // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
-    // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
-    extraFotos: [] as string[],
-    // "contain" voor bijna-vierkante/staande covers (bv. team-collages) zodat ze niet gecropt worden.
-    coverFit: "cover" as "cover" | "contain",
+  "klachten": [
+    {
+      "label": "Knie",
+      "sub": "Van kruisband tot meniscus, weer terug de sport in.",
+      "slug": "knie",
+      "icoon": "Activity"
+    },
+    {
+      "label": "Schouder",
+      "sub": "Pijn bij bewegen of na operatie, we bouwen het op.",
+      "slug": "schouder",
+      "icoon": "Bone"
+    },
+    {
+      "label": "Rug",
+      "sub": "Klachten aan onderrug of nek die je belemmeren.",
+      "slug": "rug",
+      "icoon": "PersonStanding"
+    },
+    {
+      "label": "Heup",
+      "sub": "Pijn bij lopen of sporten, of herstel na heupoperatie.",
+      "slug": "heup",
+      "icoon": "Activity"
+    },
+    {
+      "label": "Herstel",
+      "sub": "Revalidatie na operatie of langdurige blessure.",
+      "slug": "revalidatie",
+      "icoon": "HeartPulse"
+    }
+  ],
+  "reviews": [
+    {
+      "naam": "Mark",
+      "klacht": "Knie",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "Na mijn kruisbandoperatie weer volledig hersteld. De begeleiding was top en ik kon mijn eigen inbreng geven. Nu sport ik weer op hetzelfde niveau als voorheen.",
+      "toestemming": true
+    },
+    {
+      "naam": "Linda",
+      "klacht": "Schouder",
+      "plaats": "Nijkerk",
+      "sterren": 5,
+      "quote": "Mijn schouderklachten zijn volledig verdwenen. Het team neemt je klachten serieus en werkt met je mee aan een oplossing.",
+      "toestemming": true
+    },
+    {
+      "naam": "Thomas",
+      "klacht": "Rug",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "Ik had last van mijn onderrug en kon bijna niet meer werken. Nu ben ik weer volledig mobiel en kan ik zelfs weer sporten. Dankzij de goede begeleiding en de personal fitness.",
+      "toestemming": true
+    },
+    {
+      "naam": "Sandra",
+      "klacht": "Heup",
+      "plaats": "Soest",
+      "sterren": 5,
+      "quote": "Na mijn heupoperatie liep ik binnen zes weken alweer 18 holes op de golfbaan. De fysiotherapeuten zijn deskundig en motiverend.",
+      "toestemming": true
+    },
+    {
+      "naam": "Jasper",
+      "klacht": "Herstel",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "De revalidatie na mijn blessure verliep perfect. Er is echt oog voor detail en ze denken mee over wat het beste voor jou is.",
+      "toestemming": true
+    },
+    {
+      "naam": "Rianne",
+      "klacht": "Rug",
+      "plaats": "Leusden",
+      "sterren": 5,
+      "quote": "Eerst fysio gehad voor mijn rug en daarna gestart met small group training. Beide zeer deskundig en fijn dat je kunt verzetten als je een keer niet kan.",
+      "toestemming": true
+    },
+    {
+      "naam": "Johan",
+      "klacht": "Schouder",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "Mijn schouderklachten zijn behandeld en nu volg ik een personal fitness programma. Alles onder deskundige begeleiding, een echte aanrader.",
+      "toestemming": true
+    },
+    {
+      "naam": "Merel",
+      "klacht": "Knie",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "Na mijn ski-ongeval kon ik direct terecht. Fijne begeleiding bij mijn gescheurde kruisband en nu ook lid van de sportschool. Het voelt persoonlijk en er is altijd een groet.",
+      "toestemming": true
+    }
+  ],
+  "empathie": {
+    "regels": [
+      {
+        "tekst": "Je sportschoenen liggen alweer maanden in de kast, omdat bewegen gewoon te veel pijn doet.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/1_2_yzrvxh.jpg"
+      },
+      {
+        "tekst": "Je stelt het steeds uit om hulp te zoeken, niet wetend waar je écht terecht kunt met jouw klacht.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/2_2_hy32i6.jpg"
+      },
+      {
+        "tekst": "Je ziet telkens een ander gezicht en moet je verhaal steeds opnieuw vertellen zonder dat iemand je écht kent.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/3_2_uw0d3t.jpg"
+      },
+      {
+        "tekst": "Je krijgt standaardoefeningen mee, maar niemand zoekt uit waar jouw klacht nou écht vandaan komt.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/4_2_rngnnd.jpg"
+      }
+    ],
+    "afsluiting": "Bij SMC Amersfoort werken we anders. We nemen de tijd om jouw klacht te begrijpen en stellen een persoonlijk behandelplan op. Samen werken we aan jouw herstel, zodat je weer kunt doen wat je leuk vindt.",
+    "oplossingAfbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/5_lwtck4.jpg"
   },
-
-  vergoeding: {
-    peiljaar: 2026,
-    laatstGecontroleerd: "januari 2026",
-    feiten,
-    verzekeraars,
-    disclaimer:
-      "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend.",
+  "stappen": [
+    {
+      "titel": "Sportfysiotherapie",
+      "tekst": "Specifieke behandeling voor sporters die hun blessure willen verhelpen en weer snel de sport in willen. We richten ons op jouw sport en maken een plan op maat.",
+      "duur": "30-60 min",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826580/sportfysio_jwbo8b.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826580/sportfysio_jwbo8b.mp4"
+    },
+    {
+      "titel": "Manuele therapie",
+      "tekst": "Hands-on behandeling van gewrichten en spieren om bewegingsbeperkingen op te lossen. Ideaal voor nek-, rug- en gewrichtsklachten die je belemmeren in het dagelijks leven.",
+      "duur": "30 min",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826548/manuele_therapie_jiqtet.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826548/manuele_therapie_jiqtet.mp4"
+    },
+    {
+      "titel": "Dry needling",
+      "tekst": "Effectieve techniek om hardnekkige spierpijn en triggerpunten aan te pakken. Zorgt voor verlichting en helpt je sneller te herstellen van klachten.",
+      "duur": "20-30 min",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826535/dry_needling_ljfv1e.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826535/dry_needling_ljfv1e.mp4"
+    }
+  ],
+  "team": [
+    {
+      "naam": "Germen Huijser",
+      "functie": "Praktijkeigenaar",
+      "specialisatie": "Sportfysiotherapeut, Manueel therapie",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Germen-Huijser-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Rosanne Goedhart-Meester",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapie, Bikefitting",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/10/Rosanne-Goedhart-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Ralph Wijnands",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Manueel therapie, Echografie",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/10/Ralph-Wijnands-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Joosje den Hertog",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapeut, Bikefitting",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Joosje-den-Hertog-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Shanna Strijker",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapie, Hardlooptechniektrainer",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Shanna-Strijker-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Lonne Jurriens",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapeut",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Lonne-Jurriens-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Amber Meijboom",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Dry Needling",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Amber-Meijboom-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Luuk Nipshagen",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapie, Echografie",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Luuk-Nipshagen-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Minke Mallant",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Rugby, schouder",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Minke-Mallant-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Thom Bottenheft",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapeut",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2026/03/Tom-Bottenheft-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Taric Markes",
+      "functie": "Fysiotherapeut i.o.",
+      "specialisatie": "Fitnessinstructeur, Sportverzorger",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Taric-Markes-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Celine Smink",
+      "functie": "Diëtist",
+      "specialisatie": "Sportdiëtist",
+      "foto": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Celine-Smink-SMC-Amersfoort-1333x2000.jpg",
+      "uitgelicht": false
+    }
+  ],
+  "teamShowcase": {
+    "groepsfoto": "https://www.smcamersfoort.nl/wp-content/uploads/2026/05/Team-SMC-Amersfoort-1-scaled-e1778483368565.jpg"
   },
-
-  faq,
+  "vergoeding": {
+    "peiljaar": 2026,
+    "laatstGecontroleerd": "januari 2026",
+    "feiten": [
+      {
+        "titel": "Geen verwijzing nodig",
+        "tekst": "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht."
+      },
+      {
+        "titel": "Meestal uit je aanvullende pakket",
+        "tekst": "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit."
+      },
+      {
+        "titel": "Geen eigen risico bij aanvullend",
+        "tekst": "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet."
+      }
+    ],
+    "verzekeraars": [
+      {
+        "naam": "Zilveren Kruis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket."
+      },
+      {
+        "naam": "CZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "VGZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt."
+      },
+      {
+        "naam": "Menzis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket."
+      },
+      {
+        "naam": "ONVZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks."
+      },
+      {
+        "naam": "DSW",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "Zorg en Zekerheid",
+        "logo": "",
+        "gecontracteerd": false,
+        "toelichting": "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit."
+      }
+    ],
+    "disclaimer": "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend."
+  },
+  "vergoedingVervanger": null,
+  "algemeneVervanging": null,
+  "niche": "fysio",
+  "faq": [
+    {
+      "vraag": "Heb ik een verwijzing nodig?",
+      "antwoord": "Nee, je kunt zonder verwijzing bij ons terecht. Je kunt direct een afspraak maken via onze website of telefoon."
+    },
+    {
+      "vraag": "Hoeveel behandelingen heb ik nodig?",
+      "antwoord": "Dat hangt af van je klacht. Gemiddeld hebben patiënten 6 tot 10 behandelingen nodig, maar dit bespreken we in de eerste afspraak."
+    },
+    {
+      "vraag": "Hoe lang is de wachttijd?",
+      "antwoord": "We hebben geen wachtlijsten. Je kunt vaak binnen 1 tot 3 dagen terecht voor een intake."
+    },
+    {
+      "vraag": "Krijg ik steeds dezelfde therapeut?",
+      "antwoord": "Ja, je wordt behandeld door dezelfde fysiotherapeut, zodat deze jouw herstel goed kan volgen en de behandeling kan afstemmen op jouw vooruitgang."
+    },
+    {
+      "vraag": "Wat zijn de kosten zonder verzekering?",
+      "antwoord": "Een behandeling kost €45. Als je verzekerd bent, wordt dit vaak volledig vergoed vanuit je aanvullende verzekering."
+    }
+  ],
+  "fotoUitsnede": {},
+  "fotoControle": {
+    "gekeurd": 16,
+    "portretOk": 0,
+    "coverOk": 0,
+    "afgekeurd": [
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Germen-Huijser-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/10/Rosanne-Goedhart-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/10/Ralph-Wijnands-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Joosje-den-Hertog-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Shanna-Strijker-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Lonne-Jurriens-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Amber-Meijboom-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Luuk-Nipshagen-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Minke-Mallant-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2026/03/Tom-Bottenheft-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Taric-Markes-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/09/Celine-Smink-SMC-Amersfoort-1333x2000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2026/05/Team-SMC-Amersfoort-1-scaled-e1778483368565.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2025/02/smcamersfoort.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2026/05/Sportschool-Amersfoort-e1779169068341-1000x1000.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://www.smcamersfoort.nl/wp-content/uploads/2024/08/Manuele-therapie-scaled-e1679565402774-1000x1000.jpg",
+        "reden": "detectie mislukt"
+      }
+    ],
+    "msTotaal": 5992,
+    "gegenereerd": 0,
+    "gegenereerdOk": 0,
+    "gegenereerdAfgekeurd": [],
+    "tegelsOpSite": 6,
+    "coverAanwezig": true,
+    "msNodeE": 0
+  },
+  "meerdereEchtePersonen": true,
+  "fotoReferentie": {
+    "bron": null,
+    "aantal": 0,
+    "urls": [],
+    "profiel": {
+      "geslacht": "onbekend",
+      "leeftijd": null,
+      "eenmanspraktijk": null,
+      "toelichting": ""
+    }
+  },
+  "stappenKop": "Onze behandelingen",
+  "stappenSub": "Specialistische zorg afgestemd op jouw sport en klacht.",
+  "stappenModus": "aanbod",
+  "kleuren": {
+    "primair": "#ea580c",
+    "donker": "#c2410c",
+    "licht": "#fed7aa"
+  },
+  "eigenVoorraadCheck": {
+    "teamStock": 0,
+    "coverStock": false,
+    "extraStock": 0
+  }
 } as const;
 
 export type Praktijk = typeof praktijk;
