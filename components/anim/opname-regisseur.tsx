@@ -266,33 +266,34 @@ async function draaiDeelB(
   const heroZet = (progress: number) =>
     window.dispatchEvent(new CustomEvent("opname:hero", { detail: { progress } }));
 
-  // 1) Hero. Als heromarks (open, dicht, tekst) zijn meegegeven, laten we de hero-animatie
-  // exact op de gesproken woorden vallen: dicht (de twee titelwoorden zichtbaar) tot "scrollt
-  // naar beneden, dan opent hij" -> open; op "scrollt terug, dan sluit hij weer" -> even dicht;
-  // dan weer open en open blijven; en op "blijven bewegen" -> weer dicht zodat je de twee
-  // uitkomstwoorden ziet. We gaan nooit exact naar 1, want dan zet de hero zichzelf op
+  // 1) Hero. 11-09-2026 (Dylan): de hero is omgedraaid en staat bij het laden al OPEN.
+  // De choreografie is daarmee gespiegeld. De marks blijven op dezelfde zinnen staan, alleen
+  // wat er op zo'on mark gebeurt is omgekeerd: mark 1 valt op "scrollt hij naar beneden, dan
+  // sluit hij" -> dicht; mark 2 op "scrollt hij terug, dan opent hij weer" -> open; mark 3 op
+  // de tekstzin -> weer dicht, zodat de twee uitkomstwoorden leesbaar in beeld staan terwijl
+  // de stem erover praat. We gaan nooit exact naar 1, want dan zet de hero zichzelf op
   // "volledig uitgeklapt" en kan hij niet meer dicht.
   if (heromarks.length >= 3) {
-    const [hOpen, hDicht, hTekst] = heromarks;
-    heroZet(0);
-    await wachtTot(hOpen);
-    await animeerMet(1600, easeSinus, (t) => heroZet(0 + 0.92 * t));
+    const [hDicht, hOpen, hTekst] = heromarks;
+    heroZet(0.92);
     await wachtTot(hDicht);
-    await animeerMet(1400, easeSinus, (t) => heroZet(0.92 + (0.3 - 0.92) * t));
-    await animeerMet(1600, easeSinus, (t) => heroZet(0.3 + (0.92 - 0.3) * t));
+    await animeerMet(1600, easeSinus, (t) => heroZet(0.92 + (0.1 - 0.92) * t));
+    await wachtTot(hOpen);
+    await animeerMet(1600, easeSinus, (t) => heroZet(0.1 + (0.92 - 0.1) * t));
     await wachtTot(hTekst);
     await animeerMet(1400, easeSinus, (t) => heroZet(0.92 + (0 - 0.92) * t));
     await wachtTot(grens[1]);
   } else {
     // Terugval: oude vaste choreografie aan het einde van het hero-blok.
-    const HERO_OPEN_MS = 2600;
-    const HERO_DICHT_MS = 1400;
-    const HERO_HEROPEN_MS = 2200;
-    const heroBewegingMs = HERO_OPEN_MS + HERO_DICHT_MS + HERO_HEROPEN_MS;
+    const HERO_DICHT_MS = 2600;
+    const HERO_HEROPEN_MS = 1400;
+    const HERO_SLOT_MS = 2200;
+    const heroBewegingMs = HERO_DICHT_MS + HERO_HEROPEN_MS + HERO_SLOT_MS;
+    heroZet(0.92);
     await wacht(Math.max(0, hero * 1000 - heroBewegingMs));
-    await animeerMet(HERO_OPEN_MS, easeSinus, (t) => heroZet(0 + 0.92 * t));
-    await animeerMet(HERO_DICHT_MS, easeSinus, (t) => heroZet(0.92 + (0.3 - 0.92) * t));
-    await animeerMet(HERO_HEROPEN_MS, easeSinus, (t) => heroZet(0.3 + (1 - 0.3) * t));
+    await animeerMet(HERO_DICHT_MS, easeSinus, (t) => heroZet(0.92 + (0.1 - 0.92) * t));
+    await animeerMet(HERO_HEROPEN_MS, easeSinus, (t) => heroZet(0.1 + (0.92 - 0.1) * t));
+    await animeerMet(HERO_SLOT_MS, easeSinus, (t) => heroZet(0.92 + (0 - 0.92) * t));
     await wachtTot(grens[1]);
   }
 
