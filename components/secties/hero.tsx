@@ -31,7 +31,7 @@ export function Hero() {
             ? praktijk.plaats
             : `Fysiotherapie in ${praktijk.plaats}`
         }
-        scrollToExpand="Scroll om de video te openen"
+        scrollToExpand="Scroll om verder te gaan"
         textBlend
       >
         <div className="mx-auto max-w-3xl text-center text-white">
