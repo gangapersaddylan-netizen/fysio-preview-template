@@ -268,7 +268,7 @@ async function draaiDeelB(
 
   // 1) Hero. 11-09-2026 (Dylan): de hero is omgedraaid en staat bij het laden al OPEN.
   // De choreografie is daarmee gespiegeld. De marks blijven op dezelfde zinnen staan, alleen
-  // wat er op zo'on mark gebeurt is omgekeerd: mark 1 valt op "scrollt hij naar beneden, dan
+  // wat er op zo'n mark gebeurt is omgekeerd: mark 1 valt op "scrollt hij naar beneden, dan
   // sluit hij" -> dicht; mark 2 op "scrollt hij terug, dan opent hij weer" -> open; mark 3 op
   // de tekstzin -> weer dicht, zodat de twee uitkomstwoorden leesbaar in beeld staan terwijl
   // de stem erover praat. We gaan nooit exact naar 1, want dan zet de hero zichzelf op
