@@ -54,7 +54,7 @@ export const praktijk = {
   "telefoonHref": "tel:+31201234567",
   "whatsapp": "https://wa.me/31201234567",
   "boekUrl": "#contact",
-  "heroVideo": "https://videos.pexels.com/video-files/3191859/3191859-uhd_2560_1440_25fps.mp4",
+  "heroVideo": "https://hashtagspon.com/wp-content/uploads/2023/07/Spon-Header-Nieuw2.mp4",
   "heroTitel": "Meetbare Impact",
   "trust": {
     "googleScore": 4.8,
