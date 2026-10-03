@@ -1,14 +1,9 @@
 /* ============================================================
-   KLANTCONTENT — één bestand, één klant.
-   Voor een nieuwe klant: alleen dit bestand aanpassen.
-   De componenten in components/secties blijven ongewijzigd.
+   KLANTCONTENT — automatisch gegenereerd, niet handmatig bewerken.
    ============================================================ */
 
 export type Sterren = 1 | 2 | 3 | 4 | 5;
 
-/** Een review die een klacht/behandeling noemt is een gezondheidsgegeven (AVG).
- *  `toestemming` is verplicht `true`; reviews zonder toestemming worden
- *  vóór het renderen weggefilterd (zie components/secties/reviews.tsx). */
 export type Review = {
   naam: string;
   klacht: string;
@@ -31,8 +26,6 @@ export type Klacht = {
   sub: string;
   slug: string;
   icoon: string;
-  /** Optioneel: pad naar een echte praktijkfoto (bijv. /klachten/rug.jpg).
-   *  Leeg = merk-placeholder in de hover-preview. Geen stockfoto's. */
   afbeelding?: string;
 };
 
@@ -54,336 +47,382 @@ export type Verzekeraar = {
 export type Feit = { titel: string; tekst: string };
 export type FaqItem = { vraag: string; antwoord: string };
 
-/* ------------------------------------------------------------ */
-
-const klachten: Klacht[] = [
-  {
-    label: "Rugklachten",
-    sub: "Onderrug, hernia, ischias",
-    slug: "rugklachten",
-    icoon: "PersonStanding",
-    afbeelding: "/klachten/rugklachten.jpg",
-  },
-  {
-    label: "Nek en schouder",
-    sub: "Stijfheid, uitstraling naar de arm",
-    slug: "nek-en-schouder",
-    icoon: "Bone",
-    afbeelding: "/klachten/nek-en-schouder.jpg",
-  },
-  {
-    label: "Knieklachten",
-    sub: "Meniscus, kruisband, artrose",
-    slug: "knieklachten",
-    icoon: "Activity",
-    afbeelding: "/klachten/knieklachten.jpg",
-  },
-  {
-    label: "Sportblessure",
-    sub: "Hardlopen, voetbal, krachttraining",
-    slug: "sportblessure",
-    icoon: "Dumbbell",
-    afbeelding: "/klachten/sportblessure.jpg",
-  },
-  {
-    label: "Hoofdpijn",
-    sub: "Spanning, migraine, kaakklachten",
-    slug: "hoofdpijn",
-    icoon: "Brain",
-    afbeelding: "/klachten/hoofdpijn.jpg",
-  },
-  {
-    label: "Revalidatie",
-    sub: "Na operatie of ziekenhuisopname",
-    slug: "revalidatie",
-    icoon: "HeartPulse",
-    afbeelding: "/klachten/revalidatie.jpg",
-  },
-];
-
-const reviews: Review[] = [
-  {
-    naam: "Marloes de Vries",
-    klacht: "Rugklachten",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Na jaren rondlopen met onderrugpijn eindelijk iemand die uitlegde waar het vandaan kwam. Ik kreeg een plan met een einddatum en na zeven weken kon ik weer tuinieren zonder er de dag erna voor te boeten.",
-    toestemming: true,
-  },
-  {
-    naam: "Youssef El Amrani",
-    klacht: "Sportblessure",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Hardloopblessure vlak voor een halve marathon. Dezelfde week nog terecht, elke afspraak dezelfde therapeut. Ik heb de wedstrijd gewoon gelopen.",
-    toestemming: true,
-  },
-  {
-    naam: "Anouk Bakker",
-    klacht: "Nek en schouder",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Ik werk de hele dag achter een scherm en had constant uitstraling naar mijn arm. Ze keken ook naar mijn werkplek en houding, niet alleen naar de pijn zelf. Groot verschil.",
-    toestemming: true,
-  },
-  {
-    naam: "Peter Janssen",
-    klacht: "Knieklachten",
-    plaats: "Almere Haven",
-    sterren: 5,
-    quote:
-      "Na een meniscusoperatie hier gerevalideerd. Rustig opgebouwd, nooit het gevoel dat ik werd opgejaagd of juist aan het lijntje werd gehouden. Duidelijke doelen elke week.",
-    toestemming: true,
-  },
-  {
-    naam: "Sanne Visser",
-    klacht: "Hoofdpijn",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Al maanden spanningshoofdpijn waar de huisarts geen kant mee op kon. Bleek grotendeels uit mijn nek te komen. Na een paar behandelingen merkbaar minder.",
-    toestemming: true,
-  },
-  {
-    naam: "Rick Mulder",
-    klacht: "Revalidatie",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Na een ziekenhuisopname flink verzwakt. Ze hebben me stap voor stap weer op de been geholpen en precies verteld wat ik thuis moest doen. Ik voel me weer mezelf.",
-    toestemming: true,
-  },
-  {
-    naam: "Fatima Yildirim",
-    klacht: "Rugklachten",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Zwanger en veel bekken- en rugklachten. Fijn dat ze precies wisten wat wel en niet kon. Ik werd serieus genomen en kreeg oefeningen die echt hielpen.",
-    toestemming: true,
-  },
-  {
-    naam: "Thomas Koster",
-    klacht: "Sportblessure",
-    plaats: "Almere Haven",
-    sterren: 4,
-    quote:
-      "Voetbalknie die maar niet overging. Goede uitleg en een opbouwschema dat klopte. Ik sta weer op het veld, iets later dan gehoopt maar zonder terugval.",
-    toestemming: true,
-  },
-];
-
-const empathie = {
-  regels: [
-    {
-      tekst:
-        "Je het al een paar keer dacht op te lossen met rust, en het steeds terugkwam.",
-      afbeelding: "/empathie/1.jpg",
-    },
-    {
-      tekst: "Je al weken aan het wachten bent voordat je ergens terecht kunt.",
-      afbeelding: "/empathie/2.jpg",
-    },
-    {
-      tekst:
-        "Je elke afspraak een andere therapeut kreeg en je verhaal opnieuw moest doen.",
-      afbeelding: "/empathie/3.jpg",
-    },
-    {
-      tekst:
-        "Niemand je heeft uitgelegd waar het vandaan komt, alleen wat je moet laten.",
-      afbeelding: "/empathie/4.jpg",
-    },
-  ],
-  afsluiting:
-    "Dat is precies waar wij het anders doen. Je houdt dezelfde therapeut van intake tot laatste afspraak, en je gaat na de eerste keer naar huis met een verklaring in plaats van een vraagteken.",
-  oplossingAfbeelding: "/empathie/oplossing.jpg",
-};
-
-const stappen: Stap[] = [
-  {
-    titel: "We zoeken uit waar het vandaan komt",
-    duur: "45 minuten",
-    tekst:
-      "Een uitgebreide intake waarin we niet alleen kijken waar het pijn doet, maar waarom. Je gaat naar huis met een verklaring.",
-    foto: "/aanpak/intake.jpg",
-    video: "/aanpak/intake.mp4",
-  },
-  {
-    titel: "Je krijgt een plan met een einddatum",
-    duur: "Vanaf afspraak twee",
-    tekst:
-      "Geen open einde en geen strippenkaart die vanzelf doorloopt. We spreken af hoeveel behandelingen we verwachten en waar we op mikken.",
-    foto: "/aanpak/behandelplan.jpg",
-    video: "/aanpak/behandelplan.mp4",
-  },
-  {
-    titel: "Je doet weer wat je wilde doen",
-    duur: "Gemiddeld 6 tot 8 weken",
-    tekst:
-      "We stoppen als je doel gehaald is en je weet wat je zelf kunt doen om het zo te houden.",
-    foto: "/aanpak/oefenzaal.jpg",
-    video: "/aanpak/begeleiding.mp4",
-  },
-];
-
-const team: Teamlid[] = [
-  {
-    naam: "Lisa Hoekstra",
-    functie: "Fysiotherapeut MSc",
-    specialisatie: "Rug en nek",
-    foto: "/team/lid-1.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Daan van Leeuwen",
-    functie: "Sportfysiotherapeut",
-    specialisatie: "Hardloop- en knieblessures",
-    foto: "/team/lid-2.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Priya Ramdas",
-    functie: "Manueel therapeut",
-    specialisatie: "Nek, schouder en hoofdpijn",
-    foto: "/team/lid-3.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Bram de Wit",
-    functie: "Fysiotherapeut",
-    specialisatie: "Revalidatie na operatie",
-    foto: "/team/lid-4.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Esra Demir",
-    functie: "Geriatriefysiotherapeut",
-    specialisatie: "Herstel en mobiliteit",
-    foto: "/team/lid-5.jpg",
-    uitgelicht: true,
-  },
-  { naam: "Tom Bakker", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/lid-6.jpg", uitgelicht: true },
-  { naam: "Nadia el Haddaoui", functie: "Kinderfysiotherapeut", specialisatie: "Kind en motoriek", foto: "/team/nadia-el-haddaoui.jpg" },
-  { naam: "Sven Postma", functie: "Sportfysiotherapeut", specialisatie: "Kracht en preventie", foto: "/team/sven-postma.jpg" },
-  { naam: "Iris van Dijk", functie: "Manueel therapeut", specialisatie: "Wervelkolom", foto: "/team/iris-van-dijk.jpg" },
-  { naam: "Karim Bouazza", functie: "Fysiotherapeut", specialisatie: "Schouder", foto: "/team/karim-bouazza.jpg" },
-  { naam: "Femke Smit", functie: "Bekkenfysiotherapeut", specialisatie: "Zwangerschap en herstel", foto: "/team/femke-smit.jpg" },
-  { naam: "Jeroen Vos", functie: "Fysiotherapeut", specialisatie: "Knie en heup", foto: "/team/jeroen-vos.jpg" },
-  { naam: "Maud Peeters", functie: "Oedeemtherapeut", specialisatie: "Lymfe en herstel", foto: "/team/maud-peeters.jpg" },
-  { naam: "Wesley Groot", functie: "Sportfysiotherapeut", specialisatie: "Teamsport", foto: "/team/wesley-groot.jpg" },
-  { naam: "Amira Haddad", functie: "Fysiotherapeut", specialisatie: "Nek en hoofdpijn", foto: "/team/amira-haddad.jpg" },
-  { naam: "Gijs Molenaar", functie: "Manueel therapeut", specialisatie: "Rug", foto: "/team/gijs-molenaar.jpg" },
-  { naam: "Sophie Willems", functie: "Fysiotherapeut", specialisatie: "Revalidatie", foto: "/team/sophie-willems.jpg" },
-  { naam: "Ravi Sharma", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/ravi-sharma.jpg" },
-  { naam: "Julia Kramer", functie: "Sportfysiotherapeut", specialisatie: "Loopanalyse", foto: "/team/julia-kramer.jpg" },
-  { naam: "Mohammed Aziz", functie: "Praktijkmanager", specialisatie: "Zorg en planning", foto: "/team/mohammed-aziz.jpg" },
-];
-
-const verzekeraars: Verzekeraar[] = [
-  { naam: "Zilveren Kruis", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket." },
-  { naam: "CZ", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering." },
-  { naam: "VGZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt." },
-  { naam: "Menzis", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket." },
-  { naam: "ONVZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks." },
-  { naam: "DSW", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering." },
-  { naam: "Zorg en Zekerheid", logo: "", gecontracteerd: false, toelichting: "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit." },
-];
-
-const feiten: Feit[] = [
-  {
-    titel: "Geen verwijzing nodig",
-    tekst:
-      "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht.",
-  },
-  {
-    titel: "Meestal uit je aanvullende pakket",
-    tekst:
-      "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit.",
-  },
-  {
-    titel: "Geen eigen risico bij aanvullend",
-    tekst:
-      "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet.",
-  },
-];
-
-const faq: FaqItem[] = [
-  {
-    vraag: "Heb ik een verwijzing van de huisarts nodig?",
-    antwoord:
-      "Nee. Fysiotherapie is direct toegankelijk, je mag zelf een afspraak maken. Alleen bij een chronische indicatie is een verwijzing nodig, en dan helpen we je daarbij.",
-  },
-  {
-    vraag: "Hoeveel behandelingen heb ik nodig?",
-    antwoord:
-      "Dat hoor je na de intake, niet ervoor. Voor de meeste klachten zitten we tussen de zes en tien behandelingen. Je krijgt een inschatting op papier zodat je weet waar je aan toe bent.",
-  },
-  {
-    vraag: "Kan ik dezelfde week nog terecht?",
-    antwoord:
-      "Meestal wel. Onze actuele wachttijd staat bovenaan deze pagina en wordt elke maandag bijgewerkt. Bij acute klachten proberen we je binnen 24 uur in te plannen.",
-  },
-  {
-    vraag: "Krijg ik steeds dezelfde therapeut?",
-    antwoord:
-      "Ja. Je wordt gekoppeld aan één therapeut die je hele traject begeleidt. Alleen bij vakantie of ziekte neemt een collega waar, en die is dan volledig ingelezen.",
-  },
-  {
-    vraag: "Wat kost het als ik niet verzekerd ben voor fysiotherapie?",
-    antwoord:
-      "Een intake kost 60 euro en een vervolgbehandeling 38 euro. Je krijgt vooraf een inschatting van de totale kosten, zodat je nooit voor verrassingen komt te staan.",
-  },
-];
-
-/* ------------------------------------------------------------ */
-
 export const praktijk = {
-  naam: "FysioAlmere",
-  plaats: "Almere",
-  telefoon: "036 123 4567",
-  telefoonHref: "tel:+31361234567",
-  whatsapp: "https://wa.me/31361234567",
-  boekUrl: "https://afspraak.example.nl",
-  heroVideo: "/hero/hero.mp4",
-  heroTitel: "Pijnvrij Bewegen",
-
-  trust: {
-    googleScore: 4.9,
-    aantalReviews: 218,
-    wachttijdDagen: 2,
-    bigRegistratie: "BIG geregistreerd",
-    bigSub: "Kwaliteitsregister Fysiotherapie",
+  "naam": "#spon",
+  "plaats": "Amsterdam",
+  "telefoon": "020 123 4567",
+  "telefoonHref": "tel:+31201234567",
+  "whatsapp": "https://wa.me/31201234567",
+  "boekUrl": "#contact",
+  "heroVideo": "https://videos.pexels.com/video-files/3191859/3191859-uhd_2560_1440_25fps.mp4",
+  "heroTitel": "Meetbare Impact",
+  "trust": {
+    "googleScore": 4.8,
+    "aantalReviews": 180,
+    "wachttijdDagen": 3,
+    "bigRegistratie": "Vertrouwd door 100+ merken",
+    "bigSub": "Van startup tot internationaal merk"
   },
-
-  klachten,
-  reviews,
-  empathie,
-  stappen,
-  team,
-
-  teamShowcase: {
-    groepsfoto: "/team/groep.jpg",
-    // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
-    // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
-    extraFotos: [] as string[],
-    // "contain" voor bijna-vierkante/staande covers (bv. team-collages) zodat ze niet gecropt worden.
-    coverFit: "cover" as "cover" | "contain",
+  "klachten": [
+    {
+      "label": "Brand Awareness",
+      "sub": "Bouw een sterk merk met authentieke verhalen en creators",
+      "slug": "brand-awareness",
+      "icoon": "HeartPulse"
+    },
+    {
+      "label": "Content",
+      "sub": "Professionele content die jouw verhaal vertelt en converteert",
+      "slug": "content-productie",
+      "icoon": "Activity"
+    },
+    {
+      "label": "Campagnes",
+      "sub": "Data-gedreven campagnes die jouw doelgroep echt bereiken",
+      "slug": "campagnes",
+      "icoon": "Brain"
+    },
+    {
+      "label": "Strategie",
+      "sub": "Een plan dat past bij jouw merk en meetbare resultaten oplevert",
+      "slug": "strategie",
+      "icoon": "Dumbbell"
+    },
+    {
+      "label": "Social Media",
+      "sub": "Beheer en advertenties die je online aanwezigheid versterken",
+      "slug": "social-media",
+      "icoon": "PersonStanding"
+    }
+  ],
+  "reviews": [
+    {
+      "naam": "Lisa",
+      "klacht": "Brand Awareness",
+      "plaats": "Utrecht",
+      "sterren": 5,
+      "quote": "Onze naamsbekendheid is enorm gegroeid. #spon snapt precies welke creators bij ons merk passen en het resultaat is boven verwachting.",
+      "toestemming": true
+    },
+    {
+      "naam": "Mark",
+      "klacht": "Campagnes",
+      "plaats": "Rotterdam",
+      "sterren": 5,
+      "quote": "Eindelijk een bureau dat echt met data werkt. Elke euro die we investeren kunnen we terug zien in concrete resultaten.",
+      "toestemming": true
+    },
+    {
+      "naam": "Sophie",
+      "klacht": "Content",
+      "plaats": "Amsterdam",
+      "sterren": 5,
+      "quote": "De content die ze voor ons maken is precies wat we nodig hebben. Authentiek, professioneel en het converteert gewoon goed.",
+      "toestemming": true
+    },
+    {
+      "naam": "David",
+      "klacht": "Strategie",
+      "plaats": "Eindhoven",
+      "sterren": 4,
+      "quote": "Ze denken echt met je mee. Niet zomaar een campagne opzetten, maar écht begrijpen waar je als merk naartoe wil.",
+      "toestemming": true
+    },
+    {
+      "naam": "Emma",
+      "klacht": "Social Media",
+      "plaats": "Den Haag",
+      "sterren": 5,
+      "quote": "Onze social media kanalen zijn compleet getransformeerd. Meer engagement, meer volgers en vooral: meer klanten.",
+      "toestemming": true
+    },
+    {
+      "naam": "Tim",
+      "klacht": "Campagnes",
+      "plaats": "Tilburg",
+      "sterren": 5,
+      "quote": "Het mooie is dat ze niet alleen uitvoeren, maar ook adviseren. Je krijgt echt een partner, geen bureau.",
+      "toestemming": true
+    },
+    {
+      "naam": "Nina",
+      "klacht": "Brand Awareness",
+      "plaats": "Groningen",
+      "sterren": 5,
+      "quote": "We bereiken nu precies de doelgroep die we willen. De samenwerking is professioneel en het team is enorm betrokken.",
+      "toestemming": true
+    }
+  ],
+  "empathie": {
+    "regels": [
+      {
+        "tekst": "Je investeert in online marketing, maar ziet niet de resultaten die je verwacht of hoopt te bereiken.",
+        "afbeelding": "https://images.pexels.com/photos/7991910/pexels-photo-7991910.jpeg?cs=srgb&dl=pexels-annushka-ahuja-7991910.jpg&fm=jpg"
+      },
+      {
+        "tekst": "Je twijfelt of influencer marketing echt werkt voor jouw merk en of je budget wel goed besteed is.",
+        "afbeelding": "https://images.pexels.com/photos/15377745/pexels-photo-15377745.jpeg?cs=srgb&dl=pexels-centre-for-ageing-better-55954677-15377745.jpg&fm=jpg"
+      },
+      {
+        "tekst": "Je werkt met verschillende partijen en het voelt alsof niemand echt begrijpt waar jouw merk voor staat.",
+        "afbeelding": "https://images.pexels.com/photos/7176288/pexels-photo-7176288.jpeg?cs=srgb&dl=pexels-shvets-production-7176288.jpg&fm=jpg"
+      },
+      {
+        "tekst": "Je krijgt mooie campagnes, maar mis de data en inzichten om te weten of het écht impact heeft.",
+        "afbeelding": "https://images.pexels.com/photos/7994388/pexels-photo-7994388.jpeg?cs=srgb&dl=pexels-dziana-hasanbekava-7994388.jpg&fm=jpg"
+      }
+    ],
+    "afsluiting": "Bij #spon krijg je een partner die jouw merk begrijpt en campagnes opzet die meetbaar impact hebben. We leggen alles uit met data en zorgen dat je precies weet waar je budget naartoe gaat en wat het oplevert.",
+    "oplossingAfbeelding": "https://images.pexels.com/photos/8972259/pexels-photo-8972259.jpeg?cs=srgb&dl=pexels-shvets-production-8972259.jpg&fm=jpg"
   },
-
-  vergoeding: {
-    peiljaar: 2026,
-    laatstGecontroleerd: "januari 2026",
-    feiten,
-    verzekeraars,
-    disclaimer:
-      "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend.",
+  "stappen": [
+    {
+      "titel": "Strategiesessie en analyse",
+      "tekst": "We starten met een grondige analyse van jouw merk, doelen en doelgroep. Samen bepalen we de beste aanpak en welke creators en kanalen het meeste impact hebben.",
+      "duur": "1-2 weken",
+      "foto": "https://videos.pexels.com/video-files/4828608/4828608-uhd_2732_1440_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/4828608/4828608-uhd_2732_1440_25fps.mp4"
+    },
+    {
+      "titel": "Campagne-opzet en uitvoering",
+      "tekst": "We zetten een op maat gemaakt campagneplan op, selecteren de juiste creators en begeleiden de hele productie. Alles volgens jouw merkrichtlijnen en met continue afstemming.",
+      "duur": "2-4 weken",
+      "foto": "https://videos.pexels.com/video-files/7963468/7963468-uhd_2560_1440_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/7963468/7963468-uhd_2560_1440_25fps.mp4"
+    },
+    {
+      "titel": "Resultaten en rapportage",
+      "tekst": "Na afloop krijg je een uitgebreide rapportage met alle resultaten en inzichten. We tonen wat werkt, wat beter kan en hoe we samen de volgende campagne nog effectiever maken.",
+      "duur": "1 week",
+      "foto": "https://videos.pexels.com/video-files/3191859/3191859-uhd_2560_1440_25fps.mp4",
+      "video": "https://videos.pexels.com/video-files/3191859/3191859-uhd_2560_1440_25fps.mp4"
+    }
+  ],
+  "team": [
+    {
+      "naam": "Gijs Bogers",
+      "functie": "Project Manager",
+      "specialisatie": "",
+      "foto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Gijs-handtekening-2.0-roeyokpm94niwv04c7j36wgyjlmgfmypbxvkjpc71c.webp",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Koen Dulfer",
+      "functie": "Co-founder & Owner",
+      "specialisatie": "",
+      "foto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Kopie-van-Email-profile-image-template-Koen-roeylgutnueej9ilhd6hg6p3uqxrznmn8k8sfry1ls.webp",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Eelco Kingma",
+      "functie": "Co-founder & Owner",
+      "specialisatie": "",
+      "foto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Fotomeneer-20241125-Eelco-MET-RAND-qxkzqe0cwcex58ytgtwlhjqzu2fox2xyb7z07p9aqo.png",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Kim Hermes",
+      "functie": "Senior Project Manager",
+      "specialisatie": "",
+      "foto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/33-roeypkfhgu0f61k8jmywtngh48qek4wi4uo0s7v8gw.webp",
+      "uitgelicht": true
+    }
+  ],
+  "teamShowcase": {
+    "groepsfoto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Gijs-handtekening-2.0-roeyokpm94niwv04c7j36wgyjlmgfmypbxvkjpc71c.webp",
+    "coverBron": "teamlid (vangnet: groepsfoto afgekeurd, generatie mislukt (2e poging))",
+    "coverFit": "contain"
   },
-
-  faq,
+  "vergoeding": {
+    "peiljaar": 2026,
+    "laatstGecontroleerd": "januari 2026",
+    "feiten": [
+      {
+        "titel": "Geen verwijzing nodig",
+        "tekst": "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht."
+      },
+      {
+        "titel": "Meestal uit je aanvullende pakket",
+        "tekst": "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit."
+      },
+      {
+        "titel": "Geen eigen risico bij aanvullend",
+        "tekst": "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet."
+      }
+    ],
+    "verzekeraars": [
+      {
+        "naam": "Zilveren Kruis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket."
+      },
+      {
+        "naam": "CZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "VGZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt."
+      },
+      {
+        "naam": "Menzis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket."
+      },
+      {
+        "naam": "ONVZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks."
+      },
+      {
+        "naam": "DSW",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "Zorg en Zekerheid",
+        "logo": "",
+        "gecontracteerd": false,
+        "toelichting": "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit."
+      }
+    ],
+    "disclaimer": "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend."
+  },
+  "vergoedingVervanger": {
+    "eyebrow": "Onze werkwijze",
+    "titel": "Waarom kiezen merken voor #spon?",
+    "punten": [
+      {
+        "titel": "Brand-first benadering",
+        "tekst": "We beginnen bij jouw merk en doelen, en kiezen daarna pas de creators en strategie. Zo weet je zeker dat elke campagne écht aansluit bij wat jij wilt bereiken."
+      },
+      {
+        "titel": "Data-gedreven resultaten",
+        "tekst": "We werken met concrete cijfers en inzichten, geen vage beloftes. Je krijgt volledige transparantie over je budget en ziet precies wat elke euro oplevert aan bereik, engagement en conversies."
+      },
+      {
+        "titel": "Persoonlijk en betrokken",
+        "tekst": "Je werkt met een vast team dat jouw merk door en door kent. We denken proactief mee, schakelen snel en zorgen dat je altijd op de hoogte bent van wat er speelt."
+      }
+    ],
+    "ctaTekst": "Plan een vrijblijvend gesprek"
+  },
+  "algemeneVervanging": {
+    "heroKop": "Zichtbaar groeien met creators die bij je passen",
+    "heroTekst": "Data-gedreven campagnes die écht werken, met creators die jouw verhaal vertellen. Binnen drie weken live, met volledige transparantie en meetbare resultaten.",
+    "trustTitel": "Ruim 10 jaar ervaring",
+    "trustSub": "Sinds de eerste generatie influencers",
+    "navLabel": "Resultaten"
+  },
+  "niche": "overig",
+  "faq": [
+    {
+      "vraag": "Hoe snel kan een campagne live gaan?",
+      "antwoord": "Gemiddeld kunnen we binnen 3 tot 5 weken een campagne live hebben, afhankelijk van de complexiteit en het aantal creators. Voor spoedprojecten kunnen we vaak sneller schakelen."
+    },
+    {
+      "vraag": "Wat kost een influencer marketing campagne?",
+      "antwoord": "De kosten variëren per campagne en zijn afhankelijk van het aantal creators, de kanalen en de omvang. We denken graag met je mee om binnen jouw budget de beste resultaten te behalen. Neem contact met ons op voor een vrijblijvende offerte."
+    },
+    {
+      "vraag": "Hoe meet je of een campagne succesvol is?",
+      "antwoord": "We werken met duidelijke KPI's die we vooraf met je bepalen: bereik, engagement, clicks, conversies en meer. Na elke campagne krijg je een uitgebreide rapportage met alle data en inzichten om de impact te meten."
+    },
+    {
+      "vraag": "Werken jullie ook met kleinere merken of startups?",
+      "antwoord": "Absoluut. We hebben ervaring met zowel grote internationale merken als kleinere merken en startups. We passen onze aanpak aan op jouw budget en doelen."
+    },
+    {
+      "vraag": "Hoe weten jullie welke creators bij mijn merk passen?",
+      "antwoord": "We analyseren jouw merk, doelgroep en doelen grondig en gebruiken data-gedreven tools om de beste match te vinden. We kijken naar authenticiteit, betrokkenheid van hun volgers en of hun waarden aansluiten bij die van jouw merk."
+    }
+  ],
+  "fotoUitsnede": {},
+  "fotoControle": {
+    "gekeurd": 6,
+    "portretOk": 0,
+    "coverOk": 0,
+    "afgekeurd": [
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Gijs-handtekening-2.0-roeyokpm94niwv04c7j36wgyjlmgfmypbxvkjpc71c.webp",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Kopie-van-Email-profile-image-template-Koen-roeylgutnueej9ilhd6hg6p3uqxrznmn8k8sfry1ls.webp",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Fotomeneer-20241125-Eelco-MET-RAND-qxkzqe0cwcex58ytgtwlhjqzu2fox2xyb7z07p9aqo.png",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/33-roeypkfhgu0f61k8jmywtngh48qek4wi4uo0s7v8gw.webp",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/2023/11/Koen-Eelco-Kim-05-768x432.jpg",
+        "reden": "detectie mislukt"
+      },
+      {
+        "url": "https://hashtagspon.com/wp-content/uploads/2023/07/20191008_144210-1024x576-1-768x432.jpeg",
+        "reden": "detectie mislukt"
+      }
+    ],
+    "msTotaal": 25121,
+    "gegenereerd": 1,
+    "gegenereerdOk": 0,
+    "gegenereerdAfgekeurd": [
+      {
+        "soort": "groepsfoto-cover",
+        "reden": "generatie mislukt (2e poging)",
+        "pogingen": 2
+      }
+    ],
+    "coverBron": "teamlid (vangnet: groepsfoto afgekeurd, generatie mislukt (2e poging))",
+    "tegelsOpSite": 4,
+    "coverAanwezig": true,
+    "msNodeE": 292
+  },
+  "meerdereEchtePersonen": true,
+  "echtTeamViaGroepsfoto": false,
+  "fotoReferentie": {
+    "bron": null,
+    "aantal": 0,
+    "urls": [],
+    "profiel": {
+      "geslacht": "onbekend",
+      "leeftijd": null,
+      "eenmanspraktijk": null,
+      "toelichting": ""
+    }
+  },
+  "stappenKop": "Van strategie tot resultaat",
+  "stappenSub": "In drie heldere stappen realiseren we samen een campagne met meetbare impact.",
+  "stappenModus": "traject",
+  "kleuren": {
+    "primair": "#ff8c00",
+    "donker": "#cc7000",
+    "licht": "#fff4e6"
+  },
+  "echtTeamTegels": {
+    "leden": [],
+    "referenties": 0,
+    "nodig": 2,
+    "taken": 0
+  },
+  "eigenVoorraadCheck": {
+    "teamStock": 0,
+    "coverStock": false,
+    "extraStock": 0
+  }
 } as const;
 
 export type Praktijk = typeof praktijk;
