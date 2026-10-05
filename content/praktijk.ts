@@ -157,23 +157,23 @@ export const praktijk = {
     "regels": [
       {
         "tekst": "Je investeert in online marketing, maar ziet niet de resultaten die je verwacht of hoopt te bereiken.",
-        "afbeelding": "https://images.pexels.com/photos/7991910/pexels-photo-7991910.jpeg?cs=srgb&dl=pexels-annushka-ahuja-7991910.jpg&fm=jpg"
+        "afbeelding": "https://images.pexels.com/photos/27177837/pexels-photo-27177837.jpeg?auto=compress&cs=tinysrgb&w=1200"
       },
       {
         "tekst": "Je twijfelt of influencer marketing echt werkt voor jouw merk en of je budget wel goed besteed is.",
-        "afbeelding": "https://images.pexels.com/photos/15377745/pexels-photo-15377745.jpeg?cs=srgb&dl=pexels-centre-for-ageing-better-55954677-15377745.jpg&fm=jpg"
+        "afbeelding": "https://images.pexels.com/photos/6383268/pexels-photo-6383268.jpeg?auto=compress&cs=tinysrgb&w=1200"
       },
       {
         "tekst": "Je werkt met verschillende partijen en het voelt alsof niemand echt begrijpt waar jouw merk voor staat.",
-        "afbeelding": "https://images.pexels.com/photos/7176288/pexels-photo-7176288.jpeg?cs=srgb&dl=pexels-shvets-production-7176288.jpg&fm=jpg"
+        "afbeelding": "https://images.pexels.com/photos/6632532/pexels-photo-6632532.jpeg?auto=compress&cs=tinysrgb&w=1200"
       },
       {
         "tekst": "Je krijgt mooie campagnes, maar mis de data en inzichten om te weten of het écht impact heeft.",
-        "afbeelding": "https://images.pexels.com/photos/7994388/pexels-photo-7994388.jpeg?cs=srgb&dl=pexels-dziana-hasanbekava-7994388.jpg&fm=jpg"
+        "afbeelding": "https://images.pexels.com/photos/19915776/pexels-photo-19915776.jpeg?auto=compress&cs=tinysrgb&w=1200"
       }
     ],
     "afsluiting": "Bij #spon krijg je een partner die jouw merk begrijpt en campagnes opzet die meetbaar impact hebben. We leggen alles uit met data en zorgen dat je precies weet waar je budget naartoe gaat en wat het oplevert.",
-    "oplossingAfbeelding": "https://images.pexels.com/photos/8972259/pexels-photo-8972259.jpeg?cs=srgb&dl=pexels-shvets-production-8972259.jpg&fm=jpg"
+    "oplossingAfbeelding": "https://images.pexels.com/photos/8117815/pexels-photo-8117815.jpeg?auto=compress&cs=tinysrgb&w=1200"
   },
   "stappen": [
     {
@@ -229,9 +229,9 @@ export const praktijk = {
     }
   ],
   "teamShowcase": {
-    "groepsfoto": "https://hashtagspon.com/wp-content/uploads/elementor/thumbs/Gijs-handtekening-2.0-roeyokpm94niwv04c7j36wgyjlmgfmypbxvkjpc71c.webp",
-    "coverBron": "teamlid (vangnet: groepsfoto afgekeurd, generatie mislukt (2e poging))",
-    "coverFit": "contain"
+    "groepsfoto": "https://hashtagspon.com/wp-content/uploads/2023/11/Koen-Eelco-Kim-05.jpg",
+    "coverBron": "groepsfoto van de eigen site (Koen, Eelco en Kim), handmatig gekozen 05-10-2026",
+    "coverFit": "cover"
   },
   "vergoeding": {
     "peiljaar": 2026,
