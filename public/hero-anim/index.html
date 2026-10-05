@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#spon hero</title>
+<style>
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020f1d}
+  #scene{position:fixed;inset:0;overflow:hidden;background:radial-gradient(120% 90% at 50% 45%,#063457 0%,#032845 38%,#01111f 100%)}
+  .blob{position:absolute;width:900px;height:900px;border-radius:50%;filter:blur(90px);opacity:.75;mix-blend-mode:screen;will-change:transform}
+  #b1{background:radial-gradient(circle,#ffa800 0%,rgba(255,168,0,0) 65%)}
+  #b2{background:radial-gradient(circle,#ff2e7e 0%,rgba(255,46,126,0) 65%)}
+  #b3{background:radial-gradient(circle,#19c3ff 0%,rgba(25,195,255,0) 65%);opacity:.35}
+  #persp{position:absolute;left:50%;top:50%;width:0;height:0;perspective:1500px;perspective-origin:50% 40%}
+  #stage{position:absolute;left:-1600px;top:-1300px;width:3200px;height:2600px;transform-style:preserve-3d;transform:rotateX(36deg) rotateZ(-18deg) translateZ(-650px)}
+  .col{position:absolute;top:0;width:250px;will-change:transform}
+  .card{position:absolute;left:0;width:250px;height:444px;border-radius:36px;background:#0a1422;box-shadow:0 30px 60px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.08) inset;overflow:hidden}
+  .card .scr{position:absolute;inset:8px;border-radius:29px;overflow:hidden;background:#111 center/cover no-repeat}
+  .card .scr::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 62%,rgba(0,0,0,.6) 100%)}
+  .card .notch{position:absolute;top:16px;left:50%;width:70px;height:18px;margin-left:-35px;border-radius:12px;background:#05090f;z-index:3}
+  .card .top{position:absolute;left:22px;top:44px;right:22px;display:flex;align-items:center;gap:8px;z-index:3;font:600 13px/1.1 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .card .av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#ffa800,#ff2e7e);box-shadow:0 0 0 2px #fff}
+  .card .bar{position:absolute;left:22px;right:22px;bottom:24px;z-index:3;display:flex;gap:14px;font:700 13px/1 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+  .card .bar span{display:flex;align-items:center;gap:5px}
+  .card svg{width:17px;height:17px}
+  .pill{position:absolute;left:28px;top:170px;z-index:5;padding:12px 18px;border-radius:999px;background:#ffa800;color:#032845;font:800 20px/1 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;box-shadow:0 10px 30px rgba(255,168,0,.55);white-space:nowrap;opacity:0}
+  .hearts{position:absolute;left:0;right:0;bottom:60px;height:300px;z-index:4;pointer-events:none}
+  .hearts i{position:absolute;bottom:0;width:22px;height:22px;opacity:0}
+  #shine{position:absolute;inset:-50%;background:linear-gradient(105deg,rgba(255,255,255,0) 42%,rgba(255,255,255,.10) 49%,rgba(255,220,150,.16) 50%,rgba(255,255,255,.10) 51%,rgba(255,255,255,0) 58%);mix-blend-mode:screen;pointer-events:none}
+  #vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(75% 70% at 50% 50%,rgba(1,10,20,0) 40%,rgba(1,10,20,.72) 100%),linear-gradient(180deg,rgba(1,10,20,.35),rgba(1,10,20,0) 25%,rgba(1,10,20,0) 75%,rgba(1,10,20,.45))}
+  #grain{position:absolute;inset:0;pointer-events:none;opacity:.06;background-image:repeating-radial-gradient(circle at 17% 32%,#fff 0 1px,transparent 1px 3px)}
+</style>
+</head>
+<body>
+<div id="scene">
+  <div class="blob" id="b1"></div><div class="blob" id="b2"></div><div class="blob" id="b3"></div>
+  <div id="persp"><div id="stage"></div></div>
+  <div id="shine"></div>
+  <div id="vig"></div>
+  </div>
+<script>
+(function(){
+  // Seamless loop: every movement is periodic in LOOP seconds, so any LOOP-second window loops without a seam.
+  var LOOP = 12;
+  var B = 'https://hashtagspon.com/wp-content/uploads/elementor/thumbs/';
+  var POSTS = [
+    ['Kopie-van-WhatsApp-Image-2022-05-23-at-9.29.02-AM-1-qeq0plkaf7oqth6ym82acem4koct7iedmldqkmwabw.jpeg','Creffie × Trade Republic'],
+    ['Kopie-van-CANON-ZOEMINI-2-x-BOBROWNN-Instagram-story-1-qeq0pmi4m1q1535lgqgwwwdl6286f7i3yq181wuw5o.jpg','Bo Brown × Canon'],
+    ['Story-qeq0plkaf7oqth6ym82acem4koct7iedmldqkmwabw.jpeg','Loesje × Burga'],
+    ['Instagram-post-V2-qeq0pnfysvrbgp48b8vjhe51rg3jmwluauopj6thzg.jpeg','#spon campagne'],
+    ['IMG_8734-qeq0pnfysvrbgp48b8vjhe51rg3jmwluauopj6thzg.jpg','Anna Nooshin × Sonos'],
+    ['Kopie-van-post-fase-1.1-qeq0pkmg8dnghv8brpnnrwunzahfztanagq93cxoi4.jpeg','Avithall × Canon'],
+    ['WhatsApp-Image-2021-11-17-at-7.40.18-AM-qeq0pnfysvrbgp48b8vjhe51rg3jmwluauopj6thzg.jpeg','#spon campagne'],
+    ['Kopie-van-b916cd63-04cd-4fd8-80ed-f7964e96255c-qeq0pgv3h1ib7fdsdo15hxstlqzz50vpxy4b693970.jpeg','#spon campagne'],
+    ['Kopie-van-IMG_3270-2-qeq0pkmg8dnghv8brpnnrwunzahfztanagq93cxoi4.jpg','Sedergine × SodaStream'],
+    ['Kopie-van-DontBreathe-Timo-IG-post-1-qeq0plkaf7oqth6ym82acem4koct7iedmldqkmwabw.jpeg','Timo × Don’t Breathe'],
+    ['Kopie-van-Shotsbyjuv_Soda1-qeq0plkaf7oqth6ym82acem4koct7iedmldqkmwabw.jpg','Juvat × SodaStream'],
+    ['Kopie-van-feed-post-qeq0pgv3h1ib7fdsdo15hxstlqzz50vpxy4b693970.jpeg','#spon campagne']
+  ];
+  var LIKES = ['48,2K','12,9K','103K','7.418','26,5K','61,3K','9.902','33,1K','18,7K','240K','14,4K','52,6K'];
+  var VIEWS = ['1,2M','384K','2,8M','96K','712K','1,6M','221K','905K','447K','3,1M','268K','1,1M'];
+  var PILLS = ['+ 1,2M views','+ 18% sales','+ 48K likes','+ 9,6K saves','+ 312K bereik','+ 2,4K reacties'];
+  var HEART = '<svg viewBox="0 0 24 24"><path fill="#ff2e7e" d="M12 21s-7.5-4.6-9.6-9.2C.8 8.2 3 4.5 6.6 4.5c2.1 0 3.6 1.2 5.4 3.2 1.8-2 3.3-3.2 5.4-3.2 3.6 0 5.8 3.7 4.2 7.3C19.5 16.4 12 21 12 21z"/></svg>';
+  var EYE = '<svg viewBox="0 0 24 24"><path fill="#fff" d="M12 5C6.5 5 2.4 9.2 1 12c1.4 2.8 5.5 7 11 7s9.6-4.2 11-7c-1.4-2.8-5.5-7-11-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>';
+
+  var CARD_H = 444, GAP = 34, PER = 4, COLS = 11, COL_W = 250, COL_GAP = 40;
+  var SET = PER * (CARD_H + GAP);
+  var stage = document.getElementById('stage');
+  var cols = [], pills = [], hearts = [];
+  var k = 0, urls = [];
+  for (var c = 0; c < COLS; c++) {
+    var col = document.createElement('div');
+    col.className = 'col';
+    col.style.left = (c * (COL_W + COL_GAP)) + 'px';
+    // three copies of the set so the column is always filled while it wraps
+    for (var r = 0; r < PER * 3; r++) {
+      var idx = (c * 5 + (r % PER) * 3) % POSTS.length;
+      var p = POSTS[idx];
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.style.top = (r * (CARD_H + GAP)) + 'px';
+      var url = B + p[0];
+      urls.push(url);
+      card.innerHTML = '<div class="scr" style="background-image:url(\'' + url + '\')"></div><div class="notch"></div>' +
+        '<div class="top"><div class="av"></div><div>' + p[1] + '</div></div>' +
+        '<div class="bar"><span>' + HEART + LIKES[idx] + '</span><span>' + EYE + VIEWS[idx] + '</span></div>';
+      var hz = document.createElement('div'); hz.className = 'hearts'; card.appendChild(hz);
+      for (var h = 0; h < 5; h++) {
+        var hi = document.createElement('i'); hi.innerHTML = HEART; hz.appendChild(hi);
+        hearts.push({ el: hi, x: 150 + (h * 23) % 70, ph: ((c * 7 + r * 3 + h * 5) % 12) / 12, card: (c + r) % 3 });
+      }
+      if ((c + r) % 3 === 0) {
+        var pl = document.createElement('div'); pl.className = 'pill'; pl.textContent = PILLS[(c * 2 + r) % PILLS.length];
+        card.appendChild(pl);
+        pills.push({ el: pl, ph: ((c * 5 + r * 7) % 12) / 12 });
+      }
+      col.appendChild(card);
+      k++;
+    }
+    stage.appendChild(col);
+    cols.push({ el: col, dir: c % 2 ? 1 : -1, base: (c * 137) % SET });
+  }
+  var b1 = document.getElementById('b1'), b2 = document.getElementById('b2'), b3 = document.getElementById('b3');
+  var shine = document.getElementById('shine');
+  var TAU = Math.PI * 2;
+  function mod(a, n) { return ((a % n) + n) % n; }
+  function bump(x, w) { // smooth 0..1..0 pulse over the first w of the cycle
+    if (x > w) return 0; var s = Math.sin(Math.PI * x / w); return s * s;
+  }
+  function render(t) {
+    var u = mod(t, LOOP) / LOOP; // 0..1
+    for (var i = 0; i < cols.length; i++) {
+      var cl = cols[i];
+      var y = mod(cl.base + cl.dir * u * SET, SET) - SET;
+      cl.el.style.transform = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
+    }
+    b1.style.transform = 'translate(' + (-150 + 260 * Math.cos(TAU * u)).toFixed(1) + 'px,' + (-250 + 160 * Math.sin(TAU * u)).toFixed(1) + 'px)';
+    b2.style.transform = 'translate(' + (600 + 240 * Math.cos(TAU * u + 2.1)).toFixed(1) + 'px,' + (40 + 180 * Math.sin(TAU * u * 2 + 1)).toFixed(1) + 'px)';
+    b3.style.transform = 'translate(' + (150 + 300 * Math.sin(TAU * u + 4)).toFixed(1) + 'px,' + (200 + 120 * Math.cos(TAU * u)).toFixed(1) + 'px)';
+    var sx = mod(u * 2, 1); // two sweeps per loop
+    shine.style.transform = 'translateX(' + (-60 + 120 * sx).toFixed(2) + '%)';
+    shine.style.opacity = (Math.sin(Math.PI * sx)).toFixed(3);
+    for (var j = 0; j < pills.length; j++) {
+      var q = mod(u * 2 + pills[j].ph, 1); // twice per loop
+      var a = bump(q, 0.45);
+      pills[j].el.style.opacity = a.toFixed(3);
+      pills[j].el.style.transform = 'translateY(' + (12 - 12 * a).toFixed(1) + 'px) scale(' + (0.85 + 0.15 * a).toFixed(3) + ')';
+    }
+    for (var m = 0; m < hearts.length; m++) {
+      var hh = hearts[m];
+      var z = mod(u * 3 + hh.ph, 1); // three times per loop
+      var on = z < 0.55 ? z / 0.55 : -1;
+      if (on < 0) { hh.el.style.opacity = 0; continue; }
+      hh.el.style.opacity = (Math.sin(Math.PI * on) * 0.95).toFixed(3);
+      hh.el.style.transform = 'translate(' + (hh.x + 16 * Math.sin(on * 7 + m)).toFixed(1) + 'px,' + (-260 * on).toFixed(1) + 'px) scale(' + (0.6 + 0.6 * on).toFixed(2) + ')';
+    }
+  }
+  // ?t=SECONDS freezes a single frame (for checks); otherwise run on the page clock.
+  var q = /[?&]t=([\d.]+)/.exec(location.search);
+  if (q) { render(parseFloat(q[1])); document.documentElement.setAttribute('data-klaar', '1'); return; }
+  // Wait for all images, then run. The recorder's virtual clock drives performance.now and requestAnimationFrame.
+  var uniq = urls.filter(function (v, i, s) { return s.indexOf(v) === i; });
+  var left = uniq.length;
+  function go() {
+    document.documentElement.setAttribute('data-klaar', '1');
+    var t0 = performance.now();
+    function frame() { render((performance.now() - t0) / 1000); requestAnimationFrame(frame); }
+    frame();
+  }
+  render(0);
+  uniq.forEach(function (s) { var im = new Image(); im.onload = im.onerror = function () { if (--left === 0) go(); }; im.src = s; });
+  setTimeout(function () { if (left > 0) { left = -1; go(); } }, 8000);
+})();
+</script>
+</body>
+</html>
