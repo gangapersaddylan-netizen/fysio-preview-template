@@ -24,7 +24,7 @@ const navVergoedingLabel =
   "Vergoeding";
 
 const nav = [
-  { label: "Klachten", href: "#klachten" },
+  { label: ((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Diensten" : "Klachten", href: "#klachten" },
   { label: "Aanpak", href: "#aanpak" },
   { label: "Team", href: "#team" },
   { label: navVergoedingLabel, href: "#vergoeding" },
@@ -112,7 +112,7 @@ export function Header() {
             style={{ backgroundColor: btnColor }}
             className={buttonVariants({ variant: "primary", size: "md" })}
           >
-            Plan je intake
+            {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan een gesprek" : "Plan je intake"}
           </motion.a>
         </div>
       </div>
