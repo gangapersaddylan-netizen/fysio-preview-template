@@ -75,7 +75,7 @@ export function Aanpak() {
           href={praktijk.boekUrl}
           className={buttonVariants({ variant: "primary", size: "lg" })}
         >
-          Plan je intake
+          {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan een gesprek" : "Plan je intake"}
         </a>
         <a
           href={praktijk.whatsapp}
