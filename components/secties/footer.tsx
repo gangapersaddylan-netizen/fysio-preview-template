@@ -29,10 +29,10 @@ export function Footer() {
         <nav aria-label="Footer" className="text-sm">
           <p className="mb-3 font-medium text-ink">Op deze pagina</p>
           <ul className="flex flex-col gap-2">
-            <li><a href="#klachten" className="hover:text-ink">Klachten</a></li>
+            <li><a href="#klachten" className="hover:text-ink">{isOverig ? "Diensten" : "Klachten"}</a></li>
             <li><a href="#aanpak" className="hover:text-ink">Aanpak</a></li>
             <li><a href="#team" className="hover:text-ink">Team</a></li>
-            <li><a href="#vergoeding" className="hover:text-ink">Vergoeding</a></li>
+            <li><a href="#vergoeding" className="hover:text-ink">{((praktijk as unknown) as { algemeneVervanging?: { navLabel?: string } }).algemeneVervanging?.navLabel ?? "Vergoeding"}</a></li>
             <li><a href="#faq" className="hover:text-ink">Veelgestelde vragen</a></li>
           </ul>
         </nav>
