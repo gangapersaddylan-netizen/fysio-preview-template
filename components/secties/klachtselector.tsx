@@ -146,11 +146,12 @@ export function Klachtselector() {
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 pt-20 lg:pt-24">
           <p className="eyebrow">Waar begin je</p>
           <h2 id="klachten-titel" className="h2 mt-3 text-ink">
-            Waar heb je last van?
+            {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Waar kunnen we je mee helpen?" : "Waar heb je last van?"}
           </h2>
           <p className="lead mt-3">
-            Kies je klacht, dan lees je precies hoe wij die aanpakken en wat je
-            mag verwachten.
+            {((praktijk as unknown) as { niche?: string }).niche === "overig"
+              ? "Kies wat bij je past, dan lees je precies hoe wij dat aanpakken en wat je mag verwachten."
+              : "Kies je klacht, dan lees je precies hoe wij die aanpakken en wat je mag verwachten."}
           </p>
         </div>
 
