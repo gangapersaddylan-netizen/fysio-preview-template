@@ -63,7 +63,7 @@ export function Reviews() {
         <Reveal>
           <p className="eyebrow">Geverifieerd via Google</p>
           <h2 id="reviews-titel" className="h2 mt-3 text-ink">
-            Wat onze patiënten zeggen
+            {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Wat onze klanten zeggen" : "Wat onze patiënten zeggen"}
           </h2>
         </Reveal>
       </div>
