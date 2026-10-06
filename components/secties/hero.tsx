@@ -48,7 +48,7 @@ export function Hero() {
               href={praktijk.boekUrl}
               className={buttonVariants({ variant: "light", size: "lg" })}
             >
-              Plan je intake
+              {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan een gesprek" : "Plan je intake"}
             </a>
             <a
               href={praktijk.whatsapp}
@@ -61,7 +61,7 @@ export function Hero() {
             </a>
           </div>
           <p className="mt-4 text-sm text-white/60">
-            Online boeken kan ook &apos;s avonds. Bevestiging binnen een werkdag.
+            {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan online een kennismaking. Reactie binnen een werkdag." : "Online boeken kan ook 's avonds. Bevestiging binnen een werkdag."}
           </p>
         </div>
       </ScrollExpandMedia>
