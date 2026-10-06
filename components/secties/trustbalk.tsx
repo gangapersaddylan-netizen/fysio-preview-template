@@ -74,10 +74,10 @@ export function Trustbalk() {
           <div className="flex items-center gap-2">
             <CalendarClock className="h-5 w-5 text-accent" />
             <span className="h3 text-ink">
-              Binnen {trust.wachttijdDagen} dagen terecht
+              {((praktijk as unknown) as { niche?: string }).niche === "overig" ? `Binnen ${trust.wachttijdDagen} dagen een gesprek` : `Binnen ${trust.wachttijdDagen} dagen terecht`}
             </span>
           </div>
-          <p className="text-sm text-muted">Actuele wachttijd</p>
+          <p className="text-sm text-muted">{((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Snel duidelijkheid" : "Actuele wachttijd"}</p>
         </div>
 
         <div className="flex flex-col gap-1.5 py-7 min-[860px]:pl-6">
