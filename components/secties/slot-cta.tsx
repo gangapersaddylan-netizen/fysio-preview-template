@@ -27,15 +27,16 @@ export function SlotCta() {
               )}
           </h2>
           <p className="mt-4 max-w-[46ch] text-ink-soft">
-            Plan je intake online, ook &apos;s avonds. Of bel ons even als je
-            eerst wil weten of wij de juiste plek voor je zijn.
+            {isOverig
+              ? "Plan online een kennismaking. Of bel ons even als je eerst wil weten of wij bij je passen."
+              : "Plan je intake online, ook 's avonds. Of bel ons even als je eerst wil weten of wij de juiste plek voor je zijn."}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a
               href={praktijk.boekUrl}
               className={buttonVariants({ variant: "primary", size: "lg" })}
             >
-              Plan je intake
+              {isOverig ? "Plan een gesprek" : "Plan je intake"}
             </a>
             <a
               href={praktijk.whatsapp}
