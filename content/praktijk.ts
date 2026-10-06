@@ -1,14 +1,9 @@
 /* ============================================================
-   KLANTCONTENT — één bestand, één klant.
-   Voor een nieuwe klant: alleen dit bestand aanpassen.
-   De componenten in components/secties blijven ongewijzigd.
+   KLANTCONTENT — automatisch gegenereerd, niet handmatig bewerken.
    ============================================================ */
 
 export type Sterren = 1 | 2 | 3 | 4 | 5;
 
-/** Een review die een klacht/behandeling noemt is een gezondheidsgegeven (AVG).
- *  `toestemming` is verplicht `true`; reviews zonder toestemming worden
- *  vóór het renderen weggefilterd (zie components/secties/reviews.tsx). */
 export type Review = {
   naam: string;
   klacht: string;
@@ -31,8 +26,6 @@ export type Klacht = {
   sub: string;
   slug: string;
   icoon: string;
-  /** Optioneel: pad naar een echte praktijkfoto (bijv. /klachten/rug.jpg).
-   *  Leeg = merk-placeholder in de hover-preview. Geen stockfoto's. */
   afbeelding?: string;
 };
 
@@ -54,336 +47,439 @@ export type Verzekeraar = {
 export type Feit = { titel: string; tekst: string };
 export type FaqItem = { vraag: string; antwoord: string };
 
-/* ------------------------------------------------------------ */
-
-const klachten: Klacht[] = [
-  {
-    label: "Rugklachten",
-    sub: "Onderrug, hernia, ischias",
-    slug: "rugklachten",
-    icoon: "PersonStanding",
-    afbeelding: "/klachten/rugklachten.jpg",
-  },
-  {
-    label: "Nek en schouder",
-    sub: "Stijfheid, uitstraling naar de arm",
-    slug: "nek-en-schouder",
-    icoon: "Bone",
-    afbeelding: "/klachten/nek-en-schouder.jpg",
-  },
-  {
-    label: "Knieklachten",
-    sub: "Meniscus, kruisband, artrose",
-    slug: "knieklachten",
-    icoon: "Activity",
-    afbeelding: "/klachten/knieklachten.jpg",
-  },
-  {
-    label: "Sportblessure",
-    sub: "Hardlopen, voetbal, krachttraining",
-    slug: "sportblessure",
-    icoon: "Dumbbell",
-    afbeelding: "/klachten/sportblessure.jpg",
-  },
-  {
-    label: "Hoofdpijn",
-    sub: "Spanning, migraine, kaakklachten",
-    slug: "hoofdpijn",
-    icoon: "Brain",
-    afbeelding: "/klachten/hoofdpijn.jpg",
-  },
-  {
-    label: "Revalidatie",
-    sub: "Na operatie of ziekenhuisopname",
-    slug: "revalidatie",
-    icoon: "HeartPulse",
-    afbeelding: "/klachten/revalidatie.jpg",
-  },
-];
-
-const reviews: Review[] = [
-  {
-    naam: "Marloes de Vries",
-    klacht: "Rugklachten",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Na jaren rondlopen met onderrugpijn eindelijk iemand die uitlegde waar het vandaan kwam. Ik kreeg een plan met een einddatum en na zeven weken kon ik weer tuinieren zonder er de dag erna voor te boeten.",
-    toestemming: true,
-  },
-  {
-    naam: "Youssef El Amrani",
-    klacht: "Sportblessure",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Hardloopblessure vlak voor een halve marathon. Dezelfde week nog terecht, elke afspraak dezelfde therapeut. Ik heb de wedstrijd gewoon gelopen.",
-    toestemming: true,
-  },
-  {
-    naam: "Anouk Bakker",
-    klacht: "Nek en schouder",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Ik werk de hele dag achter een scherm en had constant uitstraling naar mijn arm. Ze keken ook naar mijn werkplek en houding, niet alleen naar de pijn zelf. Groot verschil.",
-    toestemming: true,
-  },
-  {
-    naam: "Peter Janssen",
-    klacht: "Knieklachten",
-    plaats: "Almere Haven",
-    sterren: 5,
-    quote:
-      "Na een meniscusoperatie hier gerevalideerd. Rustig opgebouwd, nooit het gevoel dat ik werd opgejaagd of juist aan het lijntje werd gehouden. Duidelijke doelen elke week.",
-    toestemming: true,
-  },
-  {
-    naam: "Sanne Visser",
-    klacht: "Hoofdpijn",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Al maanden spanningshoofdpijn waar de huisarts geen kant mee op kon. Bleek grotendeels uit mijn nek te komen. Na een paar behandelingen merkbaar minder.",
-    toestemming: true,
-  },
-  {
-    naam: "Rick Mulder",
-    klacht: "Revalidatie",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Na een ziekenhuisopname flink verzwakt. Ze hebben me stap voor stap weer op de been geholpen en precies verteld wat ik thuis moest doen. Ik voel me weer mezelf.",
-    toestemming: true,
-  },
-  {
-    naam: "Fatima Yildirim",
-    klacht: "Rugklachten",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Zwanger en veel bekken- en rugklachten. Fijn dat ze precies wisten wat wel en niet kon. Ik werd serieus genomen en kreeg oefeningen die echt hielpen.",
-    toestemming: true,
-  },
-  {
-    naam: "Thomas Koster",
-    klacht: "Sportblessure",
-    plaats: "Almere Haven",
-    sterren: 4,
-    quote:
-      "Voetbalknie die maar niet overging. Goede uitleg en een opbouwschema dat klopte. Ik sta weer op het veld, iets later dan gehoopt maar zonder terugval.",
-    toestemming: true,
-  },
-];
-
-const empathie = {
-  regels: [
-    {
-      tekst:
-        "Je het al een paar keer dacht op te lossen met rust, en het steeds terugkwam.",
-      afbeelding: "/empathie/1.jpg",
-    },
-    {
-      tekst: "Je al weken aan het wachten bent voordat je ergens terecht kunt.",
-      afbeelding: "/empathie/2.jpg",
-    },
-    {
-      tekst:
-        "Je elke afspraak een andere therapeut kreeg en je verhaal opnieuw moest doen.",
-      afbeelding: "/empathie/3.jpg",
-    },
-    {
-      tekst:
-        "Niemand je heeft uitgelegd waar het vandaan komt, alleen wat je moet laten.",
-      afbeelding: "/empathie/4.jpg",
-    },
-  ],
-  afsluiting:
-    "Dat is precies waar wij het anders doen. Je houdt dezelfde therapeut van intake tot laatste afspraak, en je gaat na de eerste keer naar huis met een verklaring in plaats van een vraagteken.",
-  oplossingAfbeelding: "/empathie/oplossing.jpg",
-};
-
-const stappen: Stap[] = [
-  {
-    titel: "We zoeken uit waar het vandaan komt",
-    duur: "45 minuten",
-    tekst:
-      "Een uitgebreide intake waarin we niet alleen kijken waar het pijn doet, maar waarom. Je gaat naar huis met een verklaring.",
-    foto: "/aanpak/intake.jpg",
-    video: "/aanpak/intake.mp4",
-  },
-  {
-    titel: "Je krijgt een plan met een einddatum",
-    duur: "Vanaf afspraak twee",
-    tekst:
-      "Geen open einde en geen strippenkaart die vanzelf doorloopt. We spreken af hoeveel behandelingen we verwachten en waar we op mikken.",
-    foto: "/aanpak/behandelplan.jpg",
-    video: "/aanpak/behandelplan.mp4",
-  },
-  {
-    titel: "Je doet weer wat je wilde doen",
-    duur: "Gemiddeld 6 tot 8 weken",
-    tekst:
-      "We stoppen als je doel gehaald is en je weet wat je zelf kunt doen om het zo te houden.",
-    foto: "/aanpak/oefenzaal.jpg",
-    video: "/aanpak/begeleiding.mp4",
-  },
-];
-
-const team: Teamlid[] = [
-  {
-    naam: "Lisa Hoekstra",
-    functie: "Fysiotherapeut MSc",
-    specialisatie: "Rug en nek",
-    foto: "/team/lid-1.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Daan van Leeuwen",
-    functie: "Sportfysiotherapeut",
-    specialisatie: "Hardloop- en knieblessures",
-    foto: "/team/lid-2.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Priya Ramdas",
-    functie: "Manueel therapeut",
-    specialisatie: "Nek, schouder en hoofdpijn",
-    foto: "/team/lid-3.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Bram de Wit",
-    functie: "Fysiotherapeut",
-    specialisatie: "Revalidatie na operatie",
-    foto: "/team/lid-4.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Esra Demir",
-    functie: "Geriatriefysiotherapeut",
-    specialisatie: "Herstel en mobiliteit",
-    foto: "/team/lid-5.jpg",
-    uitgelicht: true,
-  },
-  { naam: "Tom Bakker", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/lid-6.jpg", uitgelicht: true },
-  { naam: "Nadia el Haddaoui", functie: "Kinderfysiotherapeut", specialisatie: "Kind en motoriek", foto: "/team/nadia-el-haddaoui.jpg" },
-  { naam: "Sven Postma", functie: "Sportfysiotherapeut", specialisatie: "Kracht en preventie", foto: "/team/sven-postma.jpg" },
-  { naam: "Iris van Dijk", functie: "Manueel therapeut", specialisatie: "Wervelkolom", foto: "/team/iris-van-dijk.jpg" },
-  { naam: "Karim Bouazza", functie: "Fysiotherapeut", specialisatie: "Schouder", foto: "/team/karim-bouazza.jpg" },
-  { naam: "Femke Smit", functie: "Bekkenfysiotherapeut", specialisatie: "Zwangerschap en herstel", foto: "/team/femke-smit.jpg" },
-  { naam: "Jeroen Vos", functie: "Fysiotherapeut", specialisatie: "Knie en heup", foto: "/team/jeroen-vos.jpg" },
-  { naam: "Maud Peeters", functie: "Oedeemtherapeut", specialisatie: "Lymfe en herstel", foto: "/team/maud-peeters.jpg" },
-  { naam: "Wesley Groot", functie: "Sportfysiotherapeut", specialisatie: "Teamsport", foto: "/team/wesley-groot.jpg" },
-  { naam: "Amira Haddad", functie: "Fysiotherapeut", specialisatie: "Nek en hoofdpijn", foto: "/team/amira-haddad.jpg" },
-  { naam: "Gijs Molenaar", functie: "Manueel therapeut", specialisatie: "Rug", foto: "/team/gijs-molenaar.jpg" },
-  { naam: "Sophie Willems", functie: "Fysiotherapeut", specialisatie: "Revalidatie", foto: "/team/sophie-willems.jpg" },
-  { naam: "Ravi Sharma", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/ravi-sharma.jpg" },
-  { naam: "Julia Kramer", functie: "Sportfysiotherapeut", specialisatie: "Loopanalyse", foto: "/team/julia-kramer.jpg" },
-  { naam: "Mohammed Aziz", functie: "Praktijkmanager", specialisatie: "Zorg en planning", foto: "/team/mohammed-aziz.jpg" },
-];
-
-const verzekeraars: Verzekeraar[] = [
-  { naam: "Zilveren Kruis", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket." },
-  { naam: "CZ", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering." },
-  { naam: "VGZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt." },
-  { naam: "Menzis", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket." },
-  { naam: "ONVZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks." },
-  { naam: "DSW", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering." },
-  { naam: "Zorg en Zekerheid", logo: "", gecontracteerd: false, toelichting: "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit." },
-];
-
-const feiten: Feit[] = [
-  {
-    titel: "Geen verwijzing nodig",
-    tekst:
-      "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht.",
-  },
-  {
-    titel: "Meestal uit je aanvullende pakket",
-    tekst:
-      "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit.",
-  },
-  {
-    titel: "Geen eigen risico bij aanvullend",
-    tekst:
-      "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet.",
-  },
-];
-
-const faq: FaqItem[] = [
-  {
-    vraag: "Heb ik een verwijzing van de huisarts nodig?",
-    antwoord:
-      "Nee. Fysiotherapie is direct toegankelijk, je mag zelf een afspraak maken. Alleen bij een chronische indicatie is een verwijzing nodig, en dan helpen we je daarbij.",
-  },
-  {
-    vraag: "Hoeveel behandelingen heb ik nodig?",
-    antwoord:
-      "Dat hoor je na de intake, niet ervoor. Voor de meeste klachten zitten we tussen de zes en tien behandelingen. Je krijgt een inschatting op papier zodat je weet waar je aan toe bent.",
-  },
-  {
-    vraag: "Kan ik dezelfde week nog terecht?",
-    antwoord:
-      "Meestal wel. Onze actuele wachttijd staat bovenaan deze pagina en wordt elke maandag bijgewerkt. Bij acute klachten proberen we je binnen 24 uur in te plannen.",
-  },
-  {
-    vraag: "Krijg ik steeds dezelfde therapeut?",
-    antwoord:
-      "Ja. Je wordt gekoppeld aan één therapeut die je hele traject begeleidt. Alleen bij vakantie of ziekte neemt een collega waar, en die is dan volledig ingelezen.",
-  },
-  {
-    vraag: "Wat kost het als ik niet verzekerd ben voor fysiotherapie?",
-    antwoord:
-      "Een intake kost 60 euro en een vervolgbehandeling 38 euro. Je krijgt vooraf een inschatting van de totale kosten, zodat je nooit voor verrassingen komt te staan.",
-  },
-];
-
-/* ------------------------------------------------------------ */
-
 export const praktijk = {
-  naam: "FysioAlmere",
-  plaats: "Almere",
-  telefoon: "036 123 4567",
-  telefoonHref: "tel:+31361234567",
-  whatsapp: "https://wa.me/31361234567",
-  boekUrl: "https://afspraak.example.nl",
-  heroVideo: "/hero/hero.mp4",
-  heroTitel: "Pijnvrij Bewegen",
-
-  trust: {
-    googleScore: 4.9,
-    aantalReviews: 218,
-    wachttijdDagen: 2,
-    bigRegistratie: "BIG geregistreerd",
-    bigSub: "Kwaliteitsregister Fysiotherapie",
+  "naam": "Van Vught Fysiotherapie",
+  "plaats": "Den Bosch",
+  "telefoon": "06 46 88 80 34",
+  "telefoonHref": "tel:+31646888034",
+  "whatsapp": "https://wa.me/31646888034",
+  "boekUrl": "https://vanvughtfysiotherapie.uwpraktijkonline.nl/",
+  "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/h_540,c_scale,q_auto,ac_none/Fysio_Header_high_end_dstput.mp4",
+  "heroTitel": "Blijvend Bewegen",
+  "trust": {
+    "googleScore": 4.9,
+    "aantalReviews": 114,
+    "wachttijdDagen": 2,
+    "bigRegistratie": "BIG geregistreerd",
+    "bigSub": "Kwaliteitsregister Fysiotherapie"
   },
-
-  klachten,
-  reviews,
-  empathie,
-  stappen,
-  team,
-
-  teamShowcase: {
-    groepsfoto: "/team/groep.jpg",
-    // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
-    // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
-    extraFotos: [] as string[],
-    // "contain" voor bijna-vierkante/staande covers (bv. team-collages) zodat ze niet gecropt worden.
-    coverFit: "cover" as "cover" | "contain",
+  "klachten": [
+    {
+      "label": "Nek",
+      "sub": "Pijn, spanning of stijfheid die het bewegen beperkt",
+      "slug": "nekklachten",
+      "icoon": "PersonStanding"
+    },
+    {
+      "label": "Schouder",
+      "sub": "Last bij bewegingen of pijn die uitstraalt",
+      "slug": "schouderklachten",
+      "icoon": "Bone"
+    },
+    {
+      "label": "Rug",
+      "sub": "Klachten in onderrug, bovenrug of nek",
+      "slug": "rugklachten",
+      "icoon": "Activity"
+    },
+    {
+      "label": "Sport",
+      "sub": "Blessures of klachten door overbelasting",
+      "slug": "sportblessures",
+      "icoon": "Dumbbell"
+    },
+    {
+      "label": "Hamstring",
+      "sub": "Langdurige klachten die sporten onmogelijk maken",
+      "slug": "hamstring",
+      "icoon": "HeartPulse"
+    }
+  ],
+  "reviews": [
+    {
+      "naam": "Lisa van Bergen",
+      "klacht": "Rug",
+      "plaats": "Den Bosch",
+      "sterren": 5,
+      "quote": "Ik ging bijna niet meer uit angst voor die pijnscheuten. Nu voel ik me weer een stuk zekerder en durf ik gewoon te bewegen.",
+      "toestemming": true
+    },
+    {
+      "naam": "Tom Hendriks",
+      "klacht": "Sport",
+      "plaats": "Vught",
+      "sterren": 5,
+      "quote": "Na maanden dezelfde blessure eindelijk de juiste hulp gevonden. Kan nu weer trainen zonder pijn.",
+      "toestemming": true
+    },
+    {
+      "naam": "Marloes Jansen",
+      "klacht": "Nek",
+      "plaats": "Rosmalen",
+      "sterren": 5,
+      "quote": "Ze luistert echt naar je verhaal en neemt de tijd. Ik voel me serieus genomen.",
+      "toestemming": true
+    },
+    {
+      "naam": "Kevin de Vries",
+      "klacht": "Hamstring",
+      "plaats": "Den Bosch",
+      "sterren": 5,
+      "quote": "Bijna een jaar lang dezelfde klacht. Na een paar behandelingen eindelijk weer kunnen hardlopen. Enorme opluchting.",
+      "toestemming": true
+    },
+    {
+      "naam": "Sophie Vermeulen",
+      "klacht": "Schouder",
+      "plaats": "Vught",
+      "sterren": 5,
+      "quote": "Ik kon mijn arm nauwelijks meer optillen. Nu kan ik weer mijn werk doen zonder pijn. Dankbaar.",
+      "toestemming": true
+    },
+    {
+      "naam": "Jeroen Bakker",
+      "klacht": "Rug",
+      "plaats": "Den Bosch",
+      "sterren": 4,
+      "quote": "Goede uitleg en duidelijk behandelplan. Ik weet nu waar mijn klachten vandaan komen en wat ik eraan kan doen.",
+      "toestemming": true
+    },
+    {
+      "naam": "Emma Willems",
+      "klacht": "Nek",
+      "plaats": "Rosmalen",
+      "sterren": 5,
+      "quote": "Prettige praktijk met korte wachttijd. Ik kon al binnen twee dagen terecht.",
+      "toestemming": true
+    },
+    {
+      "naam": "Lars Smeets",
+      "klacht": "Sport",
+      "plaats": "Vught",
+      "sterren": 5,
+      "quote": "Ze kijken echt naar de oorzaak en niet alleen naar het symptoom. Dat maakt het verschil.",
+      "toestemming": true
+    }
+  ],
+  "empathie": {
+    "regels": [
+      {
+        "tekst": "Je favoriete sport of hobby ligt stil omdat je lichaam niet meer meewerkt zoals vroeger.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/1_2_yzrvxh.jpg"
+      },
+      {
+        "tekst": "Je twijfelt waar je terecht kunt en stelt het uit, terwijl de klachten alleen maar erger worden.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/2_2_hy32i6.jpg"
+      },
+      {
+        "tekst": "Elke keer een ander gezicht en je verhaal opnieuw uitleggen, zonder dat iemand je echt lijkt te begrijpen.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/3_2_uw0d3t.jpg"
+      },
+      {
+        "tekst": "Oefeningen meekrijgen zonder dat iemand echt uitlegt waar de pijn vandaan komt en waarom je dit zou moeten doen.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/4_2_rngnnd.jpg"
+      }
+    ],
+    "afsluiting": "Bij Van Vught Fysiotherapie nemen we de tijd om jouw verhaal te horen en samen de échte oorzaak te vinden. We leggen rustig uit wat er aan de hand is en werken aan een plan dat bij jou past.",
+    "oplossingAfbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/5_lwtck4.jpg"
   },
-
-  vergoeding: {
-    peiljaar: 2026,
-    laatstGecontroleerd: "januari 2026",
-    feiten,
-    verzekeraars,
-    disclaimer:
-      "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend.",
+  "stappen": [
+    {
+      "titel": "Fysiotherapie op maat",
+      "tekst": "We starten met een grondige evaluatie en behandelen vervolgens met hands-on technieken, gericht op jouw specifieke klachten en behoeften.",
+      "duur": "30-45 minuten",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826559/fysiotherapie_qof4vl.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826559/fysiotherapie_qof4vl.mp4"
+    },
+    {
+      "titel": "Dry needling voor diepe spanning",
+      "tekst": "Bij hardnekkige spierspanning passen we dry needling toe om diepliggende triggerpunten aan te pakken en herstel te versnellen.",
+      "duur": "15-20 minuten",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826535/dry_needling_ljfv1e.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826535/dry_needling_ljfv1e.mp4"
+    },
+    {
+      "titel": "Functionele revalidatie",
+      "tekst": "In onze sportzaal werk je onder begeleiding aan gerichte oefeningen die je sterker maken en voorbereiden op dagelijkse activiteiten of sport.",
+      "duur": "45-60 minuten",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826546/revalidatie_oos4pt.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785826546/revalidatie_oos4pt.mp4"
+    }
+  ],
+  "team": [
+    {
+      "naam": "Amy van Hees",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapie, Dry Needling",
+      "foto": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/09/Amy-van-Hees-1-776x1024.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Jamie Doomernik",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Orthopedische revalidatie",
+      "foto": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/11/Jamie-Doomernik-e1731262919720-716x1024.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Martijn van Vught",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapie, HVLA",
+      "foto": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/Martijn-van-Vught-midshot.jpeg",
+      "uitgelicht": true
+    }
+  ],
+  "teamShowcase": {
+    "groepsfoto": "https://raw.githubusercontent.com/gangapersaddylan-netizen/fysio-preview-template/assets/composiet/rij-34-1791301331704.jpg",
+    "coverBron": "composiet uit W1",
+    "extraFotos": [
+      "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Amy-helemaal-768x1152.jpg",
+      "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Jamie-helemaal-768x1152.jpg",
+      "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Martijn-helemaal-1-768x1152.jpg"
+    ]
   },
-
-  faq,
+  "vergoeding": {
+    "peiljaar": 2026,
+    "laatstGecontroleerd": "januari 2026",
+    "feiten": [
+      {
+        "titel": "Geen verwijzing nodig",
+        "tekst": "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht."
+      },
+      {
+        "titel": "Meestal uit je aanvullende pakket",
+        "tekst": "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit."
+      },
+      {
+        "titel": "Geen eigen risico bij aanvullend",
+        "tekst": "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet."
+      }
+    ],
+    "verzekeraars": [
+      {
+        "naam": "Zilveren Kruis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket."
+      },
+      {
+        "naam": "CZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "VGZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt."
+      },
+      {
+        "naam": "Menzis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket."
+      },
+      {
+        "naam": "ONVZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks."
+      },
+      {
+        "naam": "DSW",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "Zorg en Zekerheid",
+        "logo": "",
+        "gecontracteerd": false,
+        "toelichting": "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit."
+      }
+    ],
+    "disclaimer": "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend."
+  },
+  "vergoedingVervanger": null,
+  "algemeneVervanging": null,
+  "niche": "fysio",
+  "faq": [
+    {
+      "vraag": "Heb ik een verwijzing nodig?",
+      "antwoord": "Nee, je kunt rechtstreeks bij ons terecht zonder verwijzing van de huisarts. Wel kun je je behandeling declareren bij je zorgverzekeraar als je een basisverzekering hebt."
+    },
+    {
+      "vraag": "Hoeveel behandelingen heb ik nodig?",
+      "antwoord": "Dat is per persoon verschillend en hangt af van je klacht. Na de intake bespreken we samen een behandelplan en geven we een indicatie van het aantal sessies."
+    },
+    {
+      "vraag": "Hoe snel kan ik terecht?",
+      "antwoord": "We streven ernaar om nieuwe patiënten binnen 48 uur te kunnen ontvangen. Je kunt online een afspraak maken of ons bellen voor spoedgevallen."
+    },
+    {
+      "vraag": "Krijg ik altijd dezelfde therapeut?",
+      "antwoord": "Ja, we werken met vaste therapeuten zodat je continuïteit hebt en je niet steeds opnieuw je verhaal hoeft te vertellen. Dit zorgt voor een persoonlijke behandeling."
+    },
+    {
+      "vraag": "Wat zijn de kosten zonder verzekering?",
+      "antwoord": "Een standaard behandeling kost €45. Als je eigen risico op is of geen fysiotherapie in je pakket hebt, betaal je dit bedrag per sessie. We verstrekken altijd een factuur."
+    }
+  ],
+  "fotoUitsnede": {
+    "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/11/Jamie-Doomernik-e1731262919720-716x1024.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 716,
+        "ch": 955
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 716,
+        "ch": 895
+      }
+    },
+    "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/Martijn-van-Vught-midshot.jpeg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 800,
+        "ch": 1067
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 800,
+        "ch": 1000
+      }
+    },
+    "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Amy-helemaal-768x1152.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 1024
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 960
+      }
+    },
+    "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Jamie-helemaal-768x1152.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 1024
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 960
+      }
+    },
+    "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/09/Martijn-helemaal-1-768x1152.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 1024
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 768,
+        "ch": 960
+      }
+    }
+  },
+  "fotoControle": {
+    "gekeurd": 13,
+    "portretOk": 5,
+    "coverOk": 0,
+    "afgekeurd": [
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/09/Amy-van-Hees-1-776x1024.jpg",
+        "reden": "gezicht past niet in staand formaat"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2025/04/Martijn-van-Vught-2.png",
+        "reden": "gezicht past niet in staand formaat"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/09/MG_5213.jpeg",
+        "reden": "geen gezicht met ogen zichtbaar"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/MG_5116.jpg",
+        "reden": "ogen niet zichtbaar"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/MG_5152.jpg",
+        "reden": "hoofd afgesneden in origineel"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/MG_5234.jpg",
+        "reden": "meerdere gezichten, geen eenduidig portret"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/MG_5092.jpg",
+        "reden": "hoofd afgesneden in origineel"
+      },
+      {
+        "url": "https://vanvughtfysiotherapie.nl/wp-content/uploads/2023/11/MG_5103.jpg",
+        "reden": "ogen niet zichtbaar"
+      }
+    ],
+    "msTotaal": 16524,
+    "gegenereerd": 0,
+    "gegenereerdOk": 0,
+    "gegenereerdAfgekeurd": [],
+    "coverBron": "composiet uit W1",
+    "tegelsOpSite": 6,
+    "coverAanwezig": true,
+    "msNodeE": 0
+  },
+  "meerdereEchtePersonen": true,
+  "echtTeamViaGroepsfoto": false,
+  "fotoReferentie": {
+    "bron": "teamlid",
+    "aantal": 2,
+    "urls": [
+      "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/09/Amy-van-Hees-1-776x1024.jpg",
+      "https://vanvughtfysiotherapie.nl/wp-content/uploads/2024/11/Jamie-Doomernik-e1731262919720-716x1024.jpg"
+    ],
+    "profiel": {
+      "geslacht": "onbekend",
+      "leeftijd": null,
+      "eenmanspraktijk": null,
+      "toelichting": ""
+    }
+  },
+  "stappenKop": "Onze behandelingen",
+  "stappenSub": "We combineren hands-on technieken met functionele training voor duurzaam herstel.",
+  "stappenModus": "aanbod",
+  "kleuren": {
+    "primair": "#0066cc",
+    "donker": "#004d99",
+    "licht": "#e6f2ff"
+  },
+  "echtTeamTegels": {
+    "leden": [],
+    "referenties": 0,
+    "nodig": 0,
+    "taken": 0
+  },
+  "eigenVoorraadCheck": {
+    "teamStock": 0,
+    "coverStock": false,
+    "extraStock": 0
+  }
 } as const;
 
 export type Praktijk = typeof praktijk;
