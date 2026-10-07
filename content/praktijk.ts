@@ -54,7 +54,7 @@ export const praktijk = {
   "telefoonHref": "tel:+31201234567",
   "whatsapp": "https://wa.me/31201234567",
   "boekUrl": "https://bellen.ai/#trial",
-  "heroVideo": "https://assets.mixkit.co/videos/15875/15875-720.mp4",
+  "heroVideo": "https://raw.githubusercontent.com/gangapersaddylan-netizen/fysio-preview-template/assets/hero/bellen-ai-35-luna.mp4",
   "heroTitel": "Altijd Bereikbaar",
   "trust": {
     "googleScore": 4.8,
@@ -173,8 +173,8 @@ export const praktijk = {
       "titel": "Luna instellen",
       "tekst": "Koppel je telefoonnummer en reserveringssysteem. Luna neemt vanaf dan élke oproep aan, ook buiten openingstijden.",
       "duur": "5 minuten",
-      "foto": "https://assets.mixkit.co/videos/100323/100323-720.mp4",
-      "video": "https://assets.mixkit.co/videos/100323/100323-720.mp4"
+      "foto": "https://assets.mixkit.co/videos/24213/24213-720.mp4",
+      "video": "https://assets.mixkit.co/videos/24213/24213-720.mp4"
     },
     {
       "titel": "Altijd bereikbaar",
