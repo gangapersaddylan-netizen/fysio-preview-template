@@ -24,7 +24,7 @@ const esc = (s: string) =>
 function pagina(slug: string, v: Video, origin: string): string {
   const titel = `${v.praktijk}, ik heb je website opnieuw gebouwd`;
   const omschrijving =
-    "Een korte video van Dylan: wat me opviel aan je huidige site en hoe de nieuwe versie eruitziet.";
+    `Een korte persoonlijke video van Dylan: wat me opviel aan de huidige website van ${v.praktijk} en hoe de nieuwe versie eruitziet.`;
   const url = `${origin}/${slug}`;
   const beeld = `${origin}/${slug}/kaart.jpg`;
   const aanhef = v.voornaam ? `Hoi ${esc(v.voornaam)},` : "Hoi,";
