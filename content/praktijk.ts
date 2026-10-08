@@ -49,7 +49,7 @@ export type FaqItem = { vraag: string; antwoord: string };
 
 export const praktijk = {
   "naam": "Fysiocare",
-  "plaats": "Waalwijk",
+  "plaats": "Waalwijk en Bergeijk",
   "telefoon": "",
   "telefoonHref": "",
   "whatsapp": "",
@@ -95,17 +95,17 @@ export const praktijk = {
       "icoon": "Dumbbell"
     },
     {
-      "label": "Kinderen",
-      "sub": "Motorische klachten bij kinderen veilig behandelen",
-      "slug": "kinderen",
-      "icoon": "HeartPulse"
+      "label": "EGYM",
+      "sub": "Efficiënt trainen met slimme fitnessapparatuur in Waalwijk",
+      "slug": "egym",
+      "icoon": "Dumbbell"
     }
   ],
   "reviews": [
     {
       "naam": "Sandra",
       "klacht": "Rug",
-      "plaats": "Waalwijk",
+      "plaats": "Waalwijk en Bergeijk",
       "sterren": 5,
       "quote": "Ik kon door mijn rugpijn niet meer sporten. Na een paar weken behandeling merk ik echt verschil en durf ik weer stappen te zetten.",
       "toestemming": true
@@ -121,7 +121,7 @@ export const praktijk = {
     {
       "naam": "Marloes",
       "klacht": "Nek",
-      "plaats": "Waalwijk",
+      "plaats": "Waalwijk en Bergeijk",
       "sterren": 5,
       "quote": "Ik had last van mijn nek door bureauwerk. De persoonlijke aanpak hielp echt, ik voel me nu veel vrijer.",
       "toestemming": true
@@ -137,23 +137,23 @@ export const praktijk = {
     {
       "naam": "Linda",
       "klacht": "Sport",
-      "plaats": "Waalwijk",
+      "plaats": "Waalwijk en Bergeijk",
       "sterren": 5,
       "quote": "Ik wilde graag weer hardlopen maar durfde niet. Met de begeleiding hier bouwde ik veilig op en loop ik nu weer.",
       "toestemming": true
     },
     {
       "naam": "Tom",
-      "klacht": "Kinderen",
-      "plaats": "Bergeijk",
+      "klacht": "EGYM",
+      "plaats": "Waalwijk",
       "sterren": 5,
-      "quote": "Mijn zoon had moeite met bewegen. De kinderfysio was geduldig en speels, hij ging met plezier.",
+      "quote": "Met EGYM train ik in 30 minuten effectief en gericht. De begeleiding helpt me om mijn doelen te halen.",
       "toestemming": true
     },
     {
       "naam": "Anouk",
       "klacht": "Rug",
-      "plaats": "Waalwijk",
+      "plaats": "Waalwijk en Bergeijk",
       "sterren": 5,
       "quote": "Na mijn bevalling had ik last van mijn rug. De behandeling was doelgericht en ze dachten mee in wat ik nodig had.",
       "toestemming": true
