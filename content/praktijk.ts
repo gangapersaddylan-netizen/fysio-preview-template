@@ -49,7 +49,7 @@ export type FaqItem = { vraag: string; antwoord: string };
 
 export const praktijk = {
   "naam": "BTAQA",
-  "plaats": "Riyadh",
+  "plaats": "Saudi-Arabië en VAE",
   "telefoon": "",
   "telefoonHref": "",
   "whatsapp": "",
