@@ -49,7 +49,7 @@ export type FaqItem = { vraag: string; antwoord: string };
 
 export const praktijk = {
   "naam": "Fysio Daryl",
-  "plaats": "Amsterdam",
+  "plaats": "Amstelveen",
   "telefoon": "06 30182014",
   "telefoonHref": "tel:+31630182014",
   "whatsapp": "https://wa.me/31630182014",
