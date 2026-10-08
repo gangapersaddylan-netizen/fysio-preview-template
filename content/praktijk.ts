@@ -50,9 +50,9 @@ export type FaqItem = { vraag: string; antwoord: string };
 export const praktijk = {
   "naam": "Uniek Fysiotherapie",
   "plaats": "Tubbergen",
-  "telefoon": "0546 123 456",
-  "telefoonHref": "tel:+31546123456",
-  "whatsapp": "https://wa.me/31546123456",
+  "telefoon": "0546 622 690",
+  "telefoonHref": "tel:+31546622690",
+  "whatsapp": "https://wa.me/31546622690",
   "boekUrl": "https://www.uniekfysiotherapie.nl/contact",
   "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/h_540,c_scale,q_auto,ac_none/Fysio_Header_high_end_dstput.mp4",
   "heroTitel": "Optimaal Bewegen",
