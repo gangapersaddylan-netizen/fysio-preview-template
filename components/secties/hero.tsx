@@ -50,6 +50,7 @@ export function Hero() {
             >
               {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan een gesprek" : "Plan je intake"}
             </a>
+            {(praktijk.whatsapp as string) ? (
             <a
               href={praktijk.whatsapp}
               target="_blank"
@@ -59,6 +60,7 @@ export function Hero() {
               <WhatsappIcon className="h-5 w-5 text-[#25D366]" />
               WhatsApp ons
             </a>
+            ) : null}
           </div>
           <p className="mt-4 text-sm text-white/60">
             {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan online een kennismaking. Reactie binnen een werkdag." : "Online boeken kan ook 's avonds. Bevestiging binnen een werkdag."}

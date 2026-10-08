@@ -77,6 +77,7 @@ export function Aanpak() {
         >
           {((praktijk as unknown) as { niche?: string }).niche === "overig" ? "Plan een gesprek" : "Plan je intake"}
         </a>
+        {(praktijk.whatsapp as string) ? (
         <a
           href={praktijk.whatsapp}
           target="_blank"
@@ -86,6 +87,7 @@ export function Aanpak() {
           <WhatsappIcon className="h-5 w-5 text-[#25D366]" />
           WhatsApp ons
         </a>
+        ) : null}
       </Reveal>
     </section>
   );

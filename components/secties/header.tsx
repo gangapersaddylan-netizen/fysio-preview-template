@@ -100,6 +100,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {(praktijk.telefoon as string) ? (
           <a
             href={praktijk.telefoonHref}
             className="hidden items-center gap-2 text-sm font-medium text-ink transition-colors sm:flex"
@@ -107,6 +108,7 @@ export function Header() {
             <Phone className="h-4 w-4 text-accent" />
             {praktijk.telefoon}
           </a>
+          ) : null}
           <motion.a
             href={praktijk.boekUrl}
             style={{ backgroundColor: btnColor }}

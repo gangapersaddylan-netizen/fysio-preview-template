@@ -39,6 +39,7 @@ export function Footer() {
 
         <div className="text-sm">
           <p className="mb-3 font-medium text-ink">Contact</p>
+          {(praktijk.telefoon as string) ? (
           <a
             href={praktijk.telefoonHref}
             className="flex items-center gap-2 hover:text-ink"
@@ -46,6 +47,7 @@ export function Footer() {
             <Phone className="h-4 w-4" />
             {praktijk.telefoon}
           </a>
+          ) : null}
           <a
             href={praktijk.boekUrl}
             className="mt-2 inline-block hover:text-ink"
