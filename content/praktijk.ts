@@ -60,8 +60,8 @@ export const praktijk = {
     "googleScore": 4.8,
     "aantalReviews": 127,
     "wachttijdDagen": 3,
-    "bigRegistratie": "Erkend osteopaat",
-    "bigSub": "Register Osteopaten Nederland"
+    "bigRegistratie": "Twee locaties",
+    "bigSub": "Zwaag en Berkhout"
   },
   "klachten": [
     {
@@ -87,12 +87,6 @@ export const praktijk = {
       "sub": "Stijve of pijnlijke gewrichten die bewegen lastig maken.",
       "slug": "gewrichten",
       "icoon": "Dumbbell"
-    },
-    {
-      "label": "Hoofd",
-      "sub": "Hoofdpijn en migraine die je dag beïnvloeden.",
-      "slug": "hoofd",
-      "icoon": "Brain"
     }
   ],
   "reviews": [
@@ -113,17 +107,9 @@ export const praktijk = {
       "toestemming": true
     },
     {
-      "naam": "Sophie",
-      "klacht": "Hoofd",
-      "plaats": "Hoorn",
-      "sterren": 5,
-      "quote": "Na jaren migraine eindelijk verlichting gevonden. Ik had dit eerder moeten doen!",
-      "toestemming": true
-    },
-    {
       "naam": "Pieter",
       "klacht": "Spieren",
-      "plaats": "Enkhuizen",
+      "plaats": "Zwaag",
       "sterren": 4,
       "quote": "De behandeling werkt goed en de praktijk heeft een gemoedelijke sfeer waar je je direct op je gemak voelt.",
       "toestemming": true
@@ -131,7 +117,7 @@ export const praktijk = {
     {
       "naam": "Linda",
       "klacht": "Gewrichten",
-      "plaats": "Medemblik",
+      "plaats": "Berkhout",
       "sterren": 5,
       "quote": "Mijn stijve schouder is zoveel beter. Richard weet precies wat hij doet en legt alles duidelijk uit.",
       "toestemming": true
@@ -155,7 +141,7 @@ export const praktijk = {
     {
       "naam": "Tom",
       "klacht": "Spieren",
-      "plaats": "Hoorn",
+      "plaats": "Zwaag",
       "sterren": 5,
       "quote": "Geen klinische omgeving maar gewoon een plek waar je je welkom voelt. De behandeling helpt echt.",
       "toestemming": true
@@ -330,7 +316,7 @@ export const praktijk = {
     },
     {
       "vraag": "Waar kan ik terecht met osteopathie?",
-      "antwoord": "Je kunt bij ons terecht met allerlei klachten zoals rug-, nek- en hoofdpijn, gewrichts- en spierproblemen, en diverse andere lichamelijke klachten. Tijdens de intake bespreken we of osteopathie geschikt is voor jouw situatie."
+      "antwoord": "Je kunt bij ons terecht met allerlei klachten zoals rug- en nekklachten, gewrichts- en spierproblemen, en diverse andere lichamelijke klachten. Tijdens de intake bespreken we of osteopathie geschikt is voor jouw situatie."
     },
     {
       "vraag": "Hoe maak ik een afspraak?",
