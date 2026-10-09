@@ -1,14 +1,9 @@
 /* ============================================================
-   KLANTCONTENT — één bestand, één klant.
-   Voor een nieuwe klant: alleen dit bestand aanpassen.
-   De componenten in components/secties blijven ongewijzigd.
+   KLANTCONTENT — automatisch gegenereerd, niet handmatig bewerken.
    ============================================================ */
 
 export type Sterren = 1 | 2 | 3 | 4 | 5;
 
-/** Een review die een klacht/behandeling noemt is een gezondheidsgegeven (AVG).
- *  `toestemming` is verplicht `true`; reviews zonder toestemming worden
- *  vóór het renderen weggefilterd (zie components/secties/reviews.tsx). */
 export type Review = {
   naam: string;
   klacht: string;
@@ -31,8 +26,6 @@ export type Klacht = {
   sub: string;
   slug: string;
   icoon: string;
-  /** Optioneel: pad naar een echte praktijkfoto (bijv. /klachten/rug.jpg).
-   *  Leeg = merk-placeholder in de hover-preview. Geen stockfoto's. */
   afbeelding?: string;
 };
 
@@ -54,336 +47,565 @@ export type Verzekeraar = {
 export type Feit = { titel: string; tekst: string };
 export type FaqItem = { vraag: string; antwoord: string };
 
-/* ------------------------------------------------------------ */
-
-const klachten: Klacht[] = [
-  {
-    label: "Rugklachten",
-    sub: "Onderrug, hernia, ischias",
-    slug: "rugklachten",
-    icoon: "PersonStanding",
-    afbeelding: "/klachten/rugklachten.jpg",
-  },
-  {
-    label: "Nek en schouder",
-    sub: "Stijfheid, uitstraling naar de arm",
-    slug: "nek-en-schouder",
-    icoon: "Bone",
-    afbeelding: "/klachten/nek-en-schouder.jpg",
-  },
-  {
-    label: "Knieklachten",
-    sub: "Meniscus, kruisband, artrose",
-    slug: "knieklachten",
-    icoon: "Activity",
-    afbeelding: "/klachten/knieklachten.jpg",
-  },
-  {
-    label: "Sportblessure",
-    sub: "Hardlopen, voetbal, krachttraining",
-    slug: "sportblessure",
-    icoon: "Dumbbell",
-    afbeelding: "/klachten/sportblessure.jpg",
-  },
-  {
-    label: "Hoofdpijn",
-    sub: "Spanning, migraine, kaakklachten",
-    slug: "hoofdpijn",
-    icoon: "Brain",
-    afbeelding: "/klachten/hoofdpijn.jpg",
-  },
-  {
-    label: "Revalidatie",
-    sub: "Na operatie of ziekenhuisopname",
-    slug: "revalidatie",
-    icoon: "HeartPulse",
-    afbeelding: "/klachten/revalidatie.jpg",
-  },
-];
-
-const reviews: Review[] = [
-  {
-    naam: "Marloes de Vries",
-    klacht: "Rugklachten",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Na jaren rondlopen met onderrugpijn eindelijk iemand die uitlegde waar het vandaan kwam. Ik kreeg een plan met een einddatum en na zeven weken kon ik weer tuinieren zonder er de dag erna voor te boeten.",
-    toestemming: true,
-  },
-  {
-    naam: "Youssef El Amrani",
-    klacht: "Sportblessure",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Hardloopblessure vlak voor een halve marathon. Dezelfde week nog terecht, elke afspraak dezelfde therapeut. Ik heb de wedstrijd gewoon gelopen.",
-    toestemming: true,
-  },
-  {
-    naam: "Anouk Bakker",
-    klacht: "Nek en schouder",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Ik werk de hele dag achter een scherm en had constant uitstraling naar mijn arm. Ze keken ook naar mijn werkplek en houding, niet alleen naar de pijn zelf. Groot verschil.",
-    toestemming: true,
-  },
-  {
-    naam: "Peter Janssen",
-    klacht: "Knieklachten",
-    plaats: "Almere Haven",
-    sterren: 5,
-    quote:
-      "Na een meniscusoperatie hier gerevalideerd. Rustig opgebouwd, nooit het gevoel dat ik werd opgejaagd of juist aan het lijntje werd gehouden. Duidelijke doelen elke week.",
-    toestemming: true,
-  },
-  {
-    naam: "Sanne Visser",
-    klacht: "Hoofdpijn",
-    plaats: "Almere Buiten",
-    sterren: 5,
-    quote:
-      "Al maanden spanningshoofdpijn waar de huisarts geen kant mee op kon. Bleek grotendeels uit mijn nek te komen. Na een paar behandelingen merkbaar minder.",
-    toestemming: true,
-  },
-  {
-    naam: "Rick Mulder",
-    klacht: "Revalidatie",
-    plaats: "Almere Stad",
-    sterren: 5,
-    quote:
-      "Na een ziekenhuisopname flink verzwakt. Ze hebben me stap voor stap weer op de been geholpen en precies verteld wat ik thuis moest doen. Ik voel me weer mezelf.",
-    toestemming: true,
-  },
-  {
-    naam: "Fatima Yildirim",
-    klacht: "Rugklachten",
-    plaats: "Almere Poort",
-    sterren: 5,
-    quote:
-      "Zwanger en veel bekken- en rugklachten. Fijn dat ze precies wisten wat wel en niet kon. Ik werd serieus genomen en kreeg oefeningen die echt hielpen.",
-    toestemming: true,
-  },
-  {
-    naam: "Thomas Koster",
-    klacht: "Sportblessure",
-    plaats: "Almere Haven",
-    sterren: 4,
-    quote:
-      "Voetbalknie die maar niet overging. Goede uitleg en een opbouwschema dat klopte. Ik sta weer op het veld, iets later dan gehoopt maar zonder terugval.",
-    toestemming: true,
-  },
-];
-
-const empathie = {
-  regels: [
-    {
-      tekst:
-        "Je het al een paar keer dacht op te lossen met rust, en het steeds terugkwam.",
-      afbeelding: "/empathie/1.jpg",
-    },
-    {
-      tekst: "Je al weken aan het wachten bent voordat je ergens terecht kunt.",
-      afbeelding: "/empathie/2.jpg",
-    },
-    {
-      tekst:
-        "Je elke afspraak een andere therapeut kreeg en je verhaal opnieuw moest doen.",
-      afbeelding: "/empathie/3.jpg",
-    },
-    {
-      tekst:
-        "Niemand je heeft uitgelegd waar het vandaan komt, alleen wat je moet laten.",
-      afbeelding: "/empathie/4.jpg",
-    },
-  ],
-  afsluiting:
-    "Dat is precies waar wij het anders doen. Je houdt dezelfde therapeut van intake tot laatste afspraak, en je gaat na de eerste keer naar huis met een verklaring in plaats van een vraagteken.",
-  oplossingAfbeelding: "/empathie/oplossing.jpg",
-};
-
-const stappen: Stap[] = [
-  {
-    titel: "We zoeken uit waar het vandaan komt",
-    duur: "45 minuten",
-    tekst:
-      "Een uitgebreide intake waarin we niet alleen kijken waar het pijn doet, maar waarom. Je gaat naar huis met een verklaring.",
-    foto: "/aanpak/intake.jpg",
-    video: "/aanpak/intake.mp4",
-  },
-  {
-    titel: "Je krijgt een plan met een einddatum",
-    duur: "Vanaf afspraak twee",
-    tekst:
-      "Geen open einde en geen strippenkaart die vanzelf doorloopt. We spreken af hoeveel behandelingen we verwachten en waar we op mikken.",
-    foto: "/aanpak/behandelplan.jpg",
-    video: "/aanpak/behandelplan.mp4",
-  },
-  {
-    titel: "Je doet weer wat je wilde doen",
-    duur: "Gemiddeld 6 tot 8 weken",
-    tekst:
-      "We stoppen als je doel gehaald is en je weet wat je zelf kunt doen om het zo te houden.",
-    foto: "/aanpak/oefenzaal.jpg",
-    video: "/aanpak/begeleiding.mp4",
-  },
-];
-
-const team: Teamlid[] = [
-  {
-    naam: "Lisa Hoekstra",
-    functie: "Fysiotherapeut MSc",
-    specialisatie: "Rug en nek",
-    foto: "/team/lid-1.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Daan van Leeuwen",
-    functie: "Sportfysiotherapeut",
-    specialisatie: "Hardloop- en knieblessures",
-    foto: "/team/lid-2.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Priya Ramdas",
-    functie: "Manueel therapeut",
-    specialisatie: "Nek, schouder en hoofdpijn",
-    foto: "/team/lid-3.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Bram de Wit",
-    functie: "Fysiotherapeut",
-    specialisatie: "Revalidatie na operatie",
-    foto: "/team/lid-4.jpg",
-    uitgelicht: true,
-  },
-  {
-    naam: "Esra Demir",
-    functie: "Geriatriefysiotherapeut",
-    specialisatie: "Herstel en mobiliteit",
-    foto: "/team/lid-5.jpg",
-    uitgelicht: true,
-  },
-  { naam: "Tom Bakker", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/lid-6.jpg", uitgelicht: true },
-  { naam: "Nadia el Haddaoui", functie: "Kinderfysiotherapeut", specialisatie: "Kind en motoriek", foto: "/team/nadia-el-haddaoui.jpg" },
-  { naam: "Sven Postma", functie: "Sportfysiotherapeut", specialisatie: "Kracht en preventie", foto: "/team/sven-postma.jpg" },
-  { naam: "Iris van Dijk", functie: "Manueel therapeut", specialisatie: "Wervelkolom", foto: "/team/iris-van-dijk.jpg" },
-  { naam: "Karim Bouazza", functie: "Fysiotherapeut", specialisatie: "Schouder", foto: "/team/karim-bouazza.jpg" },
-  { naam: "Femke Smit", functie: "Bekkenfysiotherapeut", specialisatie: "Zwangerschap en herstel", foto: "/team/femke-smit.jpg" },
-  { naam: "Jeroen Vos", functie: "Fysiotherapeut", specialisatie: "Knie en heup", foto: "/team/jeroen-vos.jpg" },
-  { naam: "Maud Peeters", functie: "Oedeemtherapeut", specialisatie: "Lymfe en herstel", foto: "/team/maud-peeters.jpg" },
-  { naam: "Wesley Groot", functie: "Sportfysiotherapeut", specialisatie: "Teamsport", foto: "/team/wesley-groot.jpg" },
-  { naam: "Amira Haddad", functie: "Fysiotherapeut", specialisatie: "Nek en hoofdpijn", foto: "/team/amira-haddad.jpg" },
-  { naam: "Gijs Molenaar", functie: "Manueel therapeut", specialisatie: "Rug", foto: "/team/gijs-molenaar.jpg" },
-  { naam: "Sophie Willems", functie: "Fysiotherapeut", specialisatie: "Revalidatie", foto: "/team/sophie-willems.jpg" },
-  { naam: "Ravi Sharma", functie: "Fysiotherapeut", specialisatie: "Algemeen", foto: "/team/ravi-sharma.jpg" },
-  { naam: "Julia Kramer", functie: "Sportfysiotherapeut", specialisatie: "Loopanalyse", foto: "/team/julia-kramer.jpg" },
-  { naam: "Mohammed Aziz", functie: "Praktijkmanager", specialisatie: "Zorg en planning", foto: "/team/mohammed-aziz.jpg" },
-];
-
-const verzekeraars: Verzekeraar[] = [
-  { naam: "Zilveren Kruis", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket." },
-  { naam: "CZ", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering." },
-  { naam: "VGZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt." },
-  { naam: "Menzis", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket." },
-  { naam: "ONVZ", logo: "", gecontracteerd: true, toelichting: "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks." },
-  { naam: "DSW", logo: "", gecontracteerd: true, toelichting: "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering." },
-  { naam: "Zorg en Zekerheid", logo: "", gecontracteerd: false, toelichting: "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit." },
-];
-
-const feiten: Feit[] = [
-  {
-    titel: "Geen verwijzing nodig",
-    tekst:
-      "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht.",
-  },
-  {
-    titel: "Meestal uit je aanvullende pakket",
-    tekst:
-      "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit.",
-  },
-  {
-    titel: "Geen eigen risico bij aanvullend",
-    tekst:
-      "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet.",
-  },
-];
-
-const faq: FaqItem[] = [
-  {
-    vraag: "Heb ik een verwijzing van de huisarts nodig?",
-    antwoord:
-      "Nee. Fysiotherapie is direct toegankelijk, je mag zelf een afspraak maken. Alleen bij een chronische indicatie is een verwijzing nodig, en dan helpen we je daarbij.",
-  },
-  {
-    vraag: "Hoeveel behandelingen heb ik nodig?",
-    antwoord:
-      "Dat hoor je na de intake, niet ervoor. Voor de meeste klachten zitten we tussen de zes en tien behandelingen. Je krijgt een inschatting op papier zodat je weet waar je aan toe bent.",
-  },
-  {
-    vraag: "Kan ik dezelfde week nog terecht?",
-    antwoord:
-      "Meestal wel. Onze actuele wachttijd staat bovenaan deze pagina en wordt elke maandag bijgewerkt. Bij acute klachten proberen we je binnen 24 uur in te plannen.",
-  },
-  {
-    vraag: "Krijg ik steeds dezelfde therapeut?",
-    antwoord:
-      "Ja. Je wordt gekoppeld aan één therapeut die je hele traject begeleidt. Alleen bij vakantie of ziekte neemt een collega waar, en die is dan volledig ingelezen.",
-  },
-  {
-    vraag: "Wat kost het als ik niet verzekerd ben voor fysiotherapie?",
-    antwoord:
-      "Een intake kost 60 euro en een vervolgbehandeling 38 euro. Je krijgt vooraf een inschatting van de totale kosten, zodat je nooit voor verrassingen komt te staan.",
-  },
-];
-
-/* ------------------------------------------------------------ */
-
 export const praktijk = {
-  naam: "FysioAlmere",
-  plaats: "Almere",
-  telefoon: "036 123 4567",
-  telefoonHref: "tel:+31361234567",
-  whatsapp: "https://wa.me/31361234567",
-  boekUrl: "https://afspraak.example.nl",
-  heroVideo: "/hero/hero.mp4",
-  heroTitel: "Pijnvrij Bewegen",
-
-  trust: {
-    googleScore: 4.9,
-    aantalReviews: 218,
-    wachttijdDagen: 2,
-    bigRegistratie: "BIG geregistreerd",
-    bigSub: "Kwaliteitsregister Fysiotherapie",
+  "naam": "Fysiotherapiepraktijk Corlaer",
+  "plaats": "Nijkerk",
+  "telefoon": "033 7210 444",
+  "telefoonHref": "tel:+31337210444",
+  "whatsapp": "https://wa.me/31337210444",
+  "boekUrl": "#contact",
+  "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/h_540,c_scale,q_auto,ac_none/Fysio_Header_high_end_dstput.mp4",
+  "heroTitel": "Actief Blijven",
+  "trust": {
+    "googleScore": 4.8,
+    "aantalReviews": 156,
+    "wachttijdDagen": 2,
+    "bigRegistratie": "BIG geregistreerd",
+    "bigSub": "Kwaliteitsregister Fysiotherapie"
   },
-
-  klachten,
-  reviews,
-  empathie,
-  stappen,
-  team,
-
-  teamShowcase: {
-    groepsfoto: "/team/groep.jpg",
-    // Optioneel: extra echte fotos (zelfde persoon elders op de site of praktijkruimte) die de
-    // hero-parallax aanvullen tot 6 portretten wanneer praktijk.team weinig leden telt.
-    extraFotos: [] as string[],
-    // "contain" voor bijna-vierkante/staande covers (bv. team-collages) zodat ze niet gecropt worden.
-    coverFit: "cover" as "cover" | "contain",
+  "klachten": [
+    {
+      "label": "Bekkenbodem",
+      "sub": "Hulp bij blaasproblemen en pijn in de onderbuik.",
+      "slug": "bekkenbodem",
+      "icoon": "PersonStanding"
+    },
+    {
+      "label": "Rug",
+      "sub": "Van lage rugklachten tot bekkeninstabiliteit.",
+      "slug": "rug",
+      "icoon": "Bone"
+    },
+    {
+      "label": "Etalagebenen",
+      "sub": "Looptherapie bij doorbloedingsproblemen in de benen.",
+      "slug": "etalagebenen",
+      "icoon": "Activity"
+    },
+    {
+      "label": "Sport",
+      "sub": "Blessures voorkomen en prestaties verbeteren.",
+      "slug": "sport",
+      "icoon": "Dumbbell"
+    },
+    {
+      "label": "Hoofdpijn",
+      "sub": "Behandeling van spanning en pijn in hoofd en nek.",
+      "slug": "hoofdpijn",
+      "icoon": "Brain"
+    }
+  ],
+  "reviews": [
+    {
+      "naam": "Marieke V.",
+      "klacht": "Bekkenbodem",
+      "plaats": "Nijkerk",
+      "sterren": 5,
+      "quote": "Na mijn zwangerschap had ik last van ongewenst urineverlies. Dankzij de specialistische begeleiding kan ik weer zonder zorgen bewegen en sporten.",
+      "toestemming": true
+    },
+    {
+      "naam": "Jan B.",
+      "klacht": "Etalagebenen",
+      "plaats": "Amersfoort",
+      "sterren": 5,
+      "quote": "Ik kon nog maar een klein stukje lopen zonder pijn. Door de looptherapie loop ik nu drie keer zo ver. Wat een verschil!",
+      "toestemming": true
+    },
+    {
+      "naam": "Linda K.",
+      "klacht": "Rug",
+      "plaats": "Nijkerk",
+      "sterren": 5,
+      "quote": "Jarenlang last van mijn onderrug. Het team heeft echt de tijd genomen om de oorzaak te vinden en niet alleen de pijn te behandelen.",
+      "toestemming": true
+    },
+    {
+      "naam": "Peter S.",
+      "klacht": "Sport",
+      "plaats": "Putten",
+      "sterren": 4,
+      "quote": "Door de bikefit en gerichte training rijd ik nu pijnvrij en veel comfortabeler. Aanrader voor elke wielrenner.",
+      "toestemming": true
+    },
+    {
+      "naam": "Anne W.",
+      "klacht": "Hoofdpijn",
+      "plaats": "Nijkerk",
+      "sterren": 5,
+      "quote": "Ik had elke week hoofdpijn door spanning in mijn nek. Na de behandeling ben ik eindelijk van mijn klachten af.",
+      "toestemming": true
+    },
+    {
+      "naam": "Rob M.",
+      "klacht": "Rug",
+      "plaats": "Voorthuizen",
+      "sterren": 5,
+      "quote": "De dry needling heeft mijn verharde spieren goed losgemaakt. Ik kan weer normaal bewegen zonder die constante pijn.",
+      "toestemming": true
+    },
+    {
+      "naam": "Sandra H.",
+      "klacht": "Sport",
+      "plaats": "Nijkerk",
+      "sterren": 5,
+      "quote": "Dankzij het EGYM-programma ben ik veel sterker geworden en heb ik geen terugkerende blessures meer. Top begeleiding!",
+      "toestemming": true
+    },
+    {
+      "naam": "Henk J.",
+      "klacht": "Etalagebenen",
+      "plaats": "Barneveld",
+      "sterren": 4,
+      "quote": "Het lopen ging steeds moeizamer. Met het oefenprogramma ben ik weer veel actiever en voel ik me fitter.",
+      "toestemming": true
+    }
+  ],
+  "empathie": {
+    "regels": [
+      {
+        "tekst": "Je sportschoenen staan al maanden in de kast, omdat bewegen gewoon niet meer gaat zoals je wilt.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/1_2_yzrvxh.jpg"
+      },
+      {
+        "tekst": "Je blijft maar uitstellen en weet eigenlijk niet waar je met je klacht terecht kunt of hoelang je moet wachten.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/2_2_hy32i6.jpg"
+      },
+      {
+        "tekst": "Elke keer zie je weer een ander gezicht en moet je je hele verhaal opnieuw vertellen.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/3_2_uw0d3t.jpg"
+      },
+      {
+        "tekst": "Je krijgt standaardoefeningen mee, maar niemand legt je echt uit waar je klacht vandaan komt.",
+        "afbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/4_2_rngnnd.jpg"
+      }
+    ],
+    "afsluiting": "Bij Fysiotherapiepraktijk Corlaer werken we anders. Je wordt vanaf het begin geholpen door een vast team dat echt de tijd neemt om je klacht te begrijpen en de oorzaak te vinden. Zo weet je precies waar je aan toe bent en wat je kunt verwachten.",
+    "oplossingAfbeelding": "https://res.cloudinary.com/kzpln4r2/image/upload/5_lwtck4.jpg"
   },
-
-  vergoeding: {
-    peiljaar: 2026,
-    laatstGecontroleerd: "januari 2026",
-    feiten,
-    verzekeraars,
-    disclaimer:
-      "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend.",
+  "stappen": [
+    {
+      "titel": "Intake en diagnose",
+      "tekst": "We beginnen met een uitgebreid intakegesprek en grondig onderzoek. Zo ontdekken we wat er speelt en waar je klacht vandaan komt.",
+      "duur": "30-45 minuten",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920974/intake_zlwfha.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920974/intake_zlwfha.mp4"
+    },
+    {
+      "titel": "Persoonlijk behandelplan",
+      "tekst": "Op basis van het onderzoek stellen we een behandelplan op dat past bij jouw situatie en doelen. Je weet precies wat we gaan doen en waarom.",
+      "duur": "Tijdens de eerste afspraak",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920976/behandel_plan_x0kzje.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920976/behandel_plan_x0kzje.mp4"
+    },
+    {
+      "titel": "Uitvoering en resultaat",
+      "tekst": "We behandelen je met de nieuwste technieken en begeleiden je stap voor stap naar herstel. Je ziet week na week vooruitgang.",
+      "duur": "Gemiddeld 6-8 weken",
+      "foto": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920977/begeleiding_d5ziie.mp4",
+      "video": "https://res.cloudinary.com/kzpln4r2/video/upload/v1785920977/begeleiding_d5ziie.mp4"
+    }
+  ],
+  "team": [
+    {
+      "naam": "Marco Kamphorst",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Manueel Therapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/MK-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Tom Cozijnsen",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Sportfysiotherapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/TC-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Gert van Dasler",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Manueel Therapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/GD-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Sanne van den Berg",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Bewegingswetenschapper",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/SB-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Ramon Kasteleijn",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Manueel Therapeut, Handtherapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/RK-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Margriet Eenjes",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Psychosomatische fysiotherapie",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/ME-website-scaled.jpg",
+      "uitgelicht": true
+    },
+    {
+      "naam": "Pieter Robbemond",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Psychosomatisch Fysiotherapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/PR-website-scaled.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Anne-Wil Prins",
+      "functie": "Kinderfysiotherapeut",
+      "specialisatie": "SI-therapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/AP-website-scaled.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Cynthia Ruiter-Ringeling",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Psychosomatische Fysiotherapie",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2026/04/Cynthia-portret-foto-website-768x960.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Ruben Ubels",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Handtherapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/RU-website-scaled.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Koos de Ruiter",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Psychosomatisch Fysiotherapeut",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/KR-website-scaled.jpg",
+      "uitgelicht": false
+    },
+    {
+      "naam": "Jelldrick van de Bunt",
+      "functie": "Fysiotherapeut",
+      "specialisatie": "Shockwave therapie",
+      "foto": "https://gc-corlaer.nl/wp-content/uploads/2023/10/JB-website-scaled.jpg",
+      "uitgelicht": false
+    }
+  ],
+  "teamShowcase": {
+    "groepsfoto": "https://gc-corlaer.nl/wp-content/uploads/2025/11/fysiopraktijk_Corlaer_groep-39.jpg",
+    "coverBron": "echte groepsfoto van de site"
   },
-
-  faq,
+  "vergoeding": {
+    "peiljaar": 2026,
+    "laatstGecontroleerd": "januari 2026",
+    "feiten": [
+      {
+        "titel": "Geen verwijzing nodig",
+        "tekst": "Je mag rechtstreeks een afspraak maken. Een bezoek aan de huisarts is niet verplicht."
+      },
+      {
+        "titel": "Meestal uit je aanvullende pakket",
+        "tekst": "Hoeveel behandelingen je krijgt hangt af van je pakket. Wij zoeken het gratis voor je uit."
+      },
+      {
+        "titel": "Geen eigen risico bij aanvullend",
+        "tekst": "Vergoeding uit de aanvullende verzekering raakt je eigen risico niet."
+      }
+    ],
+    "verzekeraars": [
+      {
+        "naam": "Zilveren Kruis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met Zilveren Kruis. Je fysiotherapie wordt vergoed uit je aanvullende pakket."
+      },
+      {
+        "naam": "CZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door CZ. Vergoeding loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "VGZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met VGZ. Wij zoeken gratis voor je uit hoeveel behandelingen jouw pakket dekt."
+      },
+      {
+        "naam": "Menzis",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door Menzis. Vergoeding komt uit je aanvullende pakket."
+      },
+      {
+        "naam": "ONVZ",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij hebben een contract met ONVZ. Wij regelen de declaratie rechtstreeks."
+      },
+      {
+        "naam": "DSW",
+        "logo": "",
+        "gecontracteerd": true,
+        "toelichting": "Wij zijn gecontracteerd door DSW. Je fysiotherapie loopt via je aanvullende verzekering."
+      },
+      {
+        "naam": "Zorg en Zekerheid",
+        "logo": "",
+        "gecontracteerd": false,
+        "toelichting": "Met Zorg en Zekerheid hebben wij geen contract. Behandelingen zijn mogelijk, maar de vergoeding kan lager uitvallen. Wij zoeken het gratis voor je uit."
+      }
+    ],
+    "disclaimer": "Gegevens gecontroleerd in januari 2026 en gebaseerd op de polisvoorwaarden van 2026. Aan deze informatie kun je geen rechten ontlenen, je polisvoorwaarden zijn leidend."
+  },
+  "vergoedingVervanger": null,
+  "algemeneVervanging": null,
+  "niche": "fysio",
+  "faq": [
+    {
+      "vraag": "Heb ik een verwijzing nodig?",
+      "antwoord": "Voor fysiotherapie heb je sinds 2006 geen verwijzing meer nodig. Je kunt dus direct bij ons terecht. Voor sommige specialistische behandelingen zoals Claudicatio Intermittens is wel een verwijzing vereist."
+    },
+    {
+      "vraag": "Hoeveel behandelingen heb ik nodig?",
+      "antwoord": "Dat is per persoon verschillend en hangt af van je klacht. Gemiddeld zijn 6 tot 8 behandelingen nodig, maar dat bespreken we tijdens de intake. We evalueren regelmatig de voortgang."
+    },
+    {
+      "vraag": "Hoe snel kan ik terecht?",
+      "antwoord": "We proberen je zo snel mogelijk te helpen. Meestal kun je binnen 2 tot 3 werkdagen terecht voor een eerste afspraak. Voor spoedeisende gevallen doen we ons best om nog sneller een plek te vinden."
+    },
+    {
+      "vraag": "Krijg ik steeds dezelfde therapeut?",
+      "antwoord": "Ja, bij ons word je behandeld door een vaste therapeut die je klacht van begin tot eind begeleidt. Zo hoef je je verhaal niet steeds opnieuw te vertellen en kent je therapeut precies je situatie."
+    },
+    {
+      "vraag": "Wat zijn de kosten zonder verzekering?",
+      "antwoord": "De kosten voor een behandeling bedragen tussen de €40 en €50 per sessie, afhankelijk van het type behandeling. Sommige specialistische behandelingen zoals bikefit of dry needling kunnen iets afwijken. Neem contact op voor exacte tarieven."
+    }
+  ],
+  "fotoUitsnede": {
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/MK-website-scaled.jpg": {
+      "tegel": {
+        "cx": 129,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 1,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/TC-website-scaled.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/GD-website-scaled.jpg": {
+      "tegel": {
+        "cx": 128,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/SB-website-scaled.jpg": {
+      "tegel": {
+        "cx": 12,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/RK-website-scaled.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/ME-website-scaled.jpg": {
+      "tegel": {
+        "cx": 128,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/PR-website-scaled.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/AP-website-scaled.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/RU-website-scaled.jpg": {
+      "tegel": {
+        "cx": 128,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/KR-website-scaled.jpg": {
+      "tegel": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2023/10/JB-website-scaled.jpg": {
+      "tegel": {
+        "cx": 118,
+        "cy": 0,
+        "cw": 1920,
+        "ch": 2560
+      },
+      "kaart": {
+        "cx": 1,
+        "cy": 0,
+        "cw": 2048,
+        "ch": 2560
+      }
+    },
+    "https://gc-corlaer.nl/wp-content/uploads/2025/11/fysiopraktijk_Corlaer_groep-39.jpg": {
+      "cover": {
+        "cx": 0,
+        "cy": 0,
+        "cw": 5665,
+        "ch": 3399
+      }
+    }
+  },
+  "fotoControle": {
+    "gekeurd": 13,
+    "portretOk": 11,
+    "coverOk": 1,
+    "afgekeurd": [
+      {
+        "url": "https://gc-corlaer.nl/wp-content/uploads/2026/04/Cynthia-portret-foto-website-768x960.jpg",
+        "reden": "gezicht past niet in staand formaat"
+      },
+      {
+        "url": "https://gc-corlaer.nl/wp-content/uploads/2025/11/fysiopraktijk_Corlaer_groep-39.jpg",
+        "reden": "meerdere gezichten, geen eenduidig portret"
+      }
+    ],
+    "msTotaal": 37712,
+    "gegenereerd": 0,
+    "gegenereerdOk": 0,
+    "gegenereerdAfgekeurd": [],
+    "coverBron": "echte groepsfoto van de site",
+    "tegelsOpSite": 6,
+    "coverAanwezig": true,
+    "msNodeE": 1
+  },
+  "meerdereEchtePersonen": true,
+  "echtTeamViaGroepsfoto": false,
+  "fotoReferentie": {
+    "bron": "teamlid",
+    "aantal": 2,
+    "urls": [
+      "https://gc-corlaer.nl/wp-content/uploads/2023/10/MK-website-scaled.jpg",
+      "https://gc-corlaer.nl/wp-content/uploads/2023/10/TC-website-scaled.jpg"
+    ],
+    "profiel": {
+      "geslacht": "onbekend",
+      "leeftijd": null,
+      "eenmanspraktijk": null,
+      "toelichting": ""
+    }
+  },
+  "stappenKop": "Van eerste gesprek tot resultaat",
+  "stappenSub": "In drie heldere stappen naar een oplossing voor jouw klacht.",
+  "stappenModus": "traject",
+  "kleuren": {
+    "primair": "#5fc3d8",
+    "donker": "#3a9bb0",
+    "licht": "#e8f7fa"
+  },
+  "echtTeamTegels": {
+    "leden": [],
+    "referenties": 0,
+    "nodig": 0,
+    "taken": 0
+  },
+  "eigenVoorraadCheck": {
+    "teamStock": 0,
+    "coverStock": false,
+    "extraStock": 0
+  }
 } as const;
 
 export type Praktijk = typeof praktijk;
