@@ -49,7 +49,7 @@ export type FaqItem = { vraag: string; antwoord: string };
 
 export const praktijk = {
   "naam": "Stabielfit",
-  "plaats": "Daan",
+  "plaats": "",
   "telefoon": "",
   "telefoonHref": "",
   "whatsapp": "",
@@ -60,7 +60,7 @@ export const praktijk = {
     "googleScore": 4.8,
     "aantalReviews": 120,
     "wachttijdDagen": 2,
-    "bigRegistratie": "Persoonlijke begeleiding",
+    "bigRegistratie": "Persoonlijke begeleiding op maat",
     "bigSub": "Eén vaste trainer die jouw doelen kent"
   },
   "klachten": [
@@ -99,7 +99,7 @@ export const praktijk = {
     {
       "naam": "Mark",
       "klacht": "Spieropbouw",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Ik ben veel sterker geworden en voel me fitter dan ooit. De begeleiding is top en ik zie echt resultaat.",
       "toestemming": true
@@ -107,7 +107,7 @@ export const praktijk = {
     {
       "naam": "Lisa",
       "klacht": "Afvallen",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Eindelijk ben ik mijn overtollige kilo's kwijt. De training is uitdagend maar haalbaar, en ik heb er zoveel energie van gekregen.",
       "toestemming": true
@@ -115,7 +115,7 @@ export const praktijk = {
     {
       "naam": "Tim",
       "klacht": "Explosiviteit",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Mijn prestaties op het veld zijn enorm verbeterd. Ik ben sneller en explosieve kracht is echt toegenomen.",
       "toestemming": true
@@ -123,7 +123,7 @@ export const praktijk = {
     {
       "naam": "Sandra",
       "klacht": "Stabiliteit",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Ik had vaak last van mijn rug, maar door de stabiliteitstraining is dat nu verleden tijd. Ik voel me veel steviger.",
       "toestemming": true
@@ -131,7 +131,7 @@ export const praktijk = {
     {
       "naam": "Joris",
       "klacht": "Medische fit",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 4,
       "quote": "Na mijn blessure was ik bang om weer te beginnen. Daan heeft me rustig en veilig begeleid en ik ben weer volledig hersteld.",
       "toestemming": true
@@ -139,7 +139,7 @@ export const praktijk = {
     {
       "naam": "Emma",
       "klacht": "Spieropbouw",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Ik zie mijn spieren groeien en voel me sterker in alles wat ik doe. De persoonlijke aandacht maakt het verschil.",
       "toestemming": true
@@ -147,7 +147,7 @@ export const praktijk = {
     {
       "naam": "Bram",
       "klacht": "Afvallen",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Ik heb mijn doel bereikt en voel me geweldig. De trainingen zijn zwaar maar de resultaten spreken voor zich.",
       "toestemming": true
@@ -155,7 +155,7 @@ export const praktijk = {
     {
       "naam": "Sophie",
       "klacht": "Explosiviteit",
-      "plaats": "Daan",
+      "plaats": "",
       "sterren": 5,
       "quote": "Mijn reactietijd is zoveel sneller geworden. Ik presteer beter en voel me atletischer dan ooit.",
       "toestemming": true
