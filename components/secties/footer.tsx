@@ -21,7 +21,7 @@ export function Footer() {
           <p className="display text-lg text-ink">{praktijk.naam}</p>
           <p className="mt-3 text-sm">
             {isOverig
-              ? `Persoonlijke begeleiding in ${praktijk.plaats}.`
+              ? (praktijk.plaats ? `Persoonlijke begeleiding in ${praktijk.plaats}.` : 'Persoonlijke begeleiding op maat.')
               : `Fysiotherapie in ${praktijk.plaats}. Een vaste therapeut en een plan met een einddatum.`}
           </p>
         </div>

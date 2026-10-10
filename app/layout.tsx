@@ -26,7 +26,7 @@ const algemeneVervangingMeta = ((praktijk as unknown) as {
 
 export const metadata: Metadata = {
   title: isOverigMeta
-    ? `${praktijk.naam} — ${praktijk.plaats}`
+    ? (praktijk.plaats ? `${praktijk.naam} — ${praktijk.plaats}` : praktijk.naam)
     : `${praktijk.naam} — Fysiotherapie in ${praktijk.plaats}`,
   description: isOverigMeta
     ? algemeneVervangingMeta?.heroTekst ??
