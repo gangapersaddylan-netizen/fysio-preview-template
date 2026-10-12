@@ -83,33 +83,33 @@ export const praktijk = {
       "icoon": "Activity"
     },
     {
-      "label": "Sportblessure",
-      "sub": "Van hernia tot hamstring, vakkundige begeleiding naar herstel",
-      "slug": "sportblessures",
-      "icoon": "Dumbbell"
+      "label": "Pijn",
+      "sub": "Van acute klachten tot langdurige pijn, we zoeken de oorzaak",
+      "slug": "pijn",
+      "icoon": "HeartPulse"
     },
     {
-      "label": "Rug & Schouder",
-      "sub": "Stijfheid en pijn aanpakken met gerichte mobiliteit",
-      "slug": "rug-schouder",
-      "icoon": "Bone"
+      "label": "Vermoeidheid",
+      "sub": "Balans tussen fysiek, mentaal en hormonen terugvinden",
+      "slug": "vermoeidheid",
+      "icoon": "Brain"
     }
   ],
   "reviews": [
     {
       "naam": "Sophie van der Berg",
-      "klacht": "Rug & Schouder",
+      "klacht": "Vermoeidheid",
       "plaats": "Oosterhout",
       "sterren": 5,
-      "quote": "Na maanden stijfheid eindelijk weer soepel kunnen bewegen. De behandeling was gericht en de uitleg helder.",
+      "quote": "Altijd moe geweest, maar nu heb ik mijn energie terug. De persoonlijke aanpak maakte het verschil.",
       "toestemming": true
     },
     {
       "naam": "Tom Verhoeven",
-      "klacht": "Sportblessure",
+      "klacht": "Pijn",
       "plaats": "Breda",
       "sterren": 5,
-      "quote": "Mijn knieklacht werd serieus genomen. Kon na zes weken weer hardlopen, precies zoals beloofd.",
+      "quote": "Mijn pijnklacht werd serieus genomen. Na zes weken was ik pijnvrij, precies zoals beloofd.",
       "toestemming": true
     },
     {
@@ -138,7 +138,7 @@ export const praktijk = {
     },
     {
       "naam": "Dennis Smits",
-      "klacht": "Sportblessure",
+      "klacht": "Pijn",
       "plaats": "Oosterhout",
       "sterren": 5,
       "quote": "Professionele begeleiding na mijn polsbreuk. Stap voor stap terug naar volledige mobiliteit.",
@@ -154,7 +154,7 @@ export const praktijk = {
     },
     {
       "naam": "Jasper Willems",
-      "klacht": "Rug & Schouder",
+      "klacht": "Vermoeidheid",
       "plaats": "Oosterhout",
       "sterren": 5,
       "quote": "Van niet kunnen bewegen naar weer actief zijn. De oefeningen waren simpel maar effectief.",
