@@ -50,9 +50,9 @@ export type FaqItem = { vraag: string; antwoord: string };
 export const praktijk = {
   "naam": "ZUITNL Fitness & Fysiotherapie",
   "plaats": "Etten-Leur",
-  "telefoon": "",
-  "telefoonHref": "",
-  "whatsapp": "",
+  "telefoon": "076 503 3622",
+  "telefoonHref": "tel:+31765033622",
+  "whatsapp": "https://wa.me/31765033622",
   "boekUrl": "https://zuit.nl/lid-worden/",
   "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/h_540,c_scale,q_auto,ac_none/Fysio_Header_high_end_dstput.mp4",
   "heroTitel": "Blijvend Presteren",
