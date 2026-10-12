@@ -50,9 +50,9 @@ export type FaqItem = { vraag: string; antwoord: string };
 export const praktijk = {
   "naam": "Hybrid Health",
   "plaats": "Oosterhout",
-  "telefoon": "",
-  "telefoonHref": "",
-  "whatsapp": "",
+  "telefoon": "0162 575 222",
+  "telefoonHref": "tel:+31162575222",
+  "whatsapp": "https://wa.me/31162575222",
   "boekUrl": "https://flux.healthcare/schedule/hybrid-health-fysio",
   "heroVideo": "https://res.cloudinary.com/kzpln4r2/video/upload/h_540,c_scale,q_auto,ac_none/Fysio_Header_high_end_dstput.mp4",
   "heroTitel": "Vrij Bewegen",
